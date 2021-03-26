@@ -24,7 +24,7 @@ java -classpath MiraiBot.jar; Mirai-Core-2.4.0.jar; Mirai-login-solver-selenium.
 # MiraiBot
 一个基于 Mirai 的控制台机器人
 
-**使用前请注意：***
+**使用前请注意：**
 ```
 由于 Mirai 最低需求是 Java8，所以请使用 Java8 以上的 JDK
 详情请看：https://github.com/mamoe/mirai/blob/dev/docs/Preparations.md#jvm-%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82
