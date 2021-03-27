@@ -1,5 +1,4 @@
 import net.mamoe.mirai.Mirai;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.MemberPermission;
 import net.mamoe.mirai.event.EventHandler;
@@ -11,14 +10,12 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class EventListener implements ListenerHost {
 	public static final MessageSource[] messages = new MessageSource[1024];
 	private final int[] messageI = {0};
-	private final String[] oldImg = {""};
-	private final String[] old = {""};
+	public static boolean showQQ;
 	
 	public static MessageSource getMessages(int key){
 		if (key > 0){
@@ -29,31 +26,19 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onInvited(BotInvitedJoinGroupRequestEvent event){
-		event.accept();
-		LogUtil.Log("机器人已接受 " + event.getInvitorNick() + "(" + event.getInvitorId() + ")" +
-				" 的邀请，加入了聊群 " + event.getGroupName() + "(" + event.getGroupId() + ")");
+		if (ConfigUtil.getConfig("inviteAccept").equals("true")){
+			event.accept();
+			LogUtil.Log("机器人已接受 " + event.getInvitorNick() + showQQ(event.getInvitorId()) +
+					" 的邀请，加入了聊群 " + event.getGroupName() + "(" + event.getGroupId() + ")");
+		}
 	}
 	@EventHandler
 	public void onNewFriend(NewFriendRequestEvent event){
-		event.accept();
-		LogUtil.Log("机器人已接受 " + event.getFromNick() + "(" + event.getFromId() + ")" + " 的好友申请，");
-		LogUtil.Log("其添加好友的信息为：" + event.getMessage());
-	}
-	@EventHandler
-	public void onUnmute(BotUnmuteEvent event){
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
-			return;
+		if (ConfigUtil.getConfig("inviteAccept").equals("true")) {
+			event.accept();
+			LogUtil.Log("机器人已接受 " + event.getFromNick() + showQQ(event.getFromId()) + "的好友申请，");
+			LogUtil.Log("其添加好友的信息为：" + event.getMessage());
 		}
-		Objects.requireNonNull(event.getBot().getGroup(Long.parseLong(ConfigUtil.getConfig("group")))).sendMessage(
-				new At(event.getOperator().getId()).plus("终于活过来了..."));
-	}
-	@EventHandler
-	public void onPermissionChange(BotGroupPermissionChangeEvent event){
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
-			return;
-		}
-		Objects.requireNonNull(event.getBot().getGroup(Long.parseLong(ConfigUtil.getConfig("group"))))
-				.sendMessage("我的权限从" + event.getOrigin() + "被修改成了" + event.getGroup().getBotPermission() + "！");
 	}
 	@EventHandler
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event){
@@ -64,10 +49,10 @@ public class EventListener implements ListenerHost {
 		Member sender = event.getAuthor();
 		if (operator != null) {
 			if (operator.getId() == sender.getId()){
-				LogUtil.Log(operator.getNameCard() + "(" + operator.getId() + ") " + "撤回了一条消息");
+				LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条消息");
 			} else {
-				LogUtil.Log(operator.getNameCard() + "(" + operator.getId() + ") " + "撤回了一条 " +
-						sender.getNameCard() + "(" + sender.getId() + ")" + " 的消息");
+				LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
+						sender.getNameCard() + showQQ(sender.getId()) + "的消息");
 			}
 		}
 	}
@@ -77,23 +62,19 @@ public class EventListener implements ListenerHost {
 				event.getOperator().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			return;
 		}
-		LogUtil.Log(event.getOperator().getNick() + "(" + event.getOperator().getId() + ") " + "撤回了一条消息");
+		LogUtil.Log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了一条消息");
 	}
 	@EventHandler
-	public void onPostSend(GroupMessagePostSendEvent event) {
+	public void onGroupPostSend(GroupMessagePostSendEvent event) {
 		LogUtil.Log(event.getBot().getNick() + " : " +
 				(ConfigUtil.getConfig("debug").equals("true") ?
 						event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
 	}
 	@EventHandler
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
-		LogUtil.Log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + " " +
+		LogUtil.Log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + showQQ(event.getTarget().getId()) +
 				(ConfigUtil.getConfig("debug").equals("true") ?
 					event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
-	}
-	@EventHandler
-	public void onJoinGroup(BotJoinGroupEvent event){
-		event.getGroup().sendMessage(new At(event.getGroup().getOwner().getId()).plus("机器人已成功加入本群！"));
 	}
 	@EventHandler
 	public void onImageUpload(BeforeImageUploadEvent event){
@@ -114,51 +95,16 @@ public class EventListener implements ListenerHost {
 			messageI[0] = 0;
 		}
 		
-		if((msg + "\\*/" + event.getSender().getId()).equals(old[0]) && !mCode.startsWith("[mirai:image:")){
-			if (event.getSender().getPermission() != MemberPermission.OWNER &&
-					event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
-				Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
-				event.getSender().mute(10);
-				event.getGroup().sendMessage(new At(event.getSender().getId()).plus("禁 止 复 读！！"));
-			}
-		} else if (mCode.split(":").length >= 3 && mCode.split(":")[1].equals("image")){
-			if (mCode.split(":")[2].equals(oldImg[0])){
-				if (event.getSender().getPermission() == MemberPermission.MEMBER &&
+		LogUtil.Log("[" + messageI[0] + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
+		if (mCode.split(":").length >= 3 && mCode.split(":")[1].equals("flash")){
+			if (ConfigUtil.getConfig("autoFlash").equals("true")){
+				if (event.getSender().getPermission() != MemberPermission.OWNER &&
 						event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
 					Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
-					event.getSender().mute(10);
 				}
-				event.getGroup().sendMessage(new At(event.getSender().getId()).plus("发完全一样的图片干嘛？"));
+				MessageChain send = MiraiCode.deserializeMiraiCode(mCode.replace("flash", "image"));
+				event.getGroup().sendMessage(send);
 			}
-			oldImg[0] = mCode.split(":")[2];
-		}
-		
-		old[0] = msg + "\\*/" + event.getSender().getId();
-		oldImg[0] = "";
-		
-		LogUtil.Log("[" + messageI[0] + "] " + event.getSender().getNameCard() + " : " + msg);
-		if (mCode.split(":").length >= 3 && mCode.split(":")[1].equals("flash")){
-			if (event.getSender().getPermission() != MemberPermission.OWNER &&
-					event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
-				Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
-			}
-			MessageChain send = MiraiCode.deserializeMiraiCode(mCode.replace("flash", "image"));
-			event.getGroup().sendMessage(send);
-		}
-		String miraiCode = "^(\\[mirai\\\\:)(image|face|flash)(\\\\:[\\w\\W]+)?(\\\\])$";
-		if (Pattern.matches(miraiCode, mCode)){
-			event.getGroup().sendMessage(
-					new QuoteReply(event.getSource())
-							.plus("检测到 MiraiCode ：\n")
-							.plus(MiraiCode.deserializeMiraiCode(mCode
-									.replace("\\[", "[")
-									.replace("\\]", "]")
-									.replace("\\r", "\r")
-									.replace("\\n", "\n")
-									.replace("\\:", ":")
-									.replace("\\,", ",")
-							))
-			);
 		}
 		
 		if (mCode.startsWith("[mirai:at:" + event.getBot().getId() + "] ")){
@@ -194,15 +140,6 @@ public class EventListener implements ListenerHost {
 				}
 			}
 		}
-		
-		if (msg.startsWith("冒泡")) {
-			event.getGroup().sendMessage("戳泡");
-			LogUtil.Log(event.getBot().getNick() + " : " + "戳泡");
-		} else if (msg.startsWith("戳") && msg.length() >= 2) {
-			String stamp = "戳“" + event.getMessage().serializeToMiraiCode() + "”";
-			event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(stamp));
-			LogUtil.Log(event.getBot().getNick() + " : " + "戳 “" + msg + "”");
-		}
 	}
 	@EventHandler
 	public void onFriendMessage(FriendMessageEvent event){
@@ -212,7 +149,7 @@ public class EventListener implements ListenerHost {
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
-		LogUtil.Log(event.getSender().getNick() + " -> " + event.getBot().getNick() + " " + msg);
+		LogUtil.Log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	@EventHandler
 	public void onTempMessage(GroupTempMessageEvent event){
@@ -222,7 +159,7 @@ public class EventListener implements ListenerHost {
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
-		LogUtil.Log(event.getSender().getNick() + "(" + event.getSender().getId() + ")" + " -> " + event.getBot().getNick() + " " + msg);
+		LogUtil.Log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	@EventHandler
 	public void onStrangerMessage(StrangerMessageEvent event){
@@ -232,28 +169,13 @@ public class EventListener implements ListenerHost {
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
-		LogUtil.Log(event.getSender().getNick() + "(" + event.getSender().getId() + ")" + " -> " + event.getBot().getNick() + " " + msg);
-	}
-	@EventHandler
-	public void onJoinRequest(MemberJoinRequestEvent event){
-		if (Objects.requireNonNull(event.getGroup()).getId() != Long.parseLong(ConfigUtil.getConfig("group"))){
-			return;
-		}
-		Group group = Objects.requireNonNull(event.getBot().getGroup(Long.parseLong(ConfigUtil.getConfig("group"))));
-		Objects.requireNonNull(group.sendMessage(
-				new At(group.getOwner().getId()) +
-						"有新人申请加入本群！\n" +
-						"QQ: " + event.getFromId() +
-						"昵称: " + event.getFromNick() +
-						"问答: \n   " + event.getMessage()
-		));
+		LogUtil.Log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
-	@EventHandler
-	public void onJoin(MemberJoinEvent event){
-		if (Objects.requireNonNull(event.getGroup()).getId() != Long.parseLong(ConfigUtil.getConfig("group"))){
-			return;
+	public String showQQ(Long qq){
+		if (showQQ) {
+			return "(" + qq + ") ";
 		}
-		event.getMember().setNameCard("[新人]" + event.getMember().getNick());
+		return " ";
 	}
 }
