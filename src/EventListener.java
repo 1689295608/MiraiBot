@@ -21,7 +21,10 @@ public class EventListener implements ListenerHost {
 	private final String[] old = {""};
 	
 	public static MessageSource getMessages(int key){
-		return messages[key];
+		if (key > 0){
+			return messages[key];
+		}
+		return null;
 	}
 	
 	@EventHandler
@@ -67,6 +70,14 @@ public class EventListener implements ListenerHost {
 						sender.getNameCard() + "(" + sender.getId() + ")" + " 的消息");
 			}
 		}
+	}
+	@EventHandler
+	public void onFriendRecall(MessageRecallEvent.FriendRecall event){
+		if (!(ConfigUtil.getConfig("friend").equals("*") ||
+				event.getOperator().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+			return;
+		}
+		LogUtil.Log(event.getOperator().getNick() + "(" + event.getOperator().getId() + ") " + "撤回了一条消息");
 	}
 	@EventHandler
 	public void onPostSend(GroupMessagePostSendEvent event) {
@@ -153,13 +164,10 @@ public class EventListener implements ListenerHost {
 		if (mCode.startsWith("[mirai:at:" + event.getBot().getId() + "] ")){
 			String[] cmd = mCode.split(" ");
 			if (cmd[1].equals("帮助") || cmd[1].equals("help")) {
-				String help =
-						"""
-								· --------====== MiraiBot ======-------- ·
-								1. 禁言 <秒>
-								 - 禁言自己一段时间
-								· -------------------------------------- ·
-								""";
+				String help =   "· --------====== MiraiBot ======-------- ·" + "\n" +
+								"1. 禁言 <秒>" + "\n" +
+								"- 禁言自己一段时间" + "\n" +
+								"· -------------------------------------- ·" + "\n";
 				event.getGroup().sendMessage(help);
 			} else if (cmd[1].equals("禁言") && cmd.length > 2){
 				try {
