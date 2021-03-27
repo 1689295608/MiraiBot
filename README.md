@@ -12,14 +12,22 @@ https://github.com/mamoe/mirai/blob/dev/docs/Preparations.md#jvm-%E7%8E%AF%E5%A2
   Just copy `device.json` to log in to your account on any device
   Then use `Start.bat` to run
 
+**Linux** users first need to run a terminal in the `MiraiBot` directory
+  You need to use the following instructions for the first run:
+```
+java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar: Mirai-login-solver-selenium.jar PluginMain
+```
+  After successfully logging in once, you can delete `Mirai-login-solver-selenium.jar` and use the following command
+```
+java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar PluginMain
+```
+
 **MacOS** and **CentOS** users, please **test yourself** Shell script
   The specific operating instructions are:
 ```
 java -classpath MiraiBot.jar; Mirai-Core-2.4.0.jar; Mirai-login-solver-selenium.jar PluginMain
 ```
   Among them, `Mirai-login-solver-selenium.jar` can be deleted after **successful login** once
-
-**Linux** and other users need a `device.json` that **can log in** before **can use**
 
 
 # MiraiBot
@@ -36,11 +44,19 @@ https://github.com/mamoe/mirai/blob/dev/docs/Preparations.md#jvm-%E7%8E%AF%E5%A2
  只需要复制 `device.json` 就可以在任何设备登录你的账号
  然后接下来使用 `Start.bat` 即可运行
 
+**Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
+ 首次运行需要使用以下指令：
+```
+java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar: Mirai-login-solver-selenium.jar PluginMain
+```
+ 成功登录一次后即可删除 `Mirai-login-solver-selenium.jar` 并使用以下指令
+```
+java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar PluginMain
+```
+
 **MacOS** 与 **CentOS** 用户请**自行测试** Shell 脚本
  具体运行指令为：
 ```
 java -classpath MiraiBot.jar;Mirai-Core-2.4.0.jar;Mirai-login-solver-selenium.jar PluginMain
 ```
  其中 `Mirai-login-solver-selenium.jar` 可以在**成功登录**一次后删除
-
-**Linux** 等其他用户需要一个**可以登录**的 `device.json` 才**可以使用**
