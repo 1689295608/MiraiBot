@@ -31,6 +31,11 @@ public class PluginMain {
 		String qq = ConfigUtil.getConfig("qq") != null ? ConfigUtil.getConfig("qq") : "";
 		String password = ConfigUtil.getConfig("password") != null ? ConfigUtil.getConfig("password") : "";
 		String groupId = ConfigUtil.getConfig("group") != null ? ConfigUtil.getConfig("group") : "";
+		if (ConfigUtil.getConfig("showQQ") != null) {
+			EventListener.showQQ = ConfigUtil.getConfig("showQQ").equals("true");
+		} else {
+			EventListener.showQQ = false;
+		}
 		if (qq.equals("") || password.equals("")){
 			LogUtil.Log("请填写配置文件的 QQ号 与 密码！");
 			System.exit(-1);
@@ -312,6 +317,12 @@ public class PluginMain {
 							password=
 							# 输入你要聊天的聊群
 							group=
+							# 每一个新消息是否都显示发送者QQ号
+							showQQ=false
+							# 自动批准加好友/邀请进入聊群请求
+							inviteAccept=true
+							# 自动将闪照转换成图片并发送
+							autoFlash=true
 							# 输入你接收的好友信息（“*” 为 全部）
 							friend=*
 							# 输入使用“newImg”指令生成的字体
