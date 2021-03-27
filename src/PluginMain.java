@@ -13,6 +13,9 @@ import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
@@ -20,9 +23,14 @@ import java.util.Scanner;
 public class PluginMain {
 	
 	public static void main(String[] args) {
+		if (!checkConfig()) {
+			LogUtil.Log("配置文件出现错误，请检查配置文件后再试！");
+			System.exit(-1);
+			return;
+		}
 		String qq = ConfigUtil.getConfig("qq");
 		String password = ConfigUtil.getConfig("password");
-		LogUtil.Log("正在试图登录, 稍后可能会出现验证码弹窗...");
+		LogUtil.Log("正在尝试登录, 稍后可能会出现验证码弹窗...");
 		try {
 			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq),password,new BotConfiguration(){{
 				fileBasedDeviceInfo();
@@ -35,7 +43,7 @@ public class PluginMain {
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
 			LogUtil.Log("登录成功，您的昵称是：" + bot.getNick());
 			if (!inGroup(bot, Long.parseLong(ConfigUtil.getConfig("group")))){
-				LogUtil.Log("机器人并未加入聊群 " + ConfigUtil.getConfig("group") + " , 请检查配置文件是否正确或邀请机器人加入该群");
+				LogUtil.Log("机器人并未加入聊群 \"" + ConfigUtil.getConfig("group") + "\" , 请检查配置文件是否正确！");
 				bot.close();
 				LogUtil.Exit();
 				System.exit(-1);
@@ -249,10 +257,11 @@ public class PluginMain {
 				}
 			}
 		} catch (Exception e) {
-			LogUtil.Log("出现错误！进程即将终止！\n" + e.getMessage());
+			LogUtil.Log("出现错误！进程即将终止！ 请检查配置文件是否正确！\n" + e.getMessage());
 			System.exit(-1);
 		}
 	}
+	
 	public static boolean inGroup(Bot bot, Long groupId) {
 		ContactList<Group> groups = bot.getGroups();
 		for (Group g : groups) {
@@ -261,5 +270,40 @@ public class PluginMain {
 			}
 		}
 		return false;
+	}
+	
+	public static boolean checkConfig(){
+		File file = new File("config.properties");
+		if (!file.exists()){
+			try {
+				if (file.createNewFile()){
+					FileOutputStream fos = new FileOutputStream(file);
+					String config = """
+							# 输入你的 QQ
+							qq=
+							# 输入你的 QQ 密码
+							password=
+							# 输入你要聊天的聊群
+							group=
+							# 输入你接收的好友信息（“*” 为 全部）
+							friend=*
+							# 输入使用“newImg”指令生成的字体
+							font=
+							# 是否启用 Debug 模式（即显示 MiraiCode）
+							debug=false
+							
+							# ----=== MiraiBot ===----
+							# 使用“help”获取帮助！
+							# -----------------------------
+							""";
+					fos.write(config.getBytes(StandardCharsets.UTF_8));
+					fos.flush();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+		return true;
 	}
 }
