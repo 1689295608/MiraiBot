@@ -34,7 +34,14 @@ public class PluginMain {
 			LogUtil.Log("正在注册事件...");
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
 			LogUtil.Log("登录成功，您的昵称是：" + bot.getNick());
-			Group group = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))));
+			if (!inGroup(bot, Long.parseLong(ConfigUtil.getConfig("group")))){
+				LogUtil.Log("机器人并未加入聊群 " + ConfigUtil.getConfig("group") + " , 请检查配置文件是否正确或邀请机器人加入该群");
+				bot.close();
+				LogUtil.Exit();
+				System.exit(-1);
+				return;
+			}
+			Group group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
 			LogUtil.Log("当前进入的聊群为：" + group.getName() + " (" + group.getId() + ")");
 			while (true){
 				String msg = new Scanner(System.in).nextLine();
@@ -245,5 +252,14 @@ public class PluginMain {
 			LogUtil.Log("出现错误！进程即将终止！\n" + e.getMessage());
 			System.exit(-1);
 		}
+	}
+	public static boolean inGroup(Bot bot, Long groupId) {
+		ContactList<Group> groups = bot.getGroups();
+		for (Group g : groups) {
+			if (g.getId() == groupId){
+				return true;
+			}
+		}
+		return false;
 	}
 }
