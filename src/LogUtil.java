@@ -68,7 +68,11 @@ public class LogUtil {
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
-			all = byteMerger(all, ("\n\n----=== LogUtil Closed ===----\n\n").getBytes());
+			all = byteMerger(all, ("""
+     
+					----=== LogUtil Closed ===----
+					
+					""").getBytes());
 			fos.write(all);
 			fos.flush();
 		} catch (IOException e) {
