@@ -60,7 +60,7 @@ public class LogUtil {
 			File file = new File("logs" + File.separator + time + ".log");
 			if (!file.exists()){
 				if (!file.createNewFile()){
-					System.out.println(time + "创建配置文件失败！即将终止进程！");
+					System.out.println(time + "创建日志文件失败！即将终止进程！");
 					System.exit(-1);
 					return;
 				}
@@ -69,7 +69,7 @@ public class LogUtil {
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
 			all = byteMerger(all, ("""
-                    
+     
 					----=== LogUtil Closed ===----
 					
 					""").getBytes());
