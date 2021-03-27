@@ -37,15 +37,17 @@ public class PluginMain {
 			return;
 		}
 		String protocol = ConfigUtil.getConfig("protocol") != null ? ConfigUtil.getConfig("protocol") : "";
-		String tmpPro;
-		if (protocol.equals("PAD")){ tmpPro = "平板"; } /* 为了兼容 JDK11 而舍弃的 switch 语句 */
-		else if (protocol.equals("WATCH")){ tmpPro = "手表"; } else { tmpPro = "手机"; }
-		LogUtil.Log("正在尝试使用" + tmpPro + "登录, 稍后可能会出现验证码弹窗...");
+		LogUtil.Log("正在尝试使用" + switch (protocol) {
+				case "PAD" -> "平板";
+				case "WATCH" -> "手表";
+				default -> "手机";
+			} + "登录, 稍后可能会出现验证码弹窗...");
 		try {
-			BotConfiguration.MiraiProtocol miraiProtocol;
-			if (protocol.equals("PAD")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD; }
-			else if (protocol.equals("WATCH")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH; }
-			else { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE; }
+			BotConfiguration.MiraiProtocol miraiProtocol = switch (protocol) {
+				case "PAD" -> BotConfiguration.MiraiProtocol.ANDROID_PAD;
+				case "WATCH" -> BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+				default -> BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+			};
 			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq),password,new BotConfiguration(){{
 				fileBasedDeviceInfo();
 				setProtocol(miraiProtocol);
@@ -303,25 +305,26 @@ public class PluginMain {
 			try {
 				if (file.createNewFile()){
 					FileOutputStream fos = new FileOutputStream(file);
-					String config =
-							"# 输入你的 QQ" + "\n" +
-							"qq=" + "\n" +
-							"# 输入你的 QQ 密码" + "\n" +
-							"password=" + "\n" +
-							"# 输入你要聊天的聊群" + "\n" +
-							"group=" + "\n" +
-							"# 输入你接收的好友信息（“*” 为 全部）" + "\n" +
-							"friend=*" + "\n" +
-							"# 输入使用“newImg”指令生成的字体" + "\n" +
-							"font=微软雅黑" + "\n" +
-							"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE" + "\n" +
-							"protocol=PHONE" + "\n" +
-							"# 是否启用 Debug 模式（即显示 MiraiCode）" + "\n" +
-							"debug=false" + "\n" +
-							"\n" +
-							"# ----=== MiraiBot ===----" + "\n" +
-							"# 使用“help”获取帮助！" + "\n" +
-							"# -----------------------------";
+					String config = """
+							# 输入你的 QQ
+							qq=
+							# 输入你的 QQ 密码
+							password=
+							# 输入你要聊天的聊群
+							group=
+							# 输入你接收的好友信息（“*” 为 全部）
+							friend=*
+							# 输入使用“newImg”指令生成的字体
+							font=微软雅黑
+							# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE
+							protocol=PHONE
+							# 是否启用 Debug 模式（即显示 MiraiCode）
+							debug=false
+							
+							# ----=== MiraiBot ===----
+							# 使用“help”获取帮助！
+							# -----------------------------
+							""";
 					fos.write(config.getBytes(StandardCharsets.UTF_8));
 					fos.flush();
 				}
