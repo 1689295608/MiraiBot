@@ -43,11 +43,11 @@ java -classpath MiraiBot.jar; Mirai-Core-2.4.0.jar; Mirai-login-solver-selenium.
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
  首次运行需要使用以下指令：
 ```
-java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar: Mirai-login-solver-selenium.jar PluginMain
+java -classpath MiraiBot.jar:Mirai-Core-2.4.0.jar:Mirai-login-solver-selenium.jar PluginMain
 ```
  成功登录一次后即可删除 `Mirai-login-solver-selenium.jar` 并使用以下指令
 ```
-java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar PluginMain
+java -classpath MiraiBot.jar:Mirai-Core-2.4.0.jar PluginMain
 ```
 
 **MacOS** 与 **CentOS** 用户请**自行测试** Shell 脚本
