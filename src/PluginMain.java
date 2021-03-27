@@ -110,7 +110,7 @@ public class PluginMain {
 						LogUtil.Log("groupList");
 						LogUtil.Log(" - 获取当前聊群成员列表");
 						LogUtil.Log("help");
-						LogUtil.Log(" - 显示 MiraiBot 所以指令");
+						LogUtil.Log(" - 显示 MiraiBot 所有指令");
 						LogUtil.Log("send <qq> <Mirai码>");
 						LogUtil.Log(" - 向好友发送消息（支持 Mirai码）");
 						LogUtil.Log("recall <消息ID>");
