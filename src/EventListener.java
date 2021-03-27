@@ -1,5 +1,6 @@
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.MemberPermission;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListenerHost;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class EventListener implements ListenerHost {
 	public static final MessageSource[] messages = new MessageSource[1024];
-	private final int[] o = {0};
+	private final int[] messageI = {0};
 	private final String[] oldImg = {""};
 	private final String[] old = {""};
 	
@@ -52,26 +53,40 @@ public class EventListener implements ListenerHost {
 				.sendMessage("我的权限从" + event.getOrigin() + "被修改成了" + event.getGroup().getBotPermission() + "！");
 	}
 	@EventHandler
+	public void onGroupRecall(MessageRecallEvent.GroupRecall event){
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		Member operator = event.getOperator();
+		Member sender = event.getAuthor();
+		if (operator != null) {
+			if (operator.getId() == sender.getId()){
+				LogUtil.Log(operator.getNameCard() + "(" + operator.getId() + ") " + "撤回了一条消息");
+			} else {
+				LogUtil.Log(operator.getNameCard() + "(" + operator.getId() + ") " + "撤回了一条 " +
+						sender.getNameCard() + "(" + sender.getId() + ")" + " 的消息");
+			}
+		}
+	}
+	@EventHandler
+	public void onPostSend(GroupMessagePostSendEvent event) {
+		LogUtil.Log(event.getBot().getNick() + " : " +
+				(ConfigUtil.getConfig("debug").equals("true") ?
+						event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
+	}
+	@EventHandler
+	public void onFriendPostSend(FriendMessagePostSendEvent event) {
+		LogUtil.Log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + " " +
+				(ConfigUtil.getConfig("debug").equals("true") ?
+					event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
+	}
+	@EventHandler
 	public void onJoinGroup(BotJoinGroupEvent event){
 		event.getGroup().sendMessage(new At(event.getGroup().getOwner().getId()).plus("机器人已成功加入本群！"));
 	}
 	@EventHandler
 	public void onImageUpload(BeforeImageUploadEvent event){
 		LogUtil.Log("正在上传图片...");
-	}
-	@EventHandler
-	public void onNameChange(GroupNameChangeEvent event){
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
-			return;
-		}
-		if (event.getOperator() != null){
-			event.getGroup().sendMessage(new At(event.getOperator().getId()).plus("改我群昵称干嘛？"));
-			event.getGroup().getBotAsMember().setNameCard(event.getOrigin());
-			if (event.getOperator().getPermission() != MemberPermission.OWNER &&
-					event.getGroup().getBotPermission() != MemberPermission.MEMBER){
-				event.getOperator().setNameCard(event.getNew());
-			}
-		}
 	}
 	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
@@ -82,10 +97,10 @@ public class EventListener implements ListenerHost {
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
 		
-		messages[o[0]] = event.getSource();
-		o[0]++;
-		if (o[0] == 1024){
-			o[0] = 0;
+		messages[messageI[0]] = event.getSource();
+		messageI[0]++;
+		if (messageI[0] == 1024){
+			messageI[0] = 0;
 		}
 		
 		if((msg + "\\*/" + event.getSender().getId()).equals(old[0]) && !mCode.startsWith("[mirai:image:")){
@@ -110,7 +125,7 @@ public class EventListener implements ListenerHost {
 		old[0] = msg + "\\*/" + event.getSender().getId();
 		oldImg[0] = "";
 		
-		LogUtil.Log("[" + o[0] + "] " + event.getSender().getNameCard() + " : " + msg);
+		LogUtil.Log("[" + messageI[0] + "] " + event.getSender().getNameCard() + " : " + msg);
 		if (mCode.split(":").length >= 3 && mCode.split(":")[1].equals("flash")){
 			if (event.getSender().getPermission() != MemberPermission.OWNER &&
 					event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
