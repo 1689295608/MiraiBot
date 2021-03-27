@@ -30,6 +30,11 @@ public class PluginMain {
 		}
 		String qq = ConfigUtil.getConfig("qq");
 		String password = ConfigUtil.getConfig("password");
+		if (qq.equals("") || password.equals("")){
+			LogUtil.Log("请填写配置文件的 QQ号 与 密码！");
+			System.exit(-1);
+			return;
+		}
 		LogUtil.Log("正在尝试登录, 稍后可能会出现验证码弹窗...");
 		try {
 			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq),password,new BotConfiguration(){{
@@ -113,16 +118,13 @@ public class PluginMain {
 								tmp.append(cmd[i]).append(i == cmd.length-1 ? "" : " ");
 							}
 							try { // String 转换到 Integer 如果不是数字居然还会抛出错误，气死我了！！
-								MessageChain send = MiraiCode.deserializeMiraiCode(tmp.toString());
 								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
 								if (friend != null){
-									friend.sendMessage(send);
-									LogUtil.Log(bot.getNick() + " -> " + friend.getNick() + " " +
-											(ConfigUtil.getConfig("debug").equals("true") ? send.serializeToMiraiCode() : send.contentToString()));
+									friend.sendMessage(MiraiCode.deserializeMiraiCode(tmp.toString()));
 								} else {
 									LogUtil.Log("你没有这个好友！");
 								}
-							} catch (Exception e) {
+							} catch (NumberFormatException e) {
 								LogUtil.Log("\"" + cmd[1] + "\" 不是一个 QQ！");
 							}
 						} else {
@@ -200,7 +202,7 @@ public class PluginMain {
 								LogUtil.Log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
 								LogUtil.Log("MiraiCode: " + img.serializeToMiraiCode());
 								LogUtil.Log("· -------------------------------- ·");
-							} catch (Exception e) {
+							} catch (NumberFormatException e) {
 								LogUtil.Log("宽度、高度和字体大小必须为整数！");
 							}
 						} else {
@@ -216,7 +218,7 @@ public class PluginMain {
 								} else {
 									LogUtil.Log("你没有这个好友！");
 								}
-							} catch (Exception e) {
+							} catch (NumberFormatException e) {
 								LogUtil.Log("\"" + cmd[1] + "\" 不是一个 QQ！");
 							}
 						} else {
@@ -226,25 +228,29 @@ public class PluginMain {
 						if (cmd.length >= 2) {
 							try {
 								MessageSource message = EventListener.getMessages(Integer.parseInt(cmd[1]) - 1);
-								if (message.getFromId() == message.getBotId()){
-									try {
-										Mirai.getInstance().recallMessage(bot, message);
-										LogUtil.Log("已撤回该消息！");
-									} catch (Exception e) {
-										LogUtil.Log("无法撤回该消息！");
-									}
-								} else if (group.getBotPermission() != MemberPermission.MEMBER){
-									try {
-										Mirai.getInstance().recallMessage(bot, message);
-										LogUtil.Log("已撤回该消息！");
-									} catch (Exception e) {
-										LogUtil.Log("无法撤回该消息！");
+								if (message != null) {
+									if (message.getFromId() == message.getBotId()) {
+										try {
+											Mirai.getInstance().recallMessage(bot, message);
+											LogUtil.Log("已撤回该消息！");
+										} catch (Exception e) {
+											LogUtil.Log("无法撤回该消息！");
+										}
+									} else if (group.getBotPermission() != MemberPermission.MEMBER) {
+										try {
+											Mirai.getInstance().recallMessage(bot, message);
+											LogUtil.Log("已撤回该消息！");
+										} catch (Exception e) {
+											LogUtil.Log("无法撤回该消息！");
+										}
+									} else {
+										LogUtil.Log("该消息不是你发出的且你不是管理员！");
 									}
 								} else {
-									LogUtil.Log("该消息不是你发出的且你不是管理员！");
+									LogUtil.Log("该消息不存在！");
 								}
-							} catch (Exception e) {
-								LogUtil.Log("消息位置必须是整数或者该消息不存在！");
+							} catch (NumberFormatException e) {
+								LogUtil.Log("消息位置必须是整数！");
 							}
 						} else {
 							LogUtil.Log("语法：recall <消息ID>");
@@ -252,12 +258,15 @@ public class PluginMain {
 					} else {
 						MessageChain send = MiraiCode.deserializeMiraiCode(msg);
 						Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group")))).sendMessage(send);
-						LogUtil.Log(bot.getNick() + " : " + msg);
 					}
 				}
 			}
+		} catch (NumberFormatException e) {
+			LogUtil.Log("请检查配置文件中的 QQ号 是否正确！");
+			System.exit(-1);
 		} catch (Exception e) {
-			LogUtil.Log("出现错误！进程即将终止！ 请检查配置文件是否正确！\n" + e.getMessage());
+			LogUtil.Log("出现错误！进程即将终止！ 请检查配置文件是否正确！");
+			e.printStackTrace();
 			System.exit(-1);
 		}
 	}
