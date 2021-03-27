@@ -28,18 +28,27 @@ public class PluginMain {
 			System.exit(-1);
 			return;
 		}
-		String qq = ConfigUtil.getConfig("qq");
-		String password = ConfigUtil.getConfig("password");
+		String qq = ConfigUtil.getConfig("qq") != null ? ConfigUtil.getConfig("qq") : "";
+		String password = ConfigUtil.getConfig("password") != null ? ConfigUtil.getConfig("password") : "";
+		String groupId = ConfigUtil.getConfig("group") != null ? ConfigUtil.getConfig("group") : "";
 		if (qq.equals("") || password.equals("")){
 			LogUtil.Log("请填写配置文件的 QQ号 与 密码！");
 			System.exit(-1);
 			return;
 		}
-		LogUtil.Log("正在尝试登录, 稍后可能会出现验证码弹窗...");
+		String protocol = ConfigUtil.getConfig("protocol") != null ? ConfigUtil.getConfig("protocol") : "";
+		String tmpPro;
+		if (protocol.equals("PAD")){ tmpPro = "平板"; } /* 为了兼容 JDK11 而舍弃的 switch 语句 */
+		else if (protocol.equals("WATCH")){ tmpPro = "手表"; } else { tmpPro = "手机"; }
+		LogUtil.Log("正在尝试使用" + tmpPro + "登录, 稍后可能会出现验证码弹窗...");
 		try {
+			BotConfiguration.MiraiProtocol miraiProtocol;
+			if (protocol.equals("PAD")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD; }
+			else if (protocol.equals("WATCH")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH; }
+			else { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE; }
 			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq),password,new BotConfiguration(){{
 				fileBasedDeviceInfo();
-				setProtocol(MiraiProtocol.ANDROID_PHONE);
+				setProtocol(miraiProtocol);
 				noNetworkLog();
 				noBotLog();
 			}});
@@ -47,15 +56,15 @@ public class PluginMain {
 			LogUtil.Log("正在注册事件...");
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
 			LogUtil.Log("登录成功，您的昵称是：" + bot.getNick());
-			if (!inGroup(bot, Long.parseLong(ConfigUtil.getConfig("group")))){
-				LogUtil.Log("机器人并未加入聊群 \"" + ConfigUtil.getConfig("group") + "\" , 请检查配置文件是否正确！");
-				bot.close();
-				LogUtil.Exit();
-				System.exit(-1);
-				return;
+			Group group = null;
+			if (groupId.equals("")){
+				LogUtil.Log("配置文件中的 聊群 项为空！您将无法发送和接收到聊群的消息！");
+			}else if (!inGroup(bot, Long.parseLong(groupId))){
+				LogUtil.Log("机器人并未加入聊群 \"" + groupId + "\" , 但机器人目前可以继续使用！");
+			} else {
+				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
+				LogUtil.Log("当前进入的聊群为：" + group.getName() + " (" + group.getId() + ")");
 			}
-			Group group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
-			LogUtil.Log("当前进入的聊群为：" + group.getName() + " (" + group.getId() + ")");
 			while (true){
 				String msg = new Scanner(System.in).nextLine();
 				String[] cmd = msg.split(" ");
@@ -75,17 +84,21 @@ public class PluginMain {
 									.append((f.getId() == bot.getId() ? " (机器人)\n" : "\n"));
 							c++;
 						}
-						System.out.print(out);
+						LogUtil.Log(out.toString());
 					} else if (msg.startsWith("groupList")) {
-						ContactList<NormalMember> members = group.getMembers();
-						StringBuilder out = new StringBuilder();
-						int c = 1;
-						for (NormalMember f : members){
-							out.append(c).append(". ").append(f.getNameCard()).append(" (").append(f.getId()).append(")")
-									.append((f.getId() == bot.getId() ? " (机器人)\n" : "\n"));
-							c++;
+						if (group != null) {
+							ContactList<NormalMember> members = group.getMembers();
+							StringBuilder out = new StringBuilder();
+							int c = 1;
+							for (NormalMember f : members) {
+								out.append(c).append(". ").append(f.getNameCard()).append(" (").append(f.getId()).append(")")
+										.append((f.getId() == bot.getId() ? " (机器人)\n" : "\n"));
+								c++;
+							}
+							LogUtil.Log(out.toString());
+						} else {
+							LogUtil.Log("您未配置机器人的聊群选项！请检查您的配置文件！");
 						}
-						System.out.print(out);
 					} else if (msg.equals("help")) {
 						LogUtil.Log("· --------====== MiraiBot ======-------- ·");
 						LogUtil.Log("stop");
@@ -236,15 +249,18 @@ public class PluginMain {
 										} catch (Exception e) {
 											LogUtil.Log("无法撤回该消息！");
 										}
-									} else if (group.getBotPermission() != MemberPermission.MEMBER) {
-										try {
-											Mirai.getInstance().recallMessage(bot, message);
-											LogUtil.Log("已撤回该消息！");
-										} catch (Exception e) {
-											LogUtil.Log("无法撤回该消息！");
-										}
 									} else {
-										LogUtil.Log("该消息不是你发出的且你不是管理员！");
+										assert group != null;
+										if (group.getBotPermission() != MemberPermission.MEMBER) {
+											try {
+												Mirai.getInstance().recallMessage(bot, message);
+												LogUtil.Log("已撤回该消息！");
+											} catch (Exception e) {
+												LogUtil.Log("无法撤回该消息！");
+											}
+										} else {
+											LogUtil.Log("该消息不是你发出的且你不是管理员！");
+										}
 									}
 								} else {
 									LogUtil.Log("该消息不存在！");
@@ -287,24 +303,25 @@ public class PluginMain {
 			try {
 				if (file.createNewFile()){
 					FileOutputStream fos = new FileOutputStream(file);
-					String config = """
-							# 输入你的 QQ
-							qq=
-							# 输入你的 QQ 密码
-							password=
-							# 输入你要聊天的聊群
-							group=
-							# 输入你接收的好友信息（“*” 为 全部）
-							friend=*
-							# 输入使用“newImg”指令生成的字体
-							font=
-							# 是否启用 Debug 模式（即显示 MiraiCode）
-							debug=false
-							
-							# ----=== MiraiBot ===----
-							# 使用“help”获取帮助！
-							# -----------------------------
-							""";
+					String config =
+							"# 输入你的 QQ" + "\n" +
+							"qq=" + "\n" +
+							"# 输入你的 QQ 密码" + "\n" +
+							"password=" + "\n" +
+							"# 输入你要聊天的聊群" + "\n" +
+							"group=" + "\n" +
+							"# 输入你接收的好友信息（“*” 为 全部）" + "\n" +
+							"friend=*" + "\n" +
+							"# 输入使用“newImg”指令生成的字体" + "\n" +
+							"font=微软雅黑" + "\n" +
+							"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE" + "\n" +
+							"protocol=PHONE" + "\n" +
+							"# 是否启用 Debug 模式（即显示 MiraiCode）" + "\n" +
+							"debug=false" + "\n" +
+							"\n" +
+							"# ----=== MiraiBot ===----" + "\n" +
+							"# 使用“help”获取帮助！" + "\n" +
+							"# -----------------------------";
 					fos.write(config.getBytes(StandardCharsets.UTF_8));
 					fos.flush();
 				}
