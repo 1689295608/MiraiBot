@@ -6,11 +6,16 @@ A Mirai-based console robot
 This project is at least compatible with JDK15!
 ```
 **Windows** users please run `Login.bat` and then verify
+
   After the verification is successful, you can log in to the account with `device.json` in the current directory
+  
   Just copy `device.json` to log in to your account on any device
+  
   Then use `Start.bat` to run
+  
 
 **Linux** users first need to run a terminal in the `MiraiBot` directory
+
   You need to use the following instructions for the first run:
 ```
 java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar: Mirai-login-solver-selenium.jar PluginMain
@@ -21,6 +26,7 @@ java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar PluginMain
 ```
 
 **MacOS** and **CentOS** users, please **test yourself** Shell script
+
   The specific operating instructions are:
 ```
 java -classpath MiraiBot.jar; Mirai-Core-2.4.0.jar; Mirai-login-solver-selenium.jar PluginMain
@@ -36,11 +42,16 @@ java -classpath MiraiBot.jar; Mirai-Core-2.4.0.jar; Mirai-login-solver-selenium.
 本项目最低兼容到 JDK15！
 ```
 **Windows** 用户请先运行 `Login.bat` 然后进行验证
+
  验证成功后当前目录的 `device.json` 就可以登录该账户
+ 
  只需要复制 `device.json` 就可以在任何设备登录你的账号
+ 
  然后接下来使用 `Start.bat` 即可运行
+ 
 
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
+
  首次运行需要使用以下指令：
 ```
 java -classpath MiraiBot.jar:Mirai-Core-2.4.0.jar:Mirai-login-solver-selenium.jar PluginMain
@@ -51,6 +62,7 @@ java -classpath MiraiBot.jar:Mirai-Core-2.4.0.jar PluginMain
 ```
 
 **MacOS** 与 **CentOS** 用户请**自行测试** Shell 脚本
+
  具体运行指令为：
 ```
 java -classpath MiraiBot.jar;Mirai-Core-2.4.0.jar;Mirai-login-solver-selenium.jar PluginMain
