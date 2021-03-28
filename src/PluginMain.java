@@ -22,7 +22,7 @@ public class PluginMain {
 	
 	public static void main(String[] args) {
 		if (!checkConfig()) {
-			LogUtil.Log("配置文件出现错误，请检查配置文件后再试！");
+			LogUtil.log("配置文件出现错误，请检查配置文件后再试！");
 			System.exit(-1);
 			return;
 		}
@@ -35,15 +35,51 @@ public class PluginMain {
 			EventListener.showQQ = false;
 		}
 		if (qq.equals("") || password.equals("")){
-			LogUtil.Log("请填写配置文件的 QQ号 与 密码！");
+			LogUtil.log("请填写配置文件的 QQ号 与 密码！");
 			System.exit(-1);
 			return;
 		}
+		EventListener.autoRespond = new File("AutoRespond.ini");
+		if (!EventListener.autoRespond.exists()) {
+			try {
+				if (!EventListener.autoRespond.createNewFile()) {
+					LogUtil.log("创建配置文件失败！");
+					System.exit(-1);
+				}
+				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
+				fos.write((
+						"[AutoRespond]\n" +
+						"Message=Hello!\n" +
+						"Respond=Hello!\n" +
+						"\n" +
+						"# 支持变量：\n" +
+						"# %sender_nick% 发送者昵称\n" +
+						"# %sender_id% 发送者QQ号\n" +
+						"# %sender_nameCard% 发送者群昵称\n" +
+						"# %group_name% 本群名称\n" +
+						"# %group_id% 本群群号\n" +
+						"# %group_owner_nick% 本群群主昵称\n" +
+						"# %group_owner_id% 本群群主QQ号\n" +
+						"# %group_owner_nameCard% 本群群主群昵称\n" +
+						"# %message_miraiCode% 消息的 Mirai码\n" +
+						"# %message_content% 消息的内容\n" +
+						"# %bot_nick% 机器人昵称\n" +
+						"# %bot_id% 机器人QQ号\n"
+				)
+						.getBytes(StandardCharsets.UTF_8));
+				fos.flush();
+			} catch (IOException e) {
+				LogUtil.log("创建配置文件失败！");
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+		LogUtil.init();
 		String protocol = ConfigUtil.getConfig("protocol") != null ? ConfigUtil.getConfig("protocol") : "";
 		String tmpPro;
 		if (protocol.equals("PAD")){ tmpPro = "平板"; } /* 为了兼容 JDK11 而舍弃的 switch 语句 */
 		else if (protocol.equals("WATCH")){ tmpPro = "手表"; } else { tmpPro = "手机"; }
-		LogUtil.Log("正在尝试使用" + tmpPro + "登录, 稍后可能会出现验证码弹窗...");
+		LogUtil.log("正在尝试使用" + tmpPro + "登录, 稍后可能会出现验证码弹窗...");
 		try {
 			BotConfiguration.MiraiProtocol miraiProtocol;
 			if (protocol.equals("PAD")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD; }
@@ -56,17 +92,17 @@ public class PluginMain {
 				noBotLog();
 			}});
 			bot.login();
-			LogUtil.Log("正在注册事件...");
+			LogUtil.log("正在注册事件...");
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
-			LogUtil.Log("登录成功，您的昵称是：" + bot.getNick());
+			LogUtil.log("登录成功，您的昵称是：" + bot.getNick());
 			Group group = null;
 			if (groupId.equals("")){
-				LogUtil.Log("配置文件中的 聊群 项为空！您将无法发送和接收到聊群的消息！");
-			}else if (!inGroup(bot, Long.parseLong(groupId))){
-				LogUtil.Log("机器人并未加入聊群 \"" + groupId + "\" , 但机器人目前可以继续使用！");
+				LogUtil.log("配置文件中的 聊群 项为空！您将无法发送和接收到聊群的消息！");
+			} else if (!inGroup(bot, Long.parseLong(groupId))){
+				LogUtil.log("机器人并未加入聊群 \"" + groupId + "\" , 但机器人目前可以继续使用！");
 			} else {
 				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
-				LogUtil.Log("当前进入的聊群为：" + group.getName() + " (" + group.getId() + ")");
+				LogUtil.log("当前进入的聊群为：" + group.getName() + " (" + group.getId() + ")");
 			}
 			while (true){
 				String msg = new Scanner(System.in).nextLine();
@@ -74,7 +110,7 @@ public class PluginMain {
 				assert group != null;
 				if (msg.length() > 0) {
 					if (msg.equals("stop")) {
-						LogUtil.Log("正在关闭机器人：" + bot.getNick() + " (" + bot.getId() + ")");
+						LogUtil.log("正在关闭机器人：" + bot.getNick() + " (" + bot.getId() + ")");
 						bot.close();
 						LogUtil.Exit();
 						System.exit(0);
@@ -88,7 +124,7 @@ public class PluginMain {
 									.append((f.getId() == bot.getId() ? " (机器人)\n" : "\n"));
 							c++;
 						}
-						LogUtil.Log(out.toString());
+						LogUtil.log(out.toString());
 					} else if (msg.startsWith("groupList")) {
 						ContactList<NormalMember> members = group.getMembers();
 						StringBuilder out = new StringBuilder();
@@ -98,34 +134,34 @@ public class PluginMain {
 									.append((f.getId() == bot.getId() ? " (机器人)\n" : "\n"));
 							c++;
 						}
-						LogUtil.Log(out.toString());
+						LogUtil.log(out.toString());
 					} else if (msg.equals("help")) {
-						LogUtil.Log("· --------====== MiraiBot ======-------- ·");
-						LogUtil.Log("stop");
-						LogUtil.Log(" - 关闭机器人");
-						LogUtil.Log("friendList");
-						LogUtil.Log(" - 获取当前机器人好友列表");
-						LogUtil.Log("groupList");
-						LogUtil.Log(" - 获取当前聊群成员列表");
-						LogUtil.Log("help");
-						LogUtil.Log(" - 显示 MiraiBot 所有指令");
-						LogUtil.Log("send <qq> <内容>");
-						LogUtil.Log(" - 向好友发送消息（支持 Mirai码）");
-						LogUtil.Log("reply <消息ID> <内容>");
-						LogUtil.Log(" - 回复一条消息");
-						LogUtil.Log("recall <消息ID>");
-						LogUtil.Log(" - 撤回一个消息");
-						LogUtil.Log("image <文件路径>");
-						LogUtil.Log(" - 向当前聊群发送图片");
-						LogUtil.Log("upImg <文件路径>");
-						LogUtil.Log(" - 上传一个图片到服务器并获取到ID");
-						LogUtil.Log("upClipImg");
-						LogUtil.Log(" - 上传当前剪切板的图片");
-						LogUtil.Log("newImg <宽度> <高度> <字体大小> <内容>");
-						LogUtil.Log(" - 创建并上传一个图片");
-						LogUtil.Log("del <qq>");
-						LogUtil.Log(" - 删除一个好友");
-						LogUtil.Log("· -------------------------------------- ·");
+						LogUtil.log("· --------====== MiraiBot ======-------- ·");
+						LogUtil.log("stop");
+						LogUtil.log(" - 关闭机器人");
+						LogUtil.log("friendList");
+						LogUtil.log(" - 获取当前机器人好友列表");
+						LogUtil.log("groupList");
+						LogUtil.log(" - 获取当前聊群成员列表");
+						LogUtil.log("help");
+						LogUtil.log(" - 显示 MiraiBot 所有指令");
+						LogUtil.log("send <qq> <内容>");
+						LogUtil.log(" - 向好友发送消息（支持 Mirai码）");
+						LogUtil.log("reply <消息ID> <内容>");
+						LogUtil.log(" - 回复一条消息");
+						LogUtil.log("recall <消息ID>");
+						LogUtil.log(" - 撤回一个消息");
+						LogUtil.log("image <文件路径>");
+						LogUtil.log(" - 向当前聊群发送图片");
+						LogUtil.log("upImg <文件路径>");
+						LogUtil.log(" - 上传一个图片到服务器并获取到ID");
+						LogUtil.log("upClipImg");
+						LogUtil.log(" - 上传当前剪切板的图片");
+						LogUtil.log("newImg <宽度> <高度> <字体大小> <内容>");
+						LogUtil.log(" - 创建并上传一个图片");
+						LogUtil.log("del <qq>");
+						LogUtil.log(" - 删除一个好友");
+						LogUtil.log("· -------------------------------------- ·");
 					} else if (msg.startsWith("send")) {
 						if (cmd.length >= 3) {
 							StringBuilder tmp = new StringBuilder();
@@ -137,13 +173,13 @@ public class PluginMain {
 								if (friend != null){
 									friend.sendMessage(MiraiCode.deserializeMiraiCode(tmp.toString()));
 								} else {
-									LogUtil.Log("你没有这个好友！");
+									LogUtil.log("你没有这个好友！");
 								}
 							} catch (NumberFormatException e) {
-								LogUtil.Log("\"" + cmd[1] + "\" 不是一个 QQ！");
+								LogUtil.log("\"" + cmd[1] + "\" 不是一个 QQ！");
 							}
 						} else {
-							LogUtil.Log("语法: send <QQ> <内容>");
+							LogUtil.log("语法: send <QQ> <内容>");
 						}
 					} else if (msg.startsWith("image")) {
 						if (cmd.length >= 2) {
@@ -152,17 +188,17 @@ public class PluginMain {
 							Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
 									.uploadImage(externalResource);
 							Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group")))).sendMessage(img);
-							LogUtil.Log(bot.getNick() + " : " +
+							LogUtil.log(bot.getNick() + " : " +
 									(ConfigUtil.getConfig("debug").equals("true") ? img.serializeToMiraiCode() : img.contentToString()));
 							externalResource.close();
-							LogUtil.Log("· ------==== Image Info ====------ ·");
-							LogUtil.Log("I D: " + img.getImageId());
-							LogUtil.Log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-							LogUtil.Log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-							LogUtil.Log("MiraiCode: " + img.serializeToMiraiCode());
-							LogUtil.Log("· -------------------------------- ·");
+							LogUtil.log("· ------==== Image Info ====------ ·");
+							LogUtil.log("I D: " + img.getImageId());
+							LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
+							LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
+							LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
+							LogUtil.log("· -------------------------------- ·");
 						} else {
-							LogUtil.Log("语法: image <文件路径>");
+							LogUtil.log("语法: image <文件路径>");
 						}
 					} else if (msg.startsWith("upImg")) {
 						if (cmd.length >= 2) {
@@ -171,14 +207,14 @@ public class PluginMain {
 							Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
 									.uploadImage(externalResource);
 							externalResource.close();
-							LogUtil.Log("· ------==== Image Info ====------ ·");
-							LogUtil.Log("I D: " + img.getImageId());
-							LogUtil.Log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-							LogUtil.Log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-							LogUtil.Log("MiraiCode: " + img.serializeToMiraiCode());
-							LogUtil.Log("· -------------------------------- ·");
+							LogUtil.log("· ------==== Image Info ====------ ·");
+							LogUtil.log("I D: " + img.getImageId());
+							LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
+							LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
+							LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
+							LogUtil.log("· -------------------------------- ·");
 						} else {
-							LogUtil.Log("语法: upImg <文件路径>");
+							LogUtil.log("语法: upImg <文件路径>");
 						}
 					} else if (msg.startsWith("upClipImg")) {
 						byte[] clip = ClipboardUtil.getImageFromClipboard();
@@ -187,14 +223,14 @@ public class PluginMain {
 							Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
 									.uploadImage(externalResource);
 							externalResource.close();
-							LogUtil.Log("· ------==== Image Info ====------ ·");
-							LogUtil.Log("I D: " + img.getImageId());
-							LogUtil.Log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-							LogUtil.Log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-							LogUtil.Log("MiraiCode: " + img.serializeToMiraiCode());
-							LogUtil.Log("· -------------------------------- ·");
+							LogUtil.log("· ------==== Image Info ====------ ·");
+							LogUtil.log("I D: " + img.getImageId());
+							LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
+							LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
+							LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
+							LogUtil.log("· -------------------------------- ·");
 						} else {
-							LogUtil.Log("无法获取当前剪切板的图片！");
+							LogUtil.log("无法获取当前剪切板的图片！");
 						}
 					} else if (msg.startsWith("newImg")){
 						if (cmd.length >= 5) {
@@ -203,7 +239,7 @@ public class PluginMain {
 								for (int i = 4 ; i < cmd.length ; i ++){
 									content.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
 								}
-								LogUtil.Log("正在生成文字图片...");
+								LogUtil.log("正在生成文字图片...");
 								byte[] file = WordToImage.createImage(content.toString(),
 										new Font(ConfigUtil.getConfig("font"), Font.PLAIN, Integer.parseInt(cmd[3])),
 										Integer.parseInt(cmd[1]), Integer.parseInt(cmd[2]));
@@ -211,17 +247,17 @@ public class PluginMain {
 								Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
 										.uploadImage(externalResource);
 								externalResource.close();
-								LogUtil.Log("· ------==== Image Info ====------ ·");
-								LogUtil.Log("I D: " + img.getImageId());
-								LogUtil.Log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-								LogUtil.Log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-								LogUtil.Log("MiraiCode: " + img.serializeToMiraiCode());
-								LogUtil.Log("· -------------------------------- ·");
+								LogUtil.log("· ------==== Image Info ====------ ·");
+								LogUtil.log("I D: " + img.getImageId());
+								LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
+								LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
+								LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
+								LogUtil.log("· -------------------------------- ·");
 							} catch (NumberFormatException e) {
-								LogUtil.Log("宽度、高度和字体大小必须为整数！");
+								LogUtil.log("宽度、高度和字体大小必须为整数！");
 							}
 						} else {
-							LogUtil.Log("语法： newImg <宽度> <高度> <字体大小> <内容>");
+							LogUtil.log("语法： newImg <宽度> <高度> <字体大小> <内容>");
 						}
 					} else if (msg.startsWith("del")) {
 						if (cmd.length >= 2) {
@@ -229,15 +265,15 @@ public class PluginMain {
 								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
 								if (friend != null){
 									friend.delete();
-									LogUtil.Log("已删除 " + friend.getNick() + "(" + friend.getId() + ")");
+									LogUtil.log("已删除 " + friend.getNick() + "(" + friend.getId() + ")");
 								} else {
-									LogUtil.Log("你没有这个好友！");
+									LogUtil.log("你没有这个好友！");
 								}
 							} catch (NumberFormatException e) {
-								LogUtil.Log("\"" + cmd[1] + "\" 不是一个 QQ！");
+								LogUtil.log("\"" + cmd[1] + "\" 不是一个 QQ！");
 							}
 						} else {
-							LogUtil.Log("语法: del <QQ>");
+							LogUtil.log("语法: del <QQ>");
 						}
 					} else if (msg.startsWith("reply")) {
 						if (cmd.length >= 3) {
@@ -250,13 +286,13 @@ public class PluginMain {
 								if (message != null) {
 									group.sendMessage(new QuoteReply(message).plus(MiraiCode.deserializeMiraiCode(content.toString())));
 								} else {
-									LogUtil.Log("未找到该消息！");
+									LogUtil.log("未找到该消息！");
 								}
 							} catch (NumberFormatException e) {
-								LogUtil.Log("消息位置必须是整数！");
+								LogUtil.log("消息位置必须是整数！");
 							}
 						} else {
-							LogUtil.Log("语法: reply <消息ID> <内容>");
+							LogUtil.log("语法: reply <消息ID> <内容>");
 						}
 					} else if (msg.startsWith("recall")) {
 						if (cmd.length >= 2) {
@@ -266,30 +302,30 @@ public class PluginMain {
 									if (message.getFromId() == message.getBotId()) {
 										try {
 											Mirai.getInstance().recallMessage(bot, message);
-											LogUtil.Log("已撤回该消息！");
+											LogUtil.log("已撤回该消息！");
 										} catch (Exception e) {
-											LogUtil.Log("无法撤回该消息！");
+											LogUtil.log("无法撤回该消息！");
 										}
 									} else {
 										if (group.getBotPermission() != MemberPermission.MEMBER) {
 											try {
 												Mirai.getInstance().recallMessage(bot, message);
-												LogUtil.Log("已撤回该消息！");
+												LogUtil.log("已撤回该消息！");
 											} catch (Exception e) {
-												LogUtil.Log("无法撤回该消息！");
+												LogUtil.log("无法撤回该消息！");
 											}
 										} else {
-											LogUtil.Log("该消息不是你发出的且你不是管理员！");
+											LogUtil.log("该消息不是你发出的且你不是管理员！");
 										}
 									}
 								} else {
-									LogUtil.Log("未找到该消息！");
+									LogUtil.log("未找到该消息！");
 								}
 							} catch (NumberFormatException e) {
-								LogUtil.Log("消息位置必须是整数！");
+								LogUtil.log("消息位置必须是整数！");
 							}
 						} else {
-							LogUtil.Log("语法：recall <消息ID>");
+							LogUtil.log("语法：recall <消息ID>");
 						}
 					} else {
 						MessageChain send = MiraiCode.deserializeMiraiCode(msg);
@@ -298,10 +334,10 @@ public class PluginMain {
 				}
 			}
 		} catch (NumberFormatException e) {
-			LogUtil.Log("请检查配置文件中的 QQ号 是否正确！");
+			LogUtil.log("请检查配置文件中的 QQ号 是否正确！");
 			System.exit(-1);
 		} catch (Exception e) {
-			LogUtil.Log("出现错误！进程即将终止！ 请检查配置文件是否正确！");
+			LogUtil.log("出现错误！进程即将终止！ 请检查配置文件是否正确！");
 			e.printStackTrace();
 			System.exit(-1);
 		}
