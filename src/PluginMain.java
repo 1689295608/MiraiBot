@@ -21,6 +21,7 @@ import java.util.Scanner;
 public class PluginMain {
 	
 	public static void main(String[] args) {
+		LogUtil.init();
 		if (!checkConfig()) {
 			LogUtil.log("配置文件出现错误，请检查配置文件后再试！");
 			System.exit(-1);
@@ -74,7 +75,6 @@ public class PluginMain {
 				System.exit(-1);
 			}
 		}
-		LogUtil.init();
 		String protocol = ConfigUtil.getConfig("protocol") != null ? ConfigUtil.getConfig("protocol") : "";
 		String tmpPro;
 		if (protocol.equals("PAD")){ tmpPro = "平板"; } /* 为了兼容 JDK11 而舍弃的 switch 语句 */
@@ -105,12 +105,17 @@ public class PluginMain {
 				LogUtil.log("当前进入的聊群为：" + group.getName() + " (" + group.getId() + ")");
 			}
 			while (true){
-				String msg = new Scanner(System.in).nextLine();
+				Scanner scanner = new Scanner(System.in);
+				String msg = "";
+				if (scanner.hasNextLine()) {
+					msg = scanner.nextLine();
+				}
 				String[] cmd = msg.split(" ");
 				assert group != null;
 				if (msg.length() > 0) {
 					if (msg.equals("stop")) {
 						LogUtil.log("正在关闭机器人：" + bot.getNick() + " (" + bot.getId() + ")");
+						scanner.close();
 						bot.close();
 						LogUtil.Exit();
 						System.exit(0);
