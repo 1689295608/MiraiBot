@@ -38,13 +38,13 @@ public class EventListener implements ListenerHost {
 		}
 		Member operator = event.getOperator();
 		Member sender = event.getAuthor();
-		if (operator != null) {
-			int id = -1;
-			for (int i = 0; i < messageI[0]; i++) {
-				if (messages[i].getTime() == event.getMessageTime()) {
-					id = i + 1;
-				}
+		int id = -1;
+		for (int i = 0; i < messageI[0]; i++) {
+			if (messages[i].getTime() == event.getMessageTime()) {
+				id = i + 1;
 			}
+		}
+		if (operator != null) {
 			if (operator.getId() == sender.getId()){
 				if (id != -1) {
 					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了 [" + id + "] 消息");
@@ -59,6 +59,12 @@ public class EventListener implements ListenerHost {
 					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
 						sender.getNameCard() + showQQ(sender.getId()) + "的消息");
 				}
+			}
+		} else {
+			if (id != -1) {
+				LogUtil.Log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了 [" + id + "] 消息");
+			} else {
+				LogUtil.Log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了一条消息");
 			}
 		}
 	}
