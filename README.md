@@ -20,18 +20,18 @@ https://github.com/mamoe/mirai/blob/dev/docs/Preparations.md#jvm-%E7%8E%AF%E5%A2
 
   You need to use the following instructions for the first run:
 ```
-java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar: Mirai-login-solver-selenium.jar PluginMain
+java -classpath MiraiBot.jar:Mirai-Core-2.4.0.jar:Mirai-login-solver-selenium.jar PluginMain
 ```
   After successfully logging in once, you can delete `Mirai-login-solver-selenium.jar` and use the following command
 ```
-java -classpath MiraiBot.jar: Mirai-Core-2.4.0.jar PluginMain
+java -classpath MiraiBot.jar:Mirai-Core-2.4.0.jar PluginMain
 ```
 
 **MacOS** and **CentOS** users, please **test yourself** Shell script
 
   The specific operating instructions are:
 ```
-java -classpath MiraiBot.jar; Mirai-Core-2.4.0.jar; Mirai-login-solver-selenium.jar PluginMain
+java -classpath MiraiBot.jar;Mirai-Core-2.4.0.jar;Mirai-login-solver-selenium.jar PluginMain
 ```
   Among them, `Mirai-login-solver-selenium.jar` can be deleted after **successful login** once
 
