@@ -40,17 +40,15 @@ public class PluginMain {
 			return;
 		}
 		String protocol = ConfigUtil.getConfig("protocol") != null ? ConfigUtil.getConfig("protocol") : "";
-		LogUtil.Log("正在尝试使用" + switch (protocol) {
-				case "PAD" -> "平板";
-				case "WATCH" -> "手表";
-				default -> "手机";
-			} + "登录, 稍后可能会出现验证码弹窗...");
+		String tmpPro;
+		if (protocol.equals("PAD")){ tmpPro = "平板"; } /* 为了兼容 JDK11 而舍弃的 switch 语句 */
+		else if (protocol.equals("WATCH")){ tmpPro = "手表"; } else { tmpPro = "手机"; }
+		LogUtil.Log("正在尝试使用" + tmpPro + "登录, 稍后可能会出现验证码弹窗...");
 		try {
-			BotConfiguration.MiraiProtocol miraiProtocol = switch (protocol) {
-				case "PAD" -> BotConfiguration.MiraiProtocol.ANDROID_PAD;
-				case "WATCH" -> BotConfiguration.MiraiProtocol.ANDROID_WATCH;
-				default -> BotConfiguration.MiraiProtocol.ANDROID_PHONE;
-			};
+			BotConfiguration.MiraiProtocol miraiProtocol;
+			if (protocol.equals("PAD")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD; }
+			else if (protocol.equals("WATCH")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH; }
+			else { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE; }
 			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq),password,new BotConfiguration(){{
 				fileBasedDeviceInfo();
 				setProtocol(miraiProtocol);
@@ -92,19 +90,15 @@ public class PluginMain {
 						}
 						LogUtil.Log(out.toString());
 					} else if (msg.startsWith("groupList")) {
-						if (group != null) {
-							ContactList<NormalMember> members = group.getMembers();
-							StringBuilder out = new StringBuilder();
-							int c = 1;
-							for (NormalMember f : members) {
-								out.append(c).append(". ").append(f.getNameCard()).append(" (").append(f.getId()).append(")")
-										.append((f.getId() == bot.getId() ? " (机器人)\n" : "\n"));
-								c++;
-							}
-							LogUtil.Log(out.toString());
-						} else {
-							LogUtil.Log("您未配置机器人的聊群选项！请检查您的配置文件！");
+						ContactList<NormalMember> members = group.getMembers();
+						StringBuilder out = new StringBuilder();
+						int c = 1;
+						for (NormalMember f : members) {
+							out.append(c).append(". ").append(f.getNameCard()).append(" (").append(f.getId()).append(")")
+									.append((f.getId() == bot.getId() ? " (机器人)\n" : "\n"));
+							c++;
 						}
+						LogUtil.Log(out.toString());
 					} else if (msg.equals("help")) {
 						LogUtil.Log("· --------====== MiraiBot ======-------- ·");
 						LogUtil.Log("stop");
@@ -329,32 +323,31 @@ public class PluginMain {
 			try {
 				if (file.createNewFile()){
 					FileOutputStream fos = new FileOutputStream(file);
-					String config = """
-							# 输入你的 QQ
-							qq=
-							# 输入你的 QQ 密码
-							password=
-							# 输入你要聊天的聊群
-							group=
-							# 每一个新消息是否都显示发送者QQ号
-							showQQ=false
-							# 自动批准加好友/邀请进入聊群请求
-							inviteAccept=true
-							# 自动将闪照转换成图片并发送
-							autoFlash=true
-							# 输入你接收的好友信息（“*” 为 全部）
-							friend=*
-							# 输入使用“newImg”指令生成的字体
-							font=微软雅黑
-							# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE
-							protocol=PHONE
-							# 是否启用 Debug 模式（即显示 MiraiCode）
-							debug=false
-							
-							# ----=== MiraiBot ===----
-							# 使用“help”获取帮助！
-							# -----------------------------
-							""";
+					String config =
+							"# 输入你的 QQ\n" +
+							"qq=\n" +
+							"# 输入你的 QQ 密码\n" +
+							"password=\n" +
+							"# 输入你要聊天的聊群\n" +
+							"group=\n" +
+							"# 每一个新消息是否都显示发送者QQ号\n" +
+							"showQQ=false\n" +
+							"# 自动批准加好友/邀请进入聊群请求\n" +
+							"inviteAccept=true\n" +
+							"# 自动将闪照转换成图片并发送\n" +
+							"autoFlash=true\n" +
+							"# 输入你接收的好友信息（“*” 为 全部）\n" +
+							"friend=*\n" +
+							"# 输入使用“newImg”指令生成的字体\n" +
+							"font=微软雅黑\n" +
+							"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
+							"protocol=PHONE\n" +
+							"# 是否启用 Debug 模式（即显示 MiraiCode）\n" +
+							"debug=false\n" +
+							"\n" +
+							"# ----=== MiraiBot ===----\n" +
+							"# 使用“help”获取帮助！\n" +
+							"# -----------------------------\n";
 					fos.write(config.getBytes(StandardCharsets.UTF_8));
 					fos.flush();
 				}
