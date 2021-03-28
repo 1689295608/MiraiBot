@@ -4,10 +4,8 @@ import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.message.code.MiraiCode;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageSource;
-import net.mamoe.mirai.message.data.MessageUtils;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 
@@ -75,6 +73,7 @@ public class PluginMain {
 			while (true){
 				String msg = new Scanner(System.in).nextLine();
 				String[] cmd = msg.split(" ");
+				assert group != null;
 				if (msg.length() > 0) {
 					if (msg.equals("stop")) {
 						LogUtil.Log("正在关闭机器人：" + bot.getNick() + " (" + bot.getId() + ")");
@@ -116,8 +115,10 @@ public class PluginMain {
 						LogUtil.Log(" - 获取当前聊群成员列表");
 						LogUtil.Log("help");
 						LogUtil.Log(" - 显示 MiraiBot 所有指令");
-						LogUtil.Log("send <qq> <Mirai码>");
+						LogUtil.Log("send <qq> <内容>");
 						LogUtil.Log(" - 向好友发送消息（支持 Mirai码）");
+						LogUtil.Log("reply <消息ID> <内容>");
+						LogUtil.Log(" - 回复一条消息");
 						LogUtil.Log("recall <消息ID>");
 						LogUtil.Log(" - 撤回一个消息");
 						LogUtil.Log("image <文件路径>");
@@ -148,7 +149,7 @@ public class PluginMain {
 								LogUtil.Log("\"" + cmd[1] + "\" 不是一个 QQ！");
 							}
 						} else {
-							LogUtil.Log("语法: send <QQ> <Mirai码>");
+							LogUtil.Log("语法: send <QQ> <内容>");
 						}
 					} else if (msg.startsWith("image")) {
 						if (cmd.length >= 2) {
@@ -244,10 +245,29 @@ public class PluginMain {
 						} else {
 							LogUtil.Log("语法: del <QQ>");
 						}
+					} else if (msg.startsWith("reply")) {
+						if (cmd.length >= 3) {
+							try {
+								MessageSource message = EventListener.messages[Integer.parseInt(cmd[1]) - 1];
+								StringBuilder content = new StringBuilder();
+								for (int i = 2 ; i < cmd.length ; i ++) {
+									content.append(cmd[i]);
+								}
+								if (message != null) {
+									group.sendMessage(new QuoteReply(message).plus(MiraiCode.deserializeMiraiCode(content.toString())));
+								} else {
+									LogUtil.Log("未找到该消息！");
+								}
+							} catch (NumberFormatException e) {
+								LogUtil.Log("消息位置必须是整数！");
+							}
+						} else {
+							LogUtil.Log("语法: reply <消息ID> <内容>");
+						}
 					} else if (msg.startsWith("recall")) {
 						if (cmd.length >= 2) {
 							try {
-								MessageSource message = EventListener.getMessages(Integer.parseInt(cmd[1]) - 1);
+								MessageSource message = EventListener.messages[Integer.parseInt(cmd[1]) - 1];
 								if (message != null) {
 									if (message.getFromId() == message.getBotId()) {
 										try {
@@ -257,7 +277,6 @@ public class PluginMain {
 											LogUtil.Log("无法撤回该消息！");
 										}
 									} else {
-										assert group != null;
 										if (group.getBotPermission() != MemberPermission.MEMBER) {
 											try {
 												Mirai.getInstance().recallMessage(bot, message);
@@ -270,7 +289,7 @@ public class PluginMain {
 										}
 									}
 								} else {
-									LogUtil.Log("该消息不存在！");
+									LogUtil.Log("未找到该消息！");
 								}
 							} catch (NumberFormatException e) {
 								LogUtil.Log("消息位置必须是整数！");
@@ -280,7 +299,7 @@ public class PluginMain {
 						}
 					} else {
 						MessageChain send = MiraiCode.deserializeMiraiCode(msg);
-						Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group")))).sendMessage(send);
+						group.sendMessage(send);
 					}
 				}
 			}
