@@ -68,11 +68,7 @@ public class LogUtil {
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
-			all = byteMerger(all, ("""
-     
-					----=== LogUtil Closed ===----
-					
-					""").getBytes());
+			all = byteMerger(all, ("\n\n----=== LogUtil Closed ===----\n\n").getBytes());
 			fos.write(all);
 			fos.flush();
 		} catch (IOException e) {
@@ -82,7 +78,7 @@ public class LogUtil {
 		}
 	}
 	public static byte[] byteMerger(byte[] byte1, byte[] byte2){
-		byte[] byte3 = new byte[byte1.length+byte2.length];
+		byte[] byte3 = new byte[byte1.length + byte2.length];
 		System.arraycopy(byte1, 0, byte3, 0, byte1.length);
 		System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
 		return byte3;
