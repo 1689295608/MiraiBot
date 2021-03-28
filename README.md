@@ -35,6 +35,7 @@ java -classpath MiraiBot.jar;Mirai-Core-2.4.0.jar;Mirai-login-solver-selenium.ja
 ```
   Among them, `Mirai-login-solver-selenium.jar` can be deleted after **successful login** once
 
+---
 
 # MiraiBot
 一个基于 Mirai 的控制台机器人
