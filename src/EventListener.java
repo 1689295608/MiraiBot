@@ -10,16 +10,19 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
 
+import java.io.File;
+
 public class EventListener implements ListenerHost {
 	public static final MessageSource[] messages = new MessageSource[1024];
 	public static final int[] messageI = {0};
 	public static boolean showQQ;
+	public static File autoRespond;
 	
 	@EventHandler
 	public void onInvited(BotInvitedJoinGroupRequestEvent event){
 		if (ConfigUtil.getConfig("inviteAccept").equals("true")){
 			event.accept();
-			LogUtil.Log("机器人已接受 " + event.getInvitorNick() + showQQ(event.getInvitorId()) +
+			LogUtil.log("机器人已接受 " + event.getInvitorNick() + showQQ(event.getInvitorId()) +
 					" 的邀请，加入了聊群 " + event.getGroupName() + "(" + event.getGroupId() + ")");
 		}
 	}
@@ -27,8 +30,8 @@ public class EventListener implements ListenerHost {
 	public void onNewFriend(NewFriendRequestEvent event){
 		if (ConfigUtil.getConfig("inviteAccept").equals("true")) {
 			event.accept();
-			LogUtil.Log("机器人已接受 " + event.getFromNick() + showQQ(event.getFromId()) + "的好友申请，");
-			LogUtil.Log("其添加好友的信息为：" + event.getMessage());
+			LogUtil.log("机器人已接受 " + event.getFromNick() + showQQ(event.getFromId()) + "的好友申请，");
+			LogUtil.log("其添加好友的信息为：" + event.getMessage());
 		}
 	}
 	@EventHandler
@@ -47,24 +50,24 @@ public class EventListener implements ListenerHost {
 		if (operator != null) {
 			if (operator.getId() == sender.getId()){
 				if (id != -1) {
-					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了 [" + id + "] 消息");
+					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了 [" + id + "] 消息");
 				} else {
-					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条消息");
+					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条消息");
 				}
 			} else {
 				if (id != -1) {
-					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
+					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
 							sender.getNameCard() + showQQ(sender.getId()) + "的 [" + id + "] 消息");
 				} else {
-					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
+					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
 						sender.getNameCard() + showQQ(sender.getId()) + "的消息");
 				}
 			}
 		} else {
 			if (id != -1) {
-				LogUtil.Log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了 [" + id + "] 消息");
+				LogUtil.log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了 [" + id + "] 消息");
 			} else {
-				LogUtil.Log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了一条消息");
+				LogUtil.log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了一条消息");
 			}
 		}
 	}
@@ -81,26 +84,26 @@ public class EventListener implements ListenerHost {
 			}
 		}
 		if (id != -1) {
-			LogUtil.Log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了 [" + id + "] 消息");
+			LogUtil.log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了 [" + id + "] 消息");
 		} else {
-			LogUtil.Log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了一条消息");
+			LogUtil.log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了一条消息");
 		}
 	}
 	@EventHandler
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
-		LogUtil.Log(event.getBot().getNick() + " : " +
+		LogUtil.log(event.getBot().getNick() + " : " +
 				(ConfigUtil.getConfig("debug").equals("true") ?
 						event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
 	}
 	@EventHandler
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
-		LogUtil.Log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + showQQ(event.getTarget().getId()) +
+		LogUtil.log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + showQQ(event.getTarget().getId()) +
 				(ConfigUtil.getConfig("debug").equals("true") ?
 					event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
 	}
 	@EventHandler
 	public void onImageUpload(BeforeImageUploadEvent event){
-		LogUtil.Log("正在上传图片...");
+		LogUtil.log("正在上传图片...");
 	}
 	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
@@ -116,7 +119,26 @@ public class EventListener implements ListenerHost {
 		if (messageI[0] == 1024){
 			messageI[0] = 0;
 		}
-		LogUtil.Log("[" + messageI[0] + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
+		LogUtil.log("[" + messageI[0] + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
+		
+		for (String section : IniUtil.getSectionNames(autoRespond)) {
+			if (!section.isEmpty()) {
+				String regex = IniUtil.getValue(section, "Message", autoRespond);
+				String respond = IniUtil.getValue(section, "Respond", autoRespond);
+				if (respond != null && regex != null) {
+					respond = replacePlaceholder(event, respond);
+					regex = replacePlaceholder(event, regex);
+					if (mCode.matches(regex)) {
+						if (respond.startsWith("[reply]")) {
+							event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
+									MiraiCode.deserializeMiraiCode(respond.substring(7))));
+						} else {
+							event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
+						}
+					}
+				}
+			}
+		}
 		
 		if (mCode.split(":").length >= 3 && mCode.split(":")[1].equals("flash")){
 			if (ConfigUtil.getConfig("autoFlash").equals("true")){
@@ -169,7 +191,7 @@ public class EventListener implements ListenerHost {
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
-		LogUtil.Log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
+		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	@EventHandler
 	public void onTempMessage(GroupTempMessageEvent event){
@@ -179,7 +201,7 @@ public class EventListener implements ListenerHost {
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
-		LogUtil.Log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
+		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	@EventHandler
 	public void onStrangerMessage(StrangerMessageEvent event){
@@ -189,7 +211,7 @@ public class EventListener implements ListenerHost {
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
-		LogUtil.Log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
+		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
 	public String showQQ(Long qq){
@@ -197,5 +219,21 @@ public class EventListener implements ListenerHost {
 			return "(" + qq + ") ";
 		}
 		return " ";
+	}
+	
+	public String replacePlaceholder(GroupMessageEvent event, String str) {
+		str = str.replaceAll("%sender_nick%", event.getSender().getNick());
+		str = str.replaceAll("%sender_id%", String.valueOf(event.getSender().getId()));
+		str = str.replaceAll("%sender_nameCard%", event.getSender().getNameCard());
+		str = str.replaceAll("%group_name%", event.getGroup().getName());
+		str = str.replaceAll("%group_id%", String.valueOf(event.getSender().getId()));
+		str = str.replaceAll("%group_owner_nick%", event.getGroup().getOwner().getNick());
+		str = str.replaceAll("%group_owner_id%", String.valueOf(event.getGroup().getOwner().getId()));
+		str = str.replaceAll("%group_owner_nameCard%", event.getGroup().getOwner().getNameCard());
+		str = str.replaceAll("%message_miraiCode%", event.getMessage().serializeToMiraiCode());
+		str = str.replaceAll("%message_content%", event.getMessage().contentToString());
+		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
+		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
+		return str;
 	}
 }
