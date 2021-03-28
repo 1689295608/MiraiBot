@@ -10,19 +10,10 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
 
-import java.util.regex.Pattern;
-
 public class EventListener implements ListenerHost {
 	public static final MessageSource[] messages = new MessageSource[1024];
-	private final int[] messageI = {0};
+	public static final int[] messageI = {0};
 	public static boolean showQQ;
-	
-	public static MessageSource getMessages(int key){
-		if (key > 0){
-			return messages[key];
-		}
-		return null;
-	}
 	
 	@EventHandler
 	public void onInvited(BotInvitedJoinGroupRequestEvent event){
@@ -48,11 +39,26 @@ public class EventListener implements ListenerHost {
 		Member operator = event.getOperator();
 		Member sender = event.getAuthor();
 		if (operator != null) {
+			int id = -1;
+			for (int i = 0; i < messageI[0]; i++) {
+				if (messages[i].getTime() == event.getMessageTime()) {
+					id = i + 1;
+				}
+			}
 			if (operator.getId() == sender.getId()){
-				LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条消息");
+				if (id != -1) {
+					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了 [" + id + "] 消息");
+				} else {
+					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条消息");
+				}
 			} else {
-				LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
+				if (id != -1) {
+					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
+							sender.getNameCard() + showQQ(sender.getId()) + "的 [" + id + "] 消息");
+				} else {
+					LogUtil.Log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
 						sender.getNameCard() + showQQ(sender.getId()) + "的消息");
+				}
 			}
 		}
 	}
@@ -62,7 +68,17 @@ public class EventListener implements ListenerHost {
 				event.getOperator().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			return;
 		}
-		LogUtil.Log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了一条消息");
+		int id = -1;
+		for (int i = 0; i < messageI[0]; i++) {
+			if (messages[i].getTime() == event.getMessageTime()) {
+				id = i + 1;
+			}
+		}
+		if (id != -1) {
+			LogUtil.Log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了 [" + id + "] 消息");
+		} else {
+			LogUtil.Log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了一条消息");
+		}
 	}
 	@EventHandler
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
@@ -94,8 +110,8 @@ public class EventListener implements ListenerHost {
 		if (messageI[0] == 1024){
 			messageI[0] = 0;
 		}
-		
 		LogUtil.Log("[" + messageI[0] + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
+		
 		if (mCode.split(":").length >= 3 && mCode.split(":")[1].equals("flash")){
 			if (ConfigUtil.getConfig("autoFlash").equals("true")){
 				if (event.getSender().getPermission() != MemberPermission.OWNER &&
