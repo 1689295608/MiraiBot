@@ -27,15 +27,15 @@ public class PluginMain {
 			System.exit(-1);
 			return;
 		}
-		String qq = ConfigUtil.getConfig("qq") != null ? ConfigUtil.getConfig("qq") : "";
-		String password = ConfigUtil.getConfig("password") != null ? ConfigUtil.getConfig("password") : "";
-		String groupId = ConfigUtil.getConfig("group") != null ? ConfigUtil.getConfig("group") : "";
+		String qq = ConfigUtil.getConfig("qq");
+		String password = ConfigUtil.getConfig("password");
+		String groupId = ConfigUtil.getConfig("group");
 		if (ConfigUtil.getConfig("showQQ") != null) {
 			EventListener.showQQ = ConfigUtil.getConfig("showQQ").equals("true");
 		} else {
 			EventListener.showQQ = false;
 		}
-		if (qq.equals("") || password.equals("")){
+		if (qq.isEmpty() || password.isEmpty()){
 			LogUtil.log("请填写配置文件的 QQ号 与 密码！");
 			System.exit(-1);
 			return;
