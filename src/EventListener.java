@@ -133,12 +133,10 @@ public class EventListener implements ListenerHost {
 			String[] cmd = mCode.split(" ");
 			if (cmd[1].equals("帮助") || cmd[1].equals("help")) {
 				String help =
-								"""
-								· --------====== MiraiBot ======-------- ·
-								1. 禁言 <秒>
-								 - 禁言自己一段时间
-								· -------------------------------------- ·
-								""";
+						"· --------====== MiraiBot ======-------- ·\n" +
+						"1. 禁言 <秒>\n" +
+						"- 禁言自己一段时间\n" +
+						"· -------------------------------------- ·\n";
 				event.getGroup().sendMessage(help);
 			} else if (cmd[1].equals("禁言") && cmd.length > 2){
 				try {
