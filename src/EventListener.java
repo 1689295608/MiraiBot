@@ -5,18 +5,14 @@ import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.message.data.At;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
 
 import java.io.File;
 
 public class EventListener implements ListenerHost {
-	public static final MessageSource[] messages = new MessageSource[1024];
-	public static final int[] messageI = {0};
 	public static boolean showQQ;
 	public static File autoRespond;
+	public static MessageData messages;
 	
 	@EventHandler
 	public void onInvited(BotInvitedJoinGroupRequestEvent event){
@@ -42,8 +38,8 @@ public class EventListener implements ListenerHost {
 		Member operator = event.getOperator();
 		Member sender = event.getAuthor();
 		int id = -1;
-		for (int i = 0; i < messageI[0]; i++) {
-			if (messages[i].getTime() == event.getMessageTime()) {
+		for (int i = 0; i < messages.size(); i++) {
+			if (messages.get(i).getTime() == event.getMessageTime()) {
 				id = i + 1;
 			}
 		}
@@ -78,8 +74,8 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		int id = -1;
-		for (int i = 0; i < messageI[0]; i++) {
-			if (messages[i].getTime() == event.getMessageTime()) {
+		for (int i = 0; i < messages.size(); i++) {
+			if (messages.get(i).getTime() == event.getMessageTime()) {
 				id = i + 1;
 			}
 		}
@@ -114,71 +110,41 @@ public class EventListener implements ListenerHost {
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
 		
-		messages[messageI[0]] = event.getSource();
-		messageI[0]++;
-		if (messageI[0] == 1024){
-			messageI[0] = 0;
-		}
-		LogUtil.log("[" + messageI[0] + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
+		messages.add(event.getSource());
+		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
 		
-		for (String section : IniUtil.getSectionNames(autoRespond)) {
-			if (!section.isEmpty()) {
-				String regex = IniUtil.getValue(section, "Message", autoRespond);
-				String respond = IniUtil.getValue(section, "Respond", autoRespond);
+		for (String section : IniUtil.getSectionNames()) {
+			if (section != null) {
+				String regex = IniUtil.getValue(section, "Message");
+				String respond = IniUtil.getValue(section, "Respond");
 				if (respond != null && regex != null) {
 					respond = replacePlaceholder(event, respond);
-					regex = replacePlaceholder(event, regex);
-					if (mCode.matches(regex)) {
-						if (respond.startsWith("[reply]")) {
+					if (mCode.matches(replacePlaceholder(event, regex))) {
+						boolean reply = IniUtil.getValue(section, "Reply") != null &&
+								Boolean.parseBoolean(IniUtil.getValue(section, "Reply"));
+						boolean recall = IniUtil.getValue(section, "Recall") != null &&
+								Boolean.parseBoolean(IniUtil.getValue(section, "Recall"));
+						String mute = IniUtil.getValue(section, "Mute");
+						if (mute != null && !mute.equals("0")) {
+							if (event.getSender().getPermission() != MemberPermission.OWNER &&
+									event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
+								try {
+									event.getSender().mute(Integer.parseInt(mute));
+								} catch (NumberFormatException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						if (recall) {
+							Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+						}
+						if (reply) {
 							event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-									MiraiCode.deserializeMiraiCode(respond.substring(7))));
+									MiraiCode.deserializeMiraiCode(respond)));
 						} else {
 							event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
 						}
 					}
-				}
-			}
-		}
-		
-		if (mCode.split(":").length >= 3 && mCode.split(":")[1].equals("flash")){
-			if (ConfigUtil.getConfig("autoFlash").equals("true")){
-				if (event.getSender().getPermission() != MemberPermission.OWNER &&
-						event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
-					Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
-				}
-				MessageChain send = MiraiCode.deserializeMiraiCode(mCode.replace("flash", "image"));
-				event.getGroup().sendMessage(send);
-			}
-		}
-		
-		if (mCode.startsWith("[mirai:at:" + event.getBot().getId() + "] ")){
-			String[] cmd = mCode.split(" ");
-			if (cmd[1].equals("帮助") || cmd[1].equals("help")) {
-				String help =
-						"· --------====== MiraiBot ======-------- ·\n" +
-						"1. 禁言 <秒>\n" +
-						"- 禁言自己一段时间\n" +
-						"· -------------------------------------- ·\n";
-				event.getGroup().sendMessage(help);
-			} else if (cmd[1].equals("禁言") && cmd.length > 2){
-				try {
-					if (event.getSender().getPermission() != MemberPermission.OWNER &&
-							event.getGroup().getBotPermission() != MemberPermission.MEMBER){
-						if (Integer.parseInt(cmd[2]) > 0 && Integer.parseInt(cmd[2]) < 2592000){
-							event.getSender().mute(Integer.parseInt(cmd[2]));
-							event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-									new At(event.getSender().getId()).plus("头一次听说这么奇怪的要求...")));
-						} else {
-							event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-									new At(event.getSender().getId()).plus("这数字不河里啊...!")));
-						}
-					} else {
-						event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-								new At(event.getSender().getId()).plus("俺 莫 得 权 限")));
-					}
-				} catch (NumberFormatException e) {
-					event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-							new At(event.getSender().getId()).plus("\"" + cmd[2] + "\" 是多少秒...")));
 				}
 			}
 		}
@@ -222,6 +188,7 @@ public class EventListener implements ListenerHost {
 	}
 	
 	public String replacePlaceholder(GroupMessageEvent event, String str) {
+		String[] spl = event.getMessage().serializeToMiraiCode().split(":");
 		str = str.replaceAll("%sender_nick%", event.getSender().getNick());
 		str = str.replaceAll("%sender_id%", String.valueOf(event.getSender().getId()));
 		str = str.replaceAll("%sender_nameCard%", event.getSender().getNameCard());
@@ -234,6 +201,8 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%message_content%", event.getMessage().contentToString());
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
+		str = str.replaceAll("%flash_id%", spl[1].equals("flash") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
+		str = str.replaceAll("%image_id%", spl[1].equals("image") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
 		return str;
 	}
 }
