@@ -4,13 +4,15 @@ import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
@@ -42,7 +44,7 @@ public class PluginMain {
 			System.exit(-1);
 			return;
 		}
-		String qq = ConfigUtil.getConfig("config.properties",  "qq");
+		String qq = ConfigUtil.getConfig("config.properties", "qq");
 		String password = ConfigUtil.getConfig("config.properties", "password");
 		String groupId = ConfigUtil.getConfig("config.properties", "group");
 		if (ConfigUtil.getConfig("config.properties", "showQQ") != null) {
@@ -50,7 +52,7 @@ public class PluginMain {
 		} else {
 			EventListener.showQQ = false;
 		}
-		if (qq.isEmpty() || password.isEmpty()){
+		if (qq.isEmpty() || password.isEmpty()) {
 			LogUtil.log(ConfigUtil.getConfig("language.properties", "qq.password.not.exits"));
 			System.exit(-1);
 			return;
@@ -80,32 +82,32 @@ public class PluginMain {
 				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
 				fos.write((
 						"[AutoRespond]\n" +
-						"Message=\\[mirai:at:%bot_id%\\](.*)?Hello!(.*)?\n" +
-						"Reply=true\n" +
-						"Respond=[mirai:at:%sender_id%] Hello!\n" +
-						"\n" +
-						"[Placeholder|占位符]\n" +
-						"# 由于技术原因，请勿删除本占位符。\n" +
-						"# 请保持本占位符于配置文件末端！\n\n" +
-						"# 自动回复支持操作：\n" +
-						"# Reply=Boolean 回复\n" +
-						"# Recall=Boolean 撤回\n" +
-						"# Mute=Integer 禁言\n" +
-						"# 自动回复支持变量：\n" +
-						"# %sender_nick% 发送者昵称\n" +
-						"# %sender_id% 发送者QQ号\n" +
-						"# %sender_nameCard% 发送者群昵称\n" +
-						"# %group_name% 本群名称\n" +
-						"# %group_id% 本群群号\n" +
-						"# %group_owner_nick% 本群群主昵称\n" +
-						"# %group_owner_id% 本群群主QQ号\n" +
-						"# %group_owner_nameCard% 本群群主群昵称\n" +
-						"# %message_miraiCode% 消息的 Mirai码\n" +
-						"# %message_content% 消息的内容\n" +
-						"# %bot_nick% 机器人昵称\n" +
-						"# %bot_id% 机器人QQ号\n" +
-						"# %flash_id% 闪照ID" +
-						"# %image_id% 图片ID"
+								"Message=\\[mirai:at:%bot_id%\\](.*)?Hello!(.*)?\n" +
+								"Reply=true\n" +
+								"Respond=[mirai:at:%sender_id%] Hello!\n" +
+								"\n" +
+								"[Placeholder|占位符]\n" +
+								"# 由于技术原因，请勿删除本占位符。\n" +
+								"# 请保持本占位符于配置文件末端！\n\n" +
+								"# 自动回复支持操作：\n" +
+								"# Reply=Boolean 回复\n" +
+								"# Recall=Boolean 撤回\n" +
+								"# Mute=Integer 禁言\n" +
+								"# 自动回复支持变量：\n" +
+								"# %sender_nick% 发送者昵称\n" +
+								"# %sender_id% 发送者QQ号\n" +
+								"# %sender_nameCard% 发送者群昵称\n" +
+								"# %group_name% 本群名称\n" +
+								"# %group_id% 本群群号\n" +
+								"# %group_owner_nick% 本群群主昵称\n" +
+								"# %group_owner_id% 本群群主QQ号\n" +
+								"# %group_owner_nameCard% 本群群主群昵称\n" +
+								"# %message_miraiCode% 消息的 Mirai码\n" +
+								"# %message_content% 消息的内容\n" +
+								"# %bot_nick% 机器人昵称\n" +
+								"# %bot_id% 机器人QQ号\n" +
+								"# %flash_id% 闪照ID" +
+								"# %image_id% 图片ID"
 				)
 						.getBytes(StandardCharsets.UTF_8));
 				fos.flush();
@@ -123,10 +125,14 @@ public class PluginMain {
 		LogUtil.log(ConfigUtil.getConfig("language.properties", "trying.login").replaceAll("\\$1", protocol));
 		try {
 			BotConfiguration.MiraiProtocol miraiProtocol;
-			if (protocol.equals("PAD")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD; }
-			else if (protocol.equals("WATCH")) { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH; }
-			else { miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE; }
-			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq),password,new BotConfiguration(){{
+			if (protocol.equals("PAD")) {
+				miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD;
+			} else if (protocol.equals("WATCH")) {
+				miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+			} else {
+				miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+			}
+			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq), password, new BotConfiguration() {{
 				fileBasedDeviceInfo();
 				setProtocol(miraiProtocol);
 				noNetworkLog();
@@ -137,18 +143,18 @@ public class PluginMain {
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
 			LogUtil.log(ConfigUtil.getConfig("language.properties", "login.success").replaceAll("\\$1", bot.getNick()));
 			Group group = null;
-			if (groupId.isEmpty()){
+			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getConfig("language.properties", "not.group.set"));
-			} else if (!inGroup(bot, Long.parseLong(groupId))){
+			} else if (!inGroup(bot, Long.parseLong(groupId))) {
 				LogUtil.log(ConfigUtil.getConfig("language.properties", "not.entered.group").replaceAll("\\$1", groupId));
 			} else {
 				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("config.properties", "group")));
 				LogUtil.log(ConfigUtil.getConfig("language.properties", "now.group")
-					.replaceAll("\\$1", group.getName())
-					.replaceAll("\\$2", String.valueOf(group.getId())));
+						.replaceAll("\\$1", group.getName())
+						.replaceAll("\\$2", String.valueOf(group.getId())));
 			}
 			EventListener.messages = new MessageData();
-			while (true){
+			while (true) {
 				Scanner scanner = new Scanner(System.in);
 				String msg = "";
 				if (scanner.hasNextLine()) {
@@ -158,9 +164,9 @@ public class PluginMain {
 				assert group != null;
 				if (msg.length() > 0) {
 					if (msg.equals("stop")) {
-						LogUtil.log(ConfigUtil.getConfig("language.properties", "now.group")
-							.replaceAll("\\$1", bot.getNick())
-							.replaceAll("\\$2", String.valueOf(bot.getId())));
+						LogUtil.log(ConfigUtil.getConfig("language.properties", "stopping.bot")
+								.replaceAll("\\$1", bot.getNick())
+								.replaceAll("\\$2", String.valueOf(bot.getId())));
 						scanner.close();
 						bot.close();
 						/*
@@ -182,7 +188,7 @@ public class PluginMain {
 						ContactList<Friend> friends = bot.getFriends();
 						StringBuilder out = new StringBuilder();
 						int c = 1;
-						for (Friend f : friends){
+						for (Friend f : friends) {
 							out.append(c).append(". ").append(f.getNick()).append(" (").append(f.getId()).append(")")
 									.append((f.getId() == bot.getId() ? " (" +
 											ConfigUtil.getConfig("language.properties", "bot") +
@@ -213,14 +219,14 @@ public class PluginMain {
 						LogUtil.log("help");
 						LogUtil.log(" - " + ConfigUtil.getConfig("language.properties", "command.help"));
 						LogUtil.log("send <" + ConfigUtil.getConfig("language.properties", "qq") +
-								"> <" + ConfigUtil.getConfig("language.properties", "contents") +">");
+								"> <" + ConfigUtil.getConfig("language.properties", "contents") + ">");
 						LogUtil.log(" - " + ConfigUtil.getConfig("language.properties", "command.send"));
 						LogUtil.log("reply <" + ConfigUtil.getConfig("language.properties", "message.id") +
 								"> <" + ConfigUtil.getConfig("language.properties", "contents") + ">");
 						LogUtil.log(" - " + ConfigUtil.getConfig("language.properties", "command.reply"));
-						LogUtil.log("recall <" + ConfigUtil.getConfig("language.properties", "message.id") +">");
+						LogUtil.log("recall <" + ConfigUtil.getConfig("language.properties", "message.id") + ">");
 						LogUtil.log(" - " + ConfigUtil.getConfig("language.properties", "command.recall"));
-						LogUtil.log("image <" + ConfigUtil.getConfig("language.properties", "file.path") +">");
+						LogUtil.log("image <" + ConfigUtil.getConfig("language.properties", "file.path") + ">");
 						LogUtil.log(" - " + ConfigUtil.getConfig("language.properties", "command.image"));
 						LogUtil.log("upImg <" + ConfigUtil.getConfig("language.properties", "file.path") + ">");
 						LogUtil.log(" - " + ConfigUtil.getConfig("language.properties", "command.up.img"));
@@ -238,19 +244,19 @@ public class PluginMain {
 					} else if (msg.startsWith("send")) {
 						if (cmd.length >= 3) {
 							StringBuilder tmp = new StringBuilder();
-							for (int i = 2 ; i < cmd.length ; i ++){
-								tmp.append(cmd[i]).append(i == cmd.length-1 ? "" : " ");
+							for (int i = 2; i < cmd.length; i++) {
+								tmp.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
 							}
 							try { // String 转换到 Integer 如果不是数字居然还会抛出错误，气死我了！！
 								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
-								if (friend != null){
+								if (friend != null) {
 									friend.sendMessage(MiraiCode.deserializeMiraiCode(tmp.toString()));
 								} else {
 									LogUtil.log(ConfigUtil.getConfig("language.properties", "not.friend"));
 								}
 							} catch (NumberFormatException e) {
 								LogUtil.log(ConfigUtil.getConfig("language.properties", "not.qq")
-									.replaceAll("\\$1", cmd[1]));
+										.replaceAll("\\$1", cmd[1]));
 							}
 						} else {
 							LogUtil.log(ConfigUtil.getConfig("language.properties", "usage") + ": send <QQ> <内容>");
@@ -289,12 +295,12 @@ public class PluginMain {
 							LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
 							LogUtil.log("· -------------------------------- ·");
 						} else {
-							LogUtil.log(ConfigUtil.getConfig("language.properties", "usage") + ": upImg <"+
+							LogUtil.log(ConfigUtil.getConfig("language.properties", "usage") + ": upImg <" +
 									ConfigUtil.getConfig("language.properties", "file.path") + ">");
 						}
 					} else if (msg.startsWith("upClipImg")) {
 						byte[] clip = ClipboardUtil.getImageFromClipboard();
-						if (clip != null){
+						if (clip != null) {
 							ExternalResource externalResource = ExternalResource.create(clip);
 							Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("config.properties", "group"))))
 									.uploadImage(externalResource);
@@ -308,11 +314,11 @@ public class PluginMain {
 						} else {
 							LogUtil.log(ConfigUtil.getConfig("language.properties", "failed.clipboard"));
 						}
-					} else if (msg.startsWith("newImg")){
+					} else if (msg.startsWith("newImg")) {
 						if (cmd.length >= 5) {
 							try { // String 转换到 Integer 如果不是数字居然还会抛出错误，气死我了！！
 								StringBuilder content = new StringBuilder();
-								for (int i = 4 ; i < cmd.length ; i ++){
+								for (int i = 4; i < cmd.length; i++) {
 									content.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
 								}
 								LogUtil.log(ConfigUtil.getConfig("language.properties", "creating.word.image"));
@@ -344,11 +350,11 @@ public class PluginMain {
 						if (cmd.length >= 2) {
 							try { // String 转换到 Integer 如果不是数字居然还会抛出错误，气死我了！！
 								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
-								if (friend != null){
+								if (friend != null) {
 									friend.delete();
 									LogUtil.log(ConfigUtil.getConfig("language.properties", "delete.friend")
-										.replaceAll("\\$1", friend.getNick())
-										.replaceAll("\\$2", String.valueOf(friend.getId())));
+											.replaceAll("\\$1", friend.getNick())
+											.replaceAll("\\$2", String.valueOf(friend.getId())));
 								} else {
 									LogUtil.log(ConfigUtil.getConfig("language.properties", "not.friend"));
 								}
@@ -364,7 +370,7 @@ public class PluginMain {
 							try {
 								MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
 								StringBuilder content = new StringBuilder();
-								for (int i = 2 ; i < cmd.length ; i ++) {
+								for (int i = 2; i < cmd.length; i++) {
 									content.append(cmd[i]);
 								}
 								if (message != null) {
@@ -416,7 +422,7 @@ public class PluginMain {
 						}
 					} else {
 						MessageChain send = MiraiCode.deserializeMiraiCode(msg);
-						group.sendMessage(send);
+						group.sendMessage(send).getSource();
 					}
 				}
 			}
@@ -434,40 +440,40 @@ public class PluginMain {
 	public static boolean inGroup(Bot bot, Long groupId) {
 		ContactList<Group> groups = bot.getGroups();
 		for (Group g : groups) {
-			if (g.getId() == groupId){
+			if (g.getId() == groupId) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static boolean checkConfig(){
+	public static boolean checkConfig() {
 		File file = new File("config.properties");
-		if (!file.exists()){
+		if (!file.exists()) {
 			try {
-				if (file.createNewFile()){
+				if (file.createNewFile()) {
 					FileOutputStream fos = new FileOutputStream(file);
 					String config =
 							"# 输入你的 QQ\n" +
-							"qq=\n" +
-							"# 输入你的 QQ 密码\n" +
-							"password=\n" +
-							"# 输入你要聊天的聊群\n" +
-							"group=\n" +
-							"# 每一个新消息是否都显示发送者QQ号\n" +
-							"showQQ=false\n" +
-							"# 输入你接收的好友信息（“*” 为 全部）\n" +
-							"friend=*\n" +
-							"# 输入使用“newImg”指令生成的字体\n" +
-							"font=微软雅黑\n" +
-							"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
-							"protocol=PHONE\n" +
-							"# 是否启用 Debug 模式（即显示 MiraiCode）\n" +
-							"debug=false\n" +
-							"\n" +
-							"# ----=== MiraiBot ===----\n" +
-							"# 使用“help”获取帮助！\n" +
-							"# -----------------------------\n";
+									"qq=\n" +
+									"# 输入你的 QQ 密码\n" +
+									"password=\n" +
+									"# 输入你要聊天的聊群\n" +
+									"group=\n" +
+									"# 每一个新消息是否都显示发送者QQ号\n" +
+									"showQQ=false\n" +
+									"# 输入你接收的好友信息（“*” 为 全部）\n" +
+									"friend=*\n" +
+									"# 输入使用“newImg”指令生成的字体\n" +
+									"font=微软雅黑\n" +
+									"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
+									"protocol=PHONE\n" +
+									"# 是否启用 Debug 模式（即显示 MiraiCode）\n" +
+									"debug=false\n" +
+									"\n" +
+									"# ----=== MiraiBot ===----\n" +
+									"# 使用“help”获取帮助！\n" +
+									"# -----------------------------\n";
 					fos.write(config.getBytes(StandardCharsets.UTF_8));
 					fos.flush();
 					fos.close();
