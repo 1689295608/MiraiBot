@@ -13,7 +13,7 @@ public class LogUtil {
 			File dir = new File("logs");
 			if (!dir.exists()) {
 				if (!dir.mkdirs()) {
-					System.out.println(time + "创建配置文件失败！即将终止进程！");
+					System.out.println(time + ConfigUtil.getConfig("language.properties", "failed.create.config"));
 					System.exit(-1);
 					return;
 				}
@@ -21,7 +21,7 @@ public class LogUtil {
 			file = new File("logs" + File.separator + time + ".log");
 			if (!file.exists()) {
 				if (!file.createNewFile()) {
-					System.out.println(time + "创建配置文件失败！即将终止进程！");
+					System.out.println(time + ConfigUtil.getConfig("language.properties", "failed.create.config"));
 					System.exit(-1);
 					return;
 				}
@@ -32,7 +32,7 @@ public class LogUtil {
 			fos.write(all);
 			fos.flush();
 		} catch (IOException e) {
-			System.out.println("IO 流 抛出错误，即将终止进程！");
+			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
@@ -50,7 +50,7 @@ public class LogUtil {
 			fos.flush();
 			System.out.println(time + str);
 		} catch (IOException e) {
-			System.out.println("IO 流 抛出错误，即将终止进程！");
+			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
@@ -64,7 +64,7 @@ public class LogUtil {
 			fos.write(all);
 			fos.flush();
 		} catch (IOException e) {
-			System.out.println("IO 流 抛出错误，即将终止进程！");
+			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
