@@ -1,4 +1,5 @@
 import net.mamoe.mirai.Mirai;
+import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.MemberPermission;
 import net.mamoe.mirai.event.EventHandler;
@@ -15,24 +16,8 @@ public class EventListener implements ListenerHost {
 	public static MessageData messages;
 	
 	@EventHandler
-	public void onInvited(BotInvitedJoinGroupRequestEvent event){
-		if (ConfigUtil.getConfig("inviteAccept").equals("true")){
-			event.accept();
-			LogUtil.log("机器人已接受 " + event.getInvitorNick() + showQQ(event.getInvitorId()) +
-					" 的邀请，加入了聊群 " + event.getGroupName() + "(" + event.getGroupId() + ")");
-		}
-	}
-	@EventHandler
-	public void onNewFriend(NewFriendRequestEvent event){
-		if (ConfigUtil.getConfig("inviteAccept").equals("true")) {
-			event.accept();
-			LogUtil.log("机器人已接受 " + event.getFromNick() + showQQ(event.getFromId()) + "的好友申请，");
-			LogUtil.log("其添加好友的信息为：" + event.getMessage());
-		}
-	}
-	@EventHandler
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event){
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("config.properties", "group"))) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -46,31 +31,40 @@ public class EventListener implements ListenerHost {
 		if (operator != null) {
 			if (operator.getId() == sender.getId()){
 				if (id != -1) {
-					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了 [" + id + "] 消息");
+					LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.message")
+						.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId()))
+						.replaceAll("\\$2", String.valueOf(id)));
 				} else {
-					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条消息");
+					LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.unknown.message")
+						.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId())));
 				}
 			} else {
 				if (id != -1) {
-					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
-							sender.getNameCard() + showQQ(sender.getId()) + "的 [" + id + "] 消息");
+					LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.others.message")
+						.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId()))
+						.replaceAll("\\$2", sender.getNameCard() + showQQ(sender.getId()))
+						.replaceAll("\\$3", String.valueOf(id)));
 				} else {
-					LogUtil.log(operator.getNameCard() + showQQ(operator.getId()) + "撤回了一条 " +
-						sender.getNameCard() + showQQ(sender.getId()) + "的消息");
+					LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.others.unknown.message")
+							.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId()))
+							.replaceAll("\\$2", String.valueOf(id)));
 				}
 			}
 		} else {
 			if (id != -1) {
-				LogUtil.log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了 [" + id + "] 消息");
+				LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.message")
+						.replaceAll("\\$1", event.getBot().getNick() + showQQ(event.getBot().getId()))
+						.replaceAll("\\$2", String.valueOf(id)));
 			} else {
-				LogUtil.log(event.getBot().getNick() + showQQ(event.getBot().getId()) + "撤回了一条消息");
+				LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.unknown.message")
+						.replaceAll("\\$1", event.getBot().getNick() + showQQ(event.getBot().getId())));
 			}
 		}
 	}
 	@EventHandler
 	public void onFriendRecall(MessageRecallEvent.FriendRecall event){
-		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				event.getOperator().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getConfig("config.properties", "friend").equals("*") ||
+				event.getOperator().getId() == Long.parseLong(ConfigUtil.getConfig("config.properties", "friend")))) {
 			return;
 		}
 		int id = -1;
@@ -79,35 +73,39 @@ public class EventListener implements ListenerHost {
 				id = i + 1;
 			}
 		}
+		Friend operator = event.getOperator();
 		if (id != -1) {
-			LogUtil.log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了 [" + id + "] 消息");
+			LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.message")
+					.replaceAll("\\$1", operator.getNick() + showQQ(operator.getId()))
+					.replaceAll("\\$2", String.valueOf(id)));
 		} else {
-			LogUtil.log(event.getOperator().getNick() + showQQ(event.getOperator().getId()) + "撤回了一条消息");
+			LogUtil.log(ConfigUtil.getConfig("language.properties", "recall.unknown.message")
+					.replaceAll("\\$1", operator.getNick() + showQQ(operator.getId())));
 		}
 	}
 	@EventHandler
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
 		LogUtil.log(event.getBot().getNick() + " : " +
-				(ConfigUtil.getConfig("debug").equals("true") ?
+				(ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 						event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
 	}
 	@EventHandler
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
 		LogUtil.log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + showQQ(event.getTarget().getId()) +
-				(ConfigUtil.getConfig("debug").equals("true") ?
+				(ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 					event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
 	}
 	@EventHandler
 	public void onImageUpload(BeforeImageUploadEvent event){
-		LogUtil.log("正在上传图片...");
+		LogUtil.log(ConfigUtil.getConfig("language.properties", "up.loading.img"));
 	}
 	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("config.properties", "group"))) {
 			return;
 		}
 		String mCode = event.getMessage().serializeToMiraiCode();
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
 		
 		messages.add(event.getSource());
@@ -151,31 +149,31 @@ public class EventListener implements ListenerHost {
 	}
 	@EventHandler
 	public void onFriendMessage(FriendMessageEvent event){
-		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getConfig("config.properties", "friend").equals("*") ||
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("config.properties", "friend")))) {
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	@EventHandler
 	public void onTempMessage(GroupTempMessageEvent event){
-		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))){
+		if (!(ConfigUtil.getConfig("config.properties", "friend").equals("*") ||
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("config.properties", "friend")))){
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	@EventHandler
 	public void onStrangerMessage(StrangerMessageEvent event){
-		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))){
+		if (!(ConfigUtil.getConfig("config.properties", "friend").equals("*") ||
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("config.properties", "friend")))){
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
