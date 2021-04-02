@@ -103,7 +103,7 @@ public class EventListener implements ListenerHost {
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
 		if (event.getReceipt() != null) {
 			messages.add(event.getReceipt().getSource());
-			LogUtil.log("[" + messages.size() + "] " + event.getBot().getNick() + " -> " + 
+			LogUtil.log("[" + messages.size() + "] " + event.getBot().getNick() + " -> " +
 					event.getTarget().getNick() + showQQ(event.getTarget().getId()) +
 					(ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
