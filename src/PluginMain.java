@@ -10,9 +10,7 @@ import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
@@ -50,10 +48,18 @@ public class PluginMain {
 				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
 				fos.write((
 						"[AutoRespond]\n" +
-						"Message=Hello!\n" +
-						"Respond=Hello!\n" +
+						"Message=\\[mirai:at:%bot_id%\\](.*)?Hello!(.*)?\n" +
+						"Reply=true" +
+						"Respond=[mirai:at:%sender_id%] Hello!\n" +
 						"\n" +
-						"# 支持变量：\n" +
+						"[Placeholder|占位符]\n" +
+						"# 由于技术原因，请勿删除本占位符。\n" +
+						"# 请保持本占位符于配置文件末端！\n\n" +
+						"# 自动回复支持操作：\n" +
+						"# Reply=Boolean 回复\n" +
+						"# Recall=Boolean 撤回\n" +
+						"# Mute=Integer 禁言\n" +
+						"# 自动回复支持变量：\n" +
 						"# %sender_nick% 发送者昵称\n" +
 						"# %sender_id% 发送者QQ号\n" +
 						"# %sender_nameCard% 发送者群昵称\n" +
@@ -65,16 +71,21 @@ public class PluginMain {
 						"# %message_miraiCode% 消息的 Mirai码\n" +
 						"# %message_content% 消息的内容\n" +
 						"# %bot_nick% 机器人昵称\n" +
-						"# %bot_id% 机器人QQ号\n"
+						"# %bot_id% 机器人QQ号\n" +
+						"# %flash_id% 闪照ID" +
+						"# %image_id% 图片ID"
 				)
 						.getBytes(StandardCharsets.UTF_8));
 				fos.flush();
+				fos.close();
 			} catch (IOException e) {
 				LogUtil.log("创建配置文件失败！");
 				e.printStackTrace();
 				System.exit(-1);
 			}
 		}
+		IniUtil.loadData(EventListener.autoRespond);
+		
 		String protocol = ConfigUtil.getConfig("protocol") != null ? ConfigUtil.getConfig("protocol") : "";
 		String tmpPro;
 		if (protocol.equals("PAD")){ tmpPro = "平板"; } /* 为了兼容 JDK11 而舍弃的 switch 语句 */
@@ -104,6 +115,7 @@ public class PluginMain {
 				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
 				LogUtil.log("当前进入的聊群为：" + group.getName() + " (" + group.getId() + ")");
 			}
+			EventListener.messages = new MessageData();
 			while (true){
 				Scanner scanner = new Scanner(System.in);
 				String msg = "";
@@ -283,7 +295,7 @@ public class PluginMain {
 					} else if (msg.startsWith("reply")) {
 						if (cmd.length >= 3) {
 							try {
-								MessageSource message = EventListener.messages[Integer.parseInt(cmd[1]) - 1];
+								MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
 								StringBuilder content = new StringBuilder();
 								for (int i = 2 ; i < cmd.length ; i ++) {
 									content.append(cmd[i]);
@@ -302,7 +314,7 @@ public class PluginMain {
 					} else if (msg.startsWith("recall")) {
 						if (cmd.length >= 2) {
 							try {
-								MessageSource message = EventListener.messages[Integer.parseInt(cmd[1]) - 1];
+								MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
 								if (message != null) {
 									if (message.getFromId() == message.getBotId()) {
 										try {
@@ -340,9 +352,10 @@ public class PluginMain {
 			}
 		} catch (NumberFormatException e) {
 			LogUtil.log("请检查配置文件中的 QQ号 是否正确！");
+			e.printStackTrace();
 			System.exit(-1);
 		} catch (Exception e) {
-			LogUtil.log("出现错误！进程即将终止！ 请检查配置文件是否正确！");
+			LogUtil.log("出现错误！进程即将终止！");
 			e.printStackTrace();
 			System.exit(-1);
 		}
@@ -375,8 +388,6 @@ public class PluginMain {
 							"showQQ=false\n" +
 							"# 自动批准加好友/邀请进入聊群请求\n" +
 							"inviteAccept=true\n" +
-							"# 自动将闪照转换成图片并发送\n" +
-							"autoFlash=true\n" +
 							"# 输入你接收的好友信息（“*” 为 全部）\n" +
 							"friend=*\n" +
 							"# 输入使用“newImg”指令生成的字体\n" +
@@ -391,6 +402,7 @@ public class PluginMain {
 							"# -----------------------------\n";
 					fos.write(config.getBytes(StandardCharsets.UTF_8));
 					fos.flush();
+					fos.close();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
