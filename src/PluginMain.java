@@ -26,7 +26,7 @@ public class PluginMain {
 		try {
 			if (!lang.exists()) {
 				if (!lang.createNewFile()) {
-					LogUtil.log(language.equals("ZH") ? "无法创建配置文件！" : "Unable to create configuration file!");
+					LogUtil.log(language.equals("zh") ? "无法创建配置文件！" : "Unable to create configuration file!");
 				} else {
 					FileOutputStream fos = new FileOutputStream(lang);
 					fos.write(LanguageUtil.languageFile(language));
