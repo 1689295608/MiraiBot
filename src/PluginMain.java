@@ -11,7 +11,6 @@ import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PluginMain {
@@ -83,11 +82,13 @@ public class PluginMain {
 								"\n" +
 								"[Placeholder|占位符]\n" +
 								"# 由于技术原因，请勿删除本占位符。\n" +
-								"# 请保持本占位符于配置文件末端！\n\n" +
+								"# For technical reasons, please do not delete this placeholder.\n" +
+								"# 请保持本占位符位于配置文件末端！\n" +
+								"# Please keep this placeholder at the end of the configuration file!\n\n" +
 								"# 自动回复支持操作：\n" +
 								"# Reply=Boolean 回复\n" +
 								"# Recall=Boolean 撤回\n" +
-								"# Mute=Integer 禁言\n" +
+								"# Mute=Integer 禁言\n\n" +
 								"# 自动回复支持变量：\n" +
 								"# %sender_nick% 发送者昵称\n" +
 								"# %sender_id% 发送者QQ号\n" +
@@ -104,7 +105,7 @@ public class PluginMain {
 								"# %flash_id% 闪照ID" +
 								"# %image_id% 图片ID"
 				)
-						.getBytes(StandardCharsets.UTF_8));
+						.getBytes());
 				fos.flush();
 				fos.close();
 			} catch (IOException e) {
@@ -193,6 +194,7 @@ public class PluginMain {
 						LogUtil.log(out.toString());
 					} else if (msg.startsWith("groupList")) {
 						ContactList<NormalMember> members = group.getMembers();
+						members.add(group.getBotAsMember());
 						StringBuilder out = new StringBuilder();
 						int c = 1;
 						for (NormalMember f : members) {
@@ -311,7 +313,7 @@ public class PluginMain {
 						}
 					} else if (msg.startsWith("newImg")) {
 						if (cmd.length >= 5) {
-							try { // String 转换到 Integer 如果不是数字居然还会抛出错误，气死我了！！
+							try {
 								StringBuilder content = new StringBuilder();
 								for (int i = 4; i < cmd.length; i++) {
 									content.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
@@ -343,7 +345,7 @@ public class PluginMain {
 						}
 					} else if (msg.startsWith("del")) {
 						if (cmd.length >= 2) {
-							try { // String 转换到 Integer 如果不是数字居然还会抛出错误，气死我了！！
+							try {
 								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
 								if (friend != null) {
 									friend.delete();
@@ -469,7 +471,7 @@ public class PluginMain {
 									"# ----=== MiraiBot ===----\n" +
 									"# 使用“help”获取帮助！\n" +
 									"# -----------------------------\n";
-					fos.write(config.getBytes(StandardCharsets.UTF_8));
+					fos.write(config.getBytes());
 					fos.flush();
 					fos.close();
 				}
