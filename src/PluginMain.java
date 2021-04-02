@@ -10,14 +10,9 @@ import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class PluginMain {
 	public static String language = Locale.getDefault().getLanguage();
@@ -422,7 +417,7 @@ public class PluginMain {
 						}
 					} else {
 						MessageChain send = MiraiCode.deserializeMiraiCode(msg);
-						group.sendMessage(send).getSource();
+						group.sendMessage(send);
 					}
 				}
 			}
