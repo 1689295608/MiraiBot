@@ -51,21 +51,6 @@ public class PluginMain {
 			System.exit(-1);
 			return;
 		}
-		/*
-		try {
-			File messageData = new File("MessageData.data");
-			if(!messageData.exists()){
-				if(!messageData.createNewFile()){
-					LogUtil.log("创建配置文件失败!");
-				}
-			} else {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(messageData));
-				EventListener.messages.set((ArrayList<MessageSource>) ois.readObject());
-			}
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		*/
 		EventListener.autoRespond = new File("AutoRespond.ini");
 		if (!EventListener.autoRespond.exists()) {
 			try {
@@ -149,7 +134,6 @@ public class PluginMain {
 						.replaceAll("\\$1", group.getName())
 						.replaceAll("\\$2", String.valueOf(group.getId())));
 			}
-			EventListener.messages = new MessageData();
 			while (true) {
 				Scanner scanner = new Scanner(System.in);
 				String msg = "";
@@ -165,18 +149,6 @@ public class PluginMain {
 								.replaceAll("\\$2", String.valueOf(bot.getId())));
 						scanner.close();
 						bot.close();
-						/*
-						File messageData = new File("MessageData.data");
-						if (!messageData.exists()) {
-							if (!messageData.createNewFile()) {
-								LogUtil.log("创建消息数据文件失败！");
-							}
-						}
-						ObjectOutputStream ops = new ObjectOutputStream(new FileOutputStream(messageData));
-						ops.writeObject(EventListener.messages);
-						ops.flush();
-						ops.close();
-						*/
 						LogUtil.Exit();
 						System.exit(0);
 						break;
