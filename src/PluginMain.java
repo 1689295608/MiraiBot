@@ -194,7 +194,6 @@ public class PluginMain {
 						LogUtil.log(out.toString());
 					} else if (msg.startsWith("groupList")) {
 						ContactList<NormalMember> members = group.getMembers();
-						members.add(group.getBotAsMember());
 						StringBuilder out = new StringBuilder();
 						int c = 1;
 						for (NormalMember f : members) {
