@@ -35,6 +35,7 @@ public class LogUtil {
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.write(all);
 			fos.flush();
+			fos.close();
 		} catch (IOException e) {
 			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
@@ -50,18 +51,20 @@ public class LogUtil {
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
-			all = byteMerger(all, (time + str + "\n").getBytes());
-			fos.write(all);
-			fos.flush();
 			String[] allLine = str.split("\n");
+			byte[] add = new byte[0];
 			for (String s : allLine) {
 				System.out.println(time + s);
+				add = byteMerger(add, (time + s + "\n").getBytes());
 				try {
 					Thread.sleep(3);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
+			fos.write(byteMerger(all, add));
+			fos.flush();
+			fos.close();
 		} catch (IOException e) {
 			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
@@ -77,6 +80,7 @@ public class LogUtil {
 			all = byteMerger(all, ("\n\n----=== LogUtil Closed ===----\n\n").getBytes());
 			fos.write(all);
 			fos.flush();
+			fos.close();
 		} catch (IOException e) {
 			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
