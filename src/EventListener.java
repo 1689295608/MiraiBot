@@ -1,19 +1,23 @@
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.Friend;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.MemberPermission;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.event.events.*;
+import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.code.MiraiCode;
+import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class EventListener implements ListenerHost {
 	public static boolean showQQ;
 	public static File autoRespond;
-	public static MessageData messages;
+	public static ArrayList<MessageSource> messages = new ArrayList<>();
 	
 	@EventHandler
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event) {
@@ -87,8 +91,9 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
-		if (event.getReceipt() != null) {
-			messages.add(event.getReceipt().getSource());
+		MessageReceipt<Group> receipt = event.getReceipt();
+		if (receipt != null) {
+			messages.add(receipt.getSource());
 			LogUtil.log("[" + messages.size() + "] " + event.getBot().getNick() + showQQ(event.getBot().getId()) + " : " +
 					(ConfigUtil.getConfig("config.properties", "debug").equals("true") ?
 							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
