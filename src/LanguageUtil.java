@@ -29,8 +29,8 @@ public class LanguageUtil {
 					"up.loading.img=正在上传图片...\n" +
 					"recall.message=$1 撤回了一条 [$2] 消息\n" +
 					"recall.unknown.message=$1 撤回了一条消息\n" +
-					"recall.others.message=$1 撤回了一条 $2 的 $3 消息" +
-					"recall.others.unknown.message=$1 撤回了一条 $2 的消息" +
+					"recall.others.message=$1 撤回了一条 $2 的 $3 消息\n" +
+					"recall.others.unknown.message=$1 撤回了一条 $2 的消息\n" +
 					"command.stop=关闭机器人\n" +
 					"command.friend.list=获取当前机器人好友列表\n" +
 					"command.group.list=获取当前聊群成员列表\n" +
@@ -51,7 +51,7 @@ public class LanguageUtil {
 					"height=高度\n" +
 					"font.size=字体大小\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
-		} else if (language.equals("tw")){
+		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
 					"config.error=配置文件出現錯誤，請檢查配置文件後再試！\n" +
 					"qq.password.not.exits=請填寫配置文件的 QQ號 與 密碼！\n" +
@@ -78,6 +78,10 @@ public class LanguageUtil {
 					"no.permission=該消息不是你發出的且你不是管理員！\n" +
 					"qq.password.error=請檢查配置文件中的 QQ號 是否正確！\n" +
 					"up.loading.img=正在上傳圖片...\n" +
+					"recall.message=$1 撤回了一條 [$2] 消息\n" +
+					"recall.unknown.message=$1 撤回了一條消息\n" +
+					"recall.others.message=$1 撤回了一條 $2 的 $3 消息\n" +
+					"recall.others.unknown.message=$1 撤回了一條 $2 的消息\n" +
 					"command.stop=關閉機器人\n" +
 					"command.friend.list=獲取當前機器人好友列表\n" +
 					"command.group.list=獲取當前聊群成員列表\n" +
@@ -125,6 +129,10 @@ public class LanguageUtil {
 					"no.permission=The message was not sent by you and you are not an administrator!\n" +
 					"qq.password.error=Please check whether the QQ number in the configuration file is correct!\n" +
 					"up.loading.img=Uploading Image...\n" +
+					"recall.message=$1 withdrew a [$2] message\n" +
+					"recall.unknown.message=$1 withdrew a message\n" +
+					"recall.others.message=$1 withdrew a $3 message for $2\n" +
+					"recall.others.unknown.message=$1 withdrew a message for $2\n" +
 					"command.stop=Turn off the robot\n" +
 					"command.friend.list=Get the current robot friend list\n" +
 					"command.group.list=Get the list of current chat group members\n" +
