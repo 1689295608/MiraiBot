@@ -130,7 +130,7 @@ public class EventListener implements ListenerHost {
 		
 		messages.add(event.getSource());
 		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
-
+		
 		for (String section : IniUtil.getSectionNames()) {
 			if (section != null) {
 				String regex = IniUtil.getValue(section, "Message");
@@ -205,7 +205,7 @@ public class EventListener implements ListenerHost {
 		if (showQQ) {
 			return "(" + qq + ")";
 		}
-		return " ";
+		return "";
 	}
 	
 	public String replacePlaceholder(GroupMessageEvent event, String str) {
