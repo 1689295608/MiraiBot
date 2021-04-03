@@ -102,7 +102,7 @@ public class PluginMain {
 								"# %message_content% 消息的内容\n" +
 								"# %bot_nick% 机器人昵称\n" +
 								"# %bot_id% 机器人QQ号\n" +
-								"# %flash_id% 闪照ID" +
+								"# %flash_id% 闪照ID\n" +
 								"# %image_id% 图片ID"
 				)
 						.getBytes());
