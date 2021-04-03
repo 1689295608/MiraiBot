@@ -1,10 +1,14 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LogUtil {
 	static byte[] all = new byte[0];
 	static File file;
+	
 	public static void init() {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -37,7 +41,8 @@ public class LogUtil {
 			System.exit(-1);
 		}
 	}
-	public static void log(String str){
+	
+	public static void log(String str) {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
 			Date date = new Date(System.currentTimeMillis());
@@ -48,14 +53,23 @@ public class LogUtil {
 			all = byteMerger(all, (time + str + "\n").getBytes());
 			fos.write(all);
 			fos.flush();
-			System.out.println(time + str);
+			String[] allLine = str.split("\n");
+			for (String s : allLine) {
+				System.out.println(time + s);
+				try {
+					Thread.sleep(3);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		} catch (IOException e) {
 			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
 	}
-	public static void Exit(){
+	
+	public static void Exit() {
 		try {
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
@@ -69,7 +83,8 @@ public class LogUtil {
 			System.exit(-1);
 		}
 	}
-	public static byte[] byteMerger(byte[] byte1, byte[] byte2){
+	
+	public static byte[] byteMerger(byte[] byte1, byte[] byte2) {
 		byte[] byte3 = new byte[byte1.length + byte2.length];
 		System.arraycopy(byte1, 0, byte3, 0, byte1.length);
 		System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
