@@ -6,6 +6,7 @@ A Mirai-based console robot.
 This project is developed based on JDK11, so please use Java above JDK11 to run this program!
 
 
+### For Windows
 **Windows** users, please run `Login.bat` first and then verify
 
 After the verification is successful, the `device.json` in the current directory can be used to log in to the account on any other device
@@ -14,6 +15,7 @@ Then use `Start.bat` to log in to the account
 
 <br />
 
+### For Linux
 **Linux** users first need to run a terminal in the `MiraiBot` directory
 
 You need to use the following instructions for the first run:
@@ -34,6 +36,7 @@ After successfully logging in once, you can delete `Mirai-login-solver-selenium.
 	本项目基于 JDK11 开发，所以请使用 JDK11 以上的 Java 运行本程序！
 
 
+### Windows 用户
 **Windows** 用户请先运行 `Login.bat` 然后进行验证
 
 验证成功后当前目录的 `device.json` 就可以用于在任何其他设备登录该账户
@@ -42,6 +45,7 @@ After successfully logging in once, you can delete `Mirai-login-solver-selenium.
 
 <br />
 
+### Linux 用户
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
 
 首次运行需要使用以下指令：
