@@ -9,6 +9,9 @@ public class LogUtil {
 	static byte[] all = new byte[0];
 	static File file;
 	
+	/**
+	 * Initialize the log system
+	 */
 	public static void init() {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -17,7 +20,7 @@ public class LogUtil {
 			File dir = new File("logs");
 			if (!dir.exists()) {
 				if (!dir.mkdirs()) {
-					System.out.println(time + ConfigUtil.getConfig("language.properties", "failed.create.config"));
+					System.out.println(time + ConfigUtil.getLanguage("failed.create.config"));
 					System.exit(-1);
 					return;
 				}
@@ -25,7 +28,7 @@ public class LogUtil {
 			file = new File("logs" + File.separator + time + ".log");
 			if (!file.exists()) {
 				if (!file.createNewFile()) {
-					System.out.println(time + ConfigUtil.getConfig("language.properties", "failed.create.config"));
+					System.out.println(time + ConfigUtil.getLanguage("failed.create.config"));
 					System.exit(-1);
 					return;
 				}
@@ -37,12 +40,16 @@ public class LogUtil {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
+			System.out.println(ConfigUtil.getLanguage("unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
 	}
 	
+	/**
+	 * Output a message and record it in the log file
+	 * @param str What to output
+	 */
 	public static void log(String str) {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
@@ -66,12 +73,15 @@ public class LogUtil {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
+			System.out.println(ConfigUtil.getLanguage("unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
 	}
 	
+	/**
+	 * Shut down the log system and record a shutdown log
+	 */
 	public static void Exit() {
 		try {
 			FileInputStream fis = new FileInputStream(file);
@@ -82,12 +92,18 @@ public class LogUtil {
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
-			System.out.println(ConfigUtil.getConfig("language.properties", "unknown.error"));
+			System.out.println(ConfigUtil.getLanguage("unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
 	}
 	
+	/**
+	 * Combine two byte[] into one byte[]
+	 * @param byte1 Byte[] to be merged at the beginning
+	 * @param byte2 Byte[] to be merged to the end
+	 * @return Merged result
+	 */
 	public static byte[] byteMerger(byte[] byte1, byte[] byte2) {
 		byte[] byte3 = new byte[byte1.length + byte2.length];
 		System.arraycopy(byte1, 0, byte3, 0, byte1.length);
