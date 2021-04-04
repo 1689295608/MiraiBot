@@ -3,12 +3,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class LogUtil {
 	static byte[] all = new byte[0];
 	static File file;
-	
+	private static final ArrayList<String> messages = new ArrayList<>();
 	/**
 	 * Initialize the log system
 	 */
@@ -61,8 +62,16 @@ public class LogUtil {
 			String[] allLine = str.split("\n");
 			byte[] add = new byte[0];
 			for (String s : allLine) {
-				System.out.println(time + s);
-				add = byteMerger(add, (time + s + "\n").getBytes());
+				try { clear(); } catch (InterruptedException ignored) { }
+				messages.add(
+						(str.startsWith(">") ? "" : time)
+								+ s
+				);
+				for (String message : messages) {
+					System.out.println(message);
+				}
+				System.out.print("> ");
+				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
 				try {
 					Thread.sleep(3);
 				} catch (InterruptedException e) {
@@ -87,7 +96,7 @@ public class LogUtil {
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
-			all = byteMerger(all, ("\n\n----=== LogUtil Closed ===----\n\n").getBytes());
+			all = byteMerger(all, ("\n----=== MiraiBot Closed ===----\n\n").getBytes());
 			fos.write(all);
 			fos.flush();
 			fos.close();
@@ -109,5 +118,19 @@ public class LogUtil {
 		System.arraycopy(byte1, 0, byte3, 0, byte1.length);
 		System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
 		return byte3;
+	}
+	
+	/**
+	 * Clear the console text
+	 * @throws IOException IOException
+	 * @throws InterruptedException InterruptedException
+	 */
+	public static void clear() throws IOException, InterruptedException {
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.contains("windows")) {
+			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+		} else if (os.contains("linux")) {
+			new ProcessBuilder("clear").inheritIO().start().waitFor();
+		}
 	}
 }
