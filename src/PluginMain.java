@@ -73,7 +73,8 @@ public class PluginMain {
 								"# 自动回复支持操作：\n" +
 								"# Reply=Boolean 回复\n" +
 								"# Recall=Boolean 撤回\n" +
-								"# Mute=Integer 禁言\n\n" +
+								"# Mute=Integer 禁言\n" +
+								"# \n" +
 								"# 自动回复支持变量：\n" +
 								"# %sender_nick% 发送者昵称\n" +
 								"# %sender_id% 发送者QQ号\n" +
@@ -88,7 +89,8 @@ public class PluginMain {
 								"# %bot_nick% 机器人昵称\n" +
 								"# %bot_id% 机器人QQ号\n" +
 								"# %flash_id% 闪照ID\n" +
-								"# %image_id% 图片ID"
+								"# %image_id% 图片ID\n" +
+								"# %file_id% 文件ID"
 				)
 						.getBytes());
 				fos.flush();
