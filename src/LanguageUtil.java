@@ -18,6 +18,7 @@ public class LanguageUtil {
 					"now.group=当前进入的聊群为：$1 ($2)\n" +
 					"stopping.bot=正在关闭机器人：$1 ($2)\n" +
 					"bot=机器人\n" +
+					"not.user=无法获取该用户！\n" +
 					"not.friend=你没有这个好友！\n" +
 					"not.qq=$1 不是一个 QQ！\n" +
 					"usage=语法\n" +
@@ -28,6 +29,7 @@ public class LanguageUtil {
 					"message.not.found=未找到该消息！\n" +
 					"message.id.error=消息位置必须是整数！\n" +
 					"recalled=已撤回该消息！\n" +
+					"kicked=已踢出该成员！\n" +
 					"failed.recall=无法撤回该消息！\n" +
 					"no.permission=该消息不是你发出的且你不是管理员！\n" +
 					"qq.password.error=请检查配置文件中的 QQ号 是否正确！\n" +
@@ -48,7 +50,10 @@ public class LanguageUtil {
 					"command.up.clip.img=上传当前剪切板的图片\n" +
 					"command.new.img=创建并上传一个图片\n" +
 					"command.del=删除一个好友\n" +
+					"command.avatar=获取一个用户的头像\n" +
+					"command.kick=踢出一个用户\n" +
 					"qq=qq\n" +
+					"reason=原因\n" +
 					"contents=内容\n" +
 					"message.id=消息ID\n" +
 					"file.path=文件路径\n" +
@@ -69,6 +74,7 @@ public class LanguageUtil {
 					"now.group=當前進入的聊群為：$1 ($2)\n" +
 					"stopping.bot=正在關閉機器人：$1 ($2)\n" +
 					"bot=機器人\n" +
+					"not.user=無法獲取該用戶！\n" +
 					"not.friend=你沒有這個好友！\n" +
 					"not.qq=$1 不是一個 QQ！\n" +
 					"usage=語法\n" +
@@ -79,6 +85,7 @@ public class LanguageUtil {
 					"message.not.found=未找到該消息！\n" +
 					"message.id.error=消息位置必須是整數！\n" +
 					"recalled=已撤回該消息！\n" +
+					"kicked=已踢出該成員！\n" +
 					"failed.recall=無法撤回該消息！\n" +
 					"no.permission=該消息不是你發出的且你不是管理員！\n" +
 					"qq.password.error=請檢查配置文件中的 QQ號 是否正確！\n" +
@@ -99,7 +106,10 @@ public class LanguageUtil {
 					"command.up.clip.img=上傳當前剪切板的圖片\n" +
 					"command.new.img=創建並上傳一個圖片\n" +
 					"command.del=刪除一個好友\n" +
+					"command.avatar=獲取一個用戶的頭像\n" +
+					"command.kick=踢出一個用戶\n" +
 					"qq=qq\n" +
+					"reason=原因\n" +
 					"contents=內容\n" +
 					"message.id=消息ID\n" +
 					"file.path=文件路徑\n" +
@@ -120,6 +130,7 @@ public class LanguageUtil {
 					"now.group=The currently entered chat group is: $1 ($2)\n" +
 					"stopping.bot=Closing robot: $1 ($2)\n" +
 					"bot=Robot\n" +
+					"not.user=Unable to get the user!\n" +
 					"not.friend=You don't have this friend!\n" +
 					"not.qq=$1 is not a QQ!\n" +
 					"usage=Usage\n" +
@@ -130,6 +141,7 @@ public class LanguageUtil {
 					"message.not.found=The message was not found!\n" +
 					"message.id.error=The message position must be an integer!\n" +
 					"recalled=The message has been withdrawn!\n" +
+					"kicked=The member has been kicked out!\n" +
 					"failed.recall=The message cannot be retracted!\n" +
 					"no.permission=The message was not sent by you and you are not an administrator!\n" +
 					"qq.password.error=Please check whether the QQ number in the configuration file is correct!\n" +
@@ -150,7 +162,10 @@ public class LanguageUtil {
 					"command.up.clip.img=Upload a picture of the current clipboard\n" +
 					"command.new.img=Create and upload an image\n" +
 					"command.del=Delete a friend\n" +
+					"command.avatar=Get a user's avatar\n" +
+					"command.kick=Kick an user\n" +
 					"qq=qq\n" +
+					"reason=Reason\n" +
 					"contents=Content\n" +
 					"message.id=Message ID\n" +
 					"file.path=File path\n" +
