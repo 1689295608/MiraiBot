@@ -171,12 +171,12 @@ public class PluginMain {
 						StringBuilder out = new StringBuilder();
 						int c = 1;
 						for (NormalMember f : members) {
-							out.append(c).append(". ").append(f.getNameCard()).append(" (").append(f.getId()).append(")")
-									.append((f.getId() == bot.getId() ? " (" +
-											ConfigUtil.getConfig("language.properties", "bot") +
-											")\n" : "\n"));
+							out.append(c).append(". ").append((f.getNameCard().isEmpty() ? f.getNick() : f.getNameCard()))
+									.append(" (").append(f.getId()).append(")").append("\n");
 							c++;
 						}
+						out.append(c).append(". ").append(bot.getNick()).append(" (").append(bot.getId()).append(")")
+								.append(" (").append(ConfigUtil.getConfig("language.properties", "bot")).append(")\n");
 						LogUtil.log(out.toString());
 					} else if (msg.equals("help")) {
 						LogUtil.log("· --------====== MiraiBot ======-------- ·");
