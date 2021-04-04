@@ -1,4 +1,9 @@
 public class LanguageUtil {
+	/**
+	 * Get the language file by the value obtained by "Locale.getDefault().getLanguage()"
+	 * @param language The result obtained by "Locale.getDefault().getLanguage()"
+	 * @return The byte[] of the language file
+	 */
 	public static byte[] languageFile(String language) {
 		if (language.equals("zh")) {
 			return ("# 中文（简体）\n" +
