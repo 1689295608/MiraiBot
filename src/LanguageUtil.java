@@ -29,8 +29,8 @@ public class LanguageUtil {
 					"up.loading.img=正在上传图片...\n" +
 					"recall.message=$1 撤回了一条 [$2] 消息\n" +
 					"recall.unknown.message=$1 撤回了一条消息\n" +
-					"recall.others.message=$1 撤回了一条 $2 的 $3 消息\n" +
-					"recall.others.unknown.message=$1 撤回了一条 $2 的消息\n" +
+					"recall.others.message=$1 撤回了一条 $2 的 [$3] 消息\n" +
+					"recall.others.unknown.message=$1 撤回了一条 [$2] 的消息\n" +
 					"command.stop=关闭机器人\n" +
 					"command.friend.list=获取当前机器人好友列表\n" +
 					"command.group.list=获取当前聊群成员列表\n" +
@@ -80,8 +80,8 @@ public class LanguageUtil {
 					"up.loading.img=正在上傳圖片...\n" +
 					"recall.message=$1 撤回了一條 [$2] 消息\n" +
 					"recall.unknown.message=$1 撤回了一條消息\n" +
-					"recall.others.message=$1 撤回了一條 $2 的 $3 消息\n" +
-					"recall.others.unknown.message=$1 撤回了一條 $2 的消息\n" +
+					"recall.others.message=$1 撤回了一條 $2 的 [$3] 消息\n" +
+					"recall.others.unknown.message=$1 撤回了一條 [$2] 的消息\n" +
 					"command.stop=關閉機器人\n" +
 					"command.friend.list=獲取當前機器人好友列表\n" +
 					"command.group.list=獲取當前聊群成員列表\n" +
@@ -131,8 +131,8 @@ public class LanguageUtil {
 					"up.loading.img=Uploading Image...\n" +
 					"recall.message=$1 withdrew a [$2] message\n" +
 					"recall.unknown.message=$1 withdrew a message\n" +
-					"recall.others.message=$1 withdrew a $3 message for $2\n" +
-					"recall.others.unknown.message=$1 withdrew a message for $2\n" +
+					"recall.others.message=$1 withdrew a $3 message for [$2]\n" +
+					"recall.others.unknown.message=$1 withdrew a message for [$2]\n" +
 					"command.stop=Turn off the robot\n" +
 					"command.friend.list=Get the current robot friend list\n" +
 					"command.group.list=Get the list of current chat group members\n" +
