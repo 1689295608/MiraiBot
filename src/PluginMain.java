@@ -11,6 +11,7 @@ import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 public class PluginMain {
@@ -80,6 +81,7 @@ public class PluginMain {
 								"# %sender_nick% 发送者昵称\n" +
 								"# %sender_id% 发送者QQ号\n" +
 								"# %sender_nameCard% 发送者群昵称\n" +
+								"# %sender_avatarId% 发送者头像ID" +
 								"# %group_name% 本群名称\n" +
 								"# %group_id% 本群群号\n" +
 								"# %group_owner_nick% 本群群主昵称\n" +
@@ -91,7 +93,7 @@ public class PluginMain {
 								"# %bot_id% 机器人QQ号\n" +
 								"# %flash_id% 闪照ID\n" +
 								"# %image_id% 图片ID\n" +
-								"# %file_id% 文件ID"
+								"# %file_id% 文件ID\n"
 				)
 						.getBytes());
 				fos.flush();
@@ -132,6 +134,7 @@ public class PluginMain {
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
+			
 			Group group = null;
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
@@ -219,6 +222,10 @@ public class PluginMain {
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.new.img"));
 						LogUtil.log("del <" + ConfigUtil.getLanguage("qq") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.del"));
+						LogUtil.log("avatar <" + ConfigUtil.getLanguage("qq") + ">");
+						LogUtil.log(" - " + ConfigUtil.getLanguage("command.avatar"));
+						LogUtil.log("kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">");
+						LogUtil.log(" - " + ConfigUtil.getLanguage("command.avatar"));
 						LogUtil.log("· -------------------------------------- ·");
 					} else if (msg.startsWith("send")) {
 						if (cmd.length >= 3) {
@@ -238,24 +245,77 @@ public class PluginMain {
 										.replaceAll("\\$1", cmd[1]));
 							}
 						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": send <QQ> <内容>");
+							LogUtil.log(ConfigUtil.getLanguage("usage") + ": send <" + 
+									ConfigUtil.getLanguage("qq") +
+									"> <" + ConfigUtil.getLanguage("contents") + ">");
+						}
+					} else if (msg.startsWith("kick")) {
+						if (cmd.length > 2) {
+							try {
+								NormalMember member = null;
+								for (NormalMember m : group.getMembers()) {
+									if (String.valueOf(m.getId()).equals(cmd[1])) {
+										member = m;
+									}
+								}
+								if (member != null) {
+									if (group.getBotPermission() != MemberPermission.MEMBER && member.getPermission() != MemberPermission.OWNER) {
+										member.kick(cmd[2]);
+										LogUtil.log(ConfigUtil.getLanguage("kicked"));
+									} else {
+										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+									}
+								} else {
+									LogUtil.log(ConfigUtil.getLanguage("not.user"));
+								}
+							} catch (NumberFormatException e) {
+								LogUtil.log(ConfigUtil.getLanguage("not.qq")
+										.replaceAll("\\$1", cmd[1]));
+							}
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("usage") + ": kick <" + ConfigUtil.getLanguage("qq") + "> <" +
+									ConfigUtil.getLanguage("reason") + ">");
+						}
+					} else if (msg.startsWith("avatar")) {
+						if (cmd.length > 1) {
+							try {
+								Stranger stranger = bot.getStranger(Integer.parseInt(cmd[1]));
+								for (Member m : group.getMembers()) {
+									if (String.valueOf(m.getId()).equals(cmd[1])) {
+										stranger = m.getBot().getAsStranger();
+									}
+								}
+								if (stranger != null || cmd[1].equals(String.valueOf(bot.getId()))) {
+									URL url = new URL((stranger != null ? stranger : bot).getAvatarUrl());
+									InputStream is = url.openStream();
+									BufferedInputStream bis = new BufferedInputStream(is);
+									byte[] avatar = bis.readAllBytes();
+									ExternalResource externalResource = ExternalResource.create(avatar);
+									LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+									Image img = group.uploadImage(externalResource);
+									externalResource.close();
+									imageInfo(bot, img);
+								} else {
+									LogUtil.log(ConfigUtil.getLanguage("not.user"));
+								}
+							} catch (NumberFormatException e) {
+								LogUtil.log(ConfigUtil.getLanguage("not.qq")
+										.replaceAll("\\$1", cmd[1]));
+							}
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
 						}
 					} else if (msg.startsWith("image")) {
 						if (cmd.length >= 2) {
 							File file = new File(msg.substring(6));
 							ExternalResource externalResource = ExternalResource.create(file);
-							Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
-									.uploadImage(externalResource);
-							Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group")))).sendMessage(img);
+							LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+							Image img = group.uploadImage(externalResource);
+							group.sendMessage(img);
 							LogUtil.log(bot.getNick() + " : " +
 									(ConfigUtil.getConfig("debug").equals("true") ? img.serializeToMiraiCode() : img.contentToString()));
 							externalResource.close();
-							LogUtil.log("· ------==== Image Info ====------ ·");
-							LogUtil.log("I D: " + img.getImageId());
-							LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-							LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-							LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
-							LogUtil.log("· -------------------------------- ·");
+							imageInfo(bot, img);
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": image <" +
 									ConfigUtil.getLanguage("file.path") + ">");
@@ -264,15 +324,10 @@ public class PluginMain {
 						if (cmd.length >= 2) {
 							File file = new File(msg.substring(6));
 							ExternalResource externalResource = ExternalResource.create(file);
-							Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
+							Image img = group
 									.uploadImage(externalResource);
 							externalResource.close();
-							LogUtil.log("· ------==== Image Info ====------ ·");
-							LogUtil.log("I D: " + img.getImageId());
-							LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-							LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-							LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
-							LogUtil.log("· -------------------------------- ·");
+							imageInfo(bot, img);
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": upImg <" +
 									ConfigUtil.getLanguage("file.path") + ">");
@@ -281,15 +336,10 @@ public class PluginMain {
 						byte[] clip = ClipboardUtil.getImageFromClipboard();
 						if (clip != null) {
 							ExternalResource externalResource = ExternalResource.create(clip);
-							Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
-									.uploadImage(externalResource);
+							LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+							Image img = group.uploadImage(externalResource);
 							externalResource.close();
-							LogUtil.log("· ------==== Image Info ====------ ·");
-							LogUtil.log("I D: " + img.getImageId());
-							LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-							LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-							LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
-							LogUtil.log("· -------------------------------- ·");
+							imageInfo(bot, img);
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("failed.clipboard"));
 						}
@@ -305,15 +355,10 @@ public class PluginMain {
 										new Font(ConfigUtil.getConfig("font"), Font.PLAIN, Integer.parseInt(cmd[3])),
 										Integer.parseInt(cmd[1]), Integer.parseInt(cmd[2]));
 								ExternalResource externalResource = ExternalResource.create(file);
-								Image img = Objects.requireNonNull(bot.getGroup(Integer.parseInt(ConfigUtil.getConfig("group"))))
-										.uploadImage(externalResource);
+								LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+								Image img = group.uploadImage(externalResource);
 								externalResource.close();
-								LogUtil.log("· ------==== Image Info ====------ ·");
-								LogUtil.log("I D: " + img.getImageId());
-								LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, img));
-								LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(img)));
-								LogUtil.log("MiraiCode: " + img.serializeToMiraiCode());
-								LogUtil.log("· -------------------------------- ·");
+								imageInfo(bot, img);
 							} catch (NumberFormatException e) {
 								LogUtil.log(ConfigUtil.getLanguage("width.height.error"));
 							}
@@ -368,17 +413,10 @@ public class PluginMain {
 					} else if (msg.startsWith("recall")) {
 						if (cmd.length >= 2) {
 							try {
-								MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
-								if (message != null) {
-									if (message.getFromId() == message.getBotId()) {
-										try {
-											Mirai.getInstance().recallMessage(bot, message);
-											LogUtil.log(ConfigUtil.getLanguage("recalled"));
-										} catch (Exception e) {
-											LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
-										}
-									} else {
-										if (group.getBotPermission() != MemberPermission.MEMBER) {
+								if (Integer.parseInt(cmd[1]) - 1 > 0) {
+									MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
+									if (message != null) {
+										if (message.getFromId() == message.getBotId()) {
 											try {
 												Mirai.getInstance().recallMessage(bot, message);
 												LogUtil.log(ConfigUtil.getLanguage("recalled"));
@@ -386,8 +424,19 @@ public class PluginMain {
 												LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
 											}
 										} else {
-											LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+											if (group.getBotPermission() != MemberPermission.MEMBER) {
+												try {
+													Mirai.getInstance().recallMessage(bot, message);
+													LogUtil.log(ConfigUtil.getLanguage("recalled"));
+												} catch (Exception e) {
+													LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
+												}
+											} else {
+												LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+											}
 										}
+									} else {
+										LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
 									}
 								} else {
 									LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
@@ -416,6 +465,26 @@ public class PluginMain {
 		}
 	}
 	
+	/**
+	 * Output image info
+	 * @param bot Bot
+	 * @param image Image
+	 */
+	public static void imageInfo(Bot bot, Image image) {
+		LogUtil.log("· ------==== Image Info ====------ ·");
+		LogUtil.log("I D: " + image.getImageId());
+		LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, image));
+		LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(image)));
+		LogUtil.log("MiraiCode: " + image.serializeToMiraiCode());
+		LogUtil.log("· -------------------------------- ·");
+	}
+	
+	/**
+	 * Whether the robot is in the group
+	 * @param bot Bot
+	 * @param groupId Group ID
+	 * @return Whether the robot is in the group
+	 */
 	public static boolean inGroup(Bot bot, Long groupId) {
 		ContactList<Group> groups = bot.getGroups();
 		for (Group g : groups) {
@@ -426,6 +495,10 @@ public class PluginMain {
 		return false;
 	}
 	
+	/**
+	 * Check config file
+	 * @return Whether the config file is exists
+	 */
 	public static boolean checkConfig() {
 		File file = new File("config.properties");
 		if (!file.exists()) {
