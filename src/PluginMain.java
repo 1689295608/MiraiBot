@@ -126,6 +126,12 @@ public class PluginMain {
 			LogUtil.log(ConfigUtil.getLanguage("registering.event"));
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
 			LogUtil.log(ConfigUtil.getLanguage("login.success").replaceAll("\\$1", bot.getNick()));
+			String os = System.getProperty("os.name").toLowerCase();
+			if (os.contains("windows")) {
+				new ProcessBuilder("cmd", "/c", "title", bot.getNick() + " (" + bot.getId() + ")").inheritIO().start().waitFor();
+			} else if (os.contains("linux")) {
+				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
+			}
 			Group group = null;
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
@@ -137,12 +143,14 @@ public class PluginMain {
 						.replaceAll("\\$1", group.getName())
 						.replaceAll("\\$2", String.valueOf(group.getId())));
 			}
+			Scanner scanner = new Scanner(System.in);
 			while (true) {
-				Scanner scanner = new Scanner(System.in);
-				String msg = "";
-				if (scanner.hasNextLine()) {
-					msg = scanner.nextLine();
+				String msg;
+				if (!scanner.hasNextLine()) {
+					continue;
 				}
+				msg = scanner.nextLine();
+				LogUtil.log("> " + msg);
 				String[] cmd = msg.split(" ");
 				assert group != null;
 				if (msg.length() > 0) {
@@ -153,6 +161,7 @@ public class PluginMain {
 						scanner.close();
 						bot.close();
 						LogUtil.Exit();
+						System.out.println();
 						System.exit(0);
 						break;
 					} else if (msg.equals("friendList")) {
