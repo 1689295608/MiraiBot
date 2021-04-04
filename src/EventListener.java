@@ -229,6 +229,7 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
 		str = str.replaceAll("%flash_id%", spl[1].equals("flash") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
 		str = str.replaceAll("%image_id%", spl[1].equals("image") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
+		str = str.replaceAll("%file_id%", spl[1].equals("file") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
 		return str;
 	}
 }
