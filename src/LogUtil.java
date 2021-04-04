@@ -62,21 +62,16 @@ public class LogUtil {
 			String[] allLine = str.split("\n");
 			byte[] add = new byte[0];
 			for (String s : allLine) {
-				try { clear(); } catch (InterruptedException ignored) { }
-				messages.add(
-						(str.startsWith(">") ? "" : time)
-								+ s
-				);
-				for (String message : messages) {
-					System.out.println(message);
+				try {
+					clear();
+				} catch (InterruptedException ignored) {
+				
 				}
+				messages.add((str.startsWith(">") ? "" : time) + s);
+				for (String message : messages)
+					System.out.println(message);
 				System.out.print("> ");
 				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
-				try {
-					Thread.sleep(3);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 			}
 			fos.write(byteMerger(all, add));
 			fos.flush();
