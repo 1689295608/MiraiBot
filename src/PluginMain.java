@@ -5,34 +5,39 @@ import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.*;
+import net.mamoe.mirai.message.data.MessageSource;
+import net.mamoe.mirai.message.data.MessageUtils;
+import net.mamoe.mirai.message.data.QuoteReply;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Scanner;
 
 public class PluginMain {
-	public static String language = Locale.getDefault().getLanguage();
-	
 	public static void main(String[] args) {
 		LogUtil.init();
-		File lang = new File("language.properties");
+		File languageFile = new File("language.properties");
 		try {
-			if (!lang.exists()) {
-				if (!lang.createNewFile()) {
-					LogUtil.log(language.equals("zh") ? "无法创建配置文件！" : "Unable to create configuration file!");
+			if (!languageFile.exists()) {
+				if (!languageFile.createNewFile()) {
+					LogUtil.log(Locale.getDefault().getLanguage().equals("zh") ? "无法创建配置文件！" : "Unable to create configuration file!");
 				} else {
-					FileOutputStream fos = new FileOutputStream(lang);
-					fos.write(LanguageUtil.languageFile(language));
+					FileOutputStream fos = new FileOutputStream(languageFile);
+					fos.write(LanguageUtil.languageFile(Locale.getDefault().getLanguage()));
 					fos.flush();
 					fos.close();
 				}
 			}
 		} catch (IOException e) {
+			LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
 			e.printStackTrace();
+			System.exit(-1);
 		}
 		
 		if (!checkConfig()) {
@@ -61,41 +66,7 @@ public class PluginMain {
 					System.exit(-1);
 				}
 				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
-				fos.write((
-						"[AutoRespond]\n" +
-								"Message=\\[mirai:at:%bot_id%\\](.*)?Hello!(.*)?\n" +
-								"Reply=true\n" +
-								"Respond=[mirai:at:%sender_id%] Hello!\n" +
-								"\n" +
-								"[Placeholder|占位符]\n" +
-								"# 由于技术原因，请勿删除本占位符。\n" +
-								"# For technical reasons, please do not delete this placeholder.\n" +
-								"# 请保持本占位符位于配置文件末端！\n" +
-								"# Please keep this placeholder at the end of the configuration file!\n\n" +
-								"# 自动回复支持操作：\n" +
-								"# Reply=Boolean 回复\n" +
-								"# Recall=Boolean 撤回\n" +
-								"# Mute=Integer 禁言\n" +
-								"# \n" +
-								"# 自动回复支持变量：\n" +
-								"# %sender_nick% 发送者昵称\n" +
-								"# %sender_id% 发送者QQ号\n" +
-								"# %sender_nameCard% 发送者群昵称\n" +
-								"# %sender_avatarId% 发送者头像ID" +
-								"# %group_name% 本群名称\n" +
-								"# %group_id% 本群群号\n" +
-								"# %group_owner_nick% 本群群主昵称\n" +
-								"# %group_owner_id% 本群群主QQ号\n" +
-								"# %group_owner_nameCard% 本群群主群昵称\n" +
-								"# %message_miraiCode% 消息的 Mirai码\n" +
-								"# %message_content% 消息的内容\n" +
-								"# %bot_nick% 机器人昵称\n" +
-								"# %bot_id% 机器人QQ号\n" +
-								"# %flash_id% 闪照ID\n" +
-								"# %image_id% 图片ID\n" +
-								"# %file_id% 文件ID\n"
-				)
-						.getBytes());
+				fos.write(PluginMain.class.getResourceAsStream("AutoRespond.ini").readAllBytes());
 				fos.flush();
 				fos.close();
 			} catch (IOException e) {
@@ -134,7 +105,6 @@ public class PluginMain {
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
-			
 			Group group = null;
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
@@ -146,18 +116,22 @@ public class PluginMain {
 						.replaceAll("\\$1", group.getName())
 						.replaceAll("\\$2", String.valueOf(group.getId())));
 			}
+			if (group == null) {
+				LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+				System.exit(-1);
+			}
 			Scanner scanner = new Scanner(System.in);
+			
+			command:
 			while (true) {
 				String msg;
-				if (!scanner.hasNextLine()) {
-					continue;
-				}
+				if (!scanner.hasNextLine()) continue;
 				msg = scanner.nextLine();
 				LogUtil.log("> " + msg);
 				String[] cmd = msg.split(" ");
-				assert group != null;
-				if (msg.length() > 0) {
-					if (msg.equals("stop")) {
+				if (msg.length() <= 0) continue;
+				switch (cmd[0]) {
+					case "stop":
 						LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
 								.replaceAll("\\$1", bot.getNick())
 								.replaceAll("\\$2", String.valueOf(bot.getId())));
@@ -166,8 +140,8 @@ public class PluginMain {
 						LogUtil.Exit();
 						System.out.println();
 						System.exit(0);
-						break;
-					} else if (msg.equals("friendList")) {
+						break command;
+					case "friendList": {
 						ContactList<Friend> friends = bot.getFriends();
 						StringBuilder out = new StringBuilder();
 						int c = 1;
@@ -179,7 +153,9 @@ public class PluginMain {
 							c++;
 						}
 						LogUtil.log(out.toString());
-					} else if (msg.startsWith("groupList")) {
+						break;
+					}
+					case "groupList": {
 						ContactList<NormalMember> members = group.getMembers();
 						StringBuilder out = new StringBuilder();
 						int c = 1;
@@ -191,7 +167,15 @@ public class PluginMain {
 						out.append(c).append(". ").append(bot.getNick()).append(" (").append(bot.getId()).append(")")
 								.append(" (").append(ConfigUtil.getLanguage("bot")).append(")\n");
 						LogUtil.log(out.toString());
-					} else if (msg.equals("help")) {
+						break;
+					}
+					case "clear":
+						LogUtil.clear();
+						LogUtil.messages = new ArrayList<>();
+						EventListener.messages = new ArrayList<>();
+						LogUtil.log("Console cleared");
+						break;
+					case "help":
 						LogUtil.log("· --------====== MiraiBot ======-------- ·");
 						LogUtil.log("stop");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.stop"));
@@ -201,11 +185,9 @@ public class PluginMain {
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.group.list"));
 						LogUtil.log("help");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.help"));
-						LogUtil.log("send <" + ConfigUtil.getLanguage("qq") + "> <" +
-								ConfigUtil.getLanguage("contents") + ">");
+						LogUtil.log("send <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("contents") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.send"));
-						LogUtil.log("reply <" + ConfigUtil.getLanguage("message.id") + "> <" +
-								ConfigUtil.getLanguage("contents") + ">");
+						LogUtil.log("reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.reply"));
 						LogUtil.log("recall <" + ConfigUtil.getLanguage("message.id") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.recall"));
@@ -215,10 +197,8 @@ public class PluginMain {
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.up.img"));
 						LogUtil.log("upClipImg");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.up.clip.img"));
-						LogUtil.log("newImg <" + ConfigUtil.getLanguage("width") + "> <" +
-								ConfigUtil.getLanguage("height") + "> <" +
-								ConfigUtil.getLanguage("font.size") + "> <" +
-								ConfigUtil.getLanguage("contents") + ">");
+						LogUtil.log("newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
+								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.new.img"));
 						LogUtil.log("del <" + ConfigUtil.getLanguage("qq") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.del"));
@@ -227,7 +207,8 @@ public class PluginMain {
 						LogUtil.log("kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.avatar"));
 						LogUtil.log("· -------------------------------------- ·");
-					} else if (msg.startsWith("send")) {
+						break;
+					case "send":
 						if (cmd.length >= 3) {
 							StringBuilder tmp = new StringBuilder();
 							for (int i = 2; i < cmd.length; i++) {
@@ -245,11 +226,12 @@ public class PluginMain {
 										.replaceAll("\\$1", cmd[1]));
 							}
 						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": send <" + 
+							LogUtil.log(ConfigUtil.getLanguage("usage") + ": send <" +
 									ConfigUtil.getLanguage("qq") +
 									"> <" + ConfigUtil.getLanguage("contents") + ">");
 						}
-					} else if (msg.startsWith("kick")) {
+						break;
+					case "kick":
 						if (cmd.length > 2) {
 							try {
 								NormalMember member = null;
@@ -276,7 +258,8 @@ public class PluginMain {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": kick <" + ConfigUtil.getLanguage("qq") + "> <" +
 									ConfigUtil.getLanguage("reason") + ">");
 						}
-					} else if (msg.startsWith("avatar")) {
+						break;
+					case "avatar":
 						if (cmd.length > 1) {
 							try {
 								Stranger stranger = bot.getStranger(Integer.parseInt(cmd[1]));
@@ -305,22 +288,28 @@ public class PluginMain {
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
 						}
-					} else if (msg.startsWith("image")) {
+						break;
+					case "image":
 						if (cmd.length >= 2) {
-							File file = new File(msg.substring(6));
-							ExternalResource externalResource = ExternalResource.create(file);
-							LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
-							Image img = group.uploadImage(externalResource);
-							group.sendMessage(img);
-							LogUtil.log(bot.getNick() + " : " +
-									(ConfigUtil.getConfig("debug").equals("true") ? img.serializeToMiraiCode() : img.contentToString()));
-							externalResource.close();
-							imageInfo(bot, img);
+							try {
+								File file = new File(msg.substring(6));
+								ExternalResource externalResource = ExternalResource.create(file);
+								LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+								Image img = group.uploadImage(externalResource);
+								group.sendMessage(img);
+								LogUtil.log(bot.getNick() + " : " +
+										(ConfigUtil.getConfig("debug").equals("true") ? img.serializeToMiraiCode() : img.contentToString()));
+								externalResource.close();
+								imageInfo(bot, img);
+							} catch (IOException e) {
+								LogUtil.log(ConfigUtil.getLanguage("file.error"));
+							}
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": image <" +
 									ConfigUtil.getLanguage("file.path") + ">");
 						}
-					} else if (msg.startsWith("upImg")) {
+						break;
+					case "upImg":
 						if (cmd.length >= 2) {
 							File file = new File(msg.substring(6));
 							ExternalResource externalResource = ExternalResource.create(file);
@@ -332,7 +321,8 @@ public class PluginMain {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": upImg <" +
 									ConfigUtil.getLanguage("file.path") + ">");
 						}
-					} else if (msg.startsWith("upClipImg")) {
+						break;
+					case "upClipImg":
 						byte[] clip = ClipboardUtil.getImageFromClipboard();
 						if (clip != null) {
 							ExternalResource externalResource = ExternalResource.create(clip);
@@ -343,7 +333,8 @@ public class PluginMain {
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("failed.clipboard"));
 						}
-					} else if (msg.startsWith("newImg")) {
+						break;
+					case "newImg":
 						if (cmd.length >= 5) {
 							try {
 								StringBuilder content = new StringBuilder();
@@ -370,7 +361,8 @@ public class PluginMain {
 									"> <" + ConfigUtil.getLanguage("contents") +
 									">");
 						}
-					} else if (msg.startsWith("del")) {
+						break;
+					case "del":
 						if (cmd.length >= 2) {
 							try {
 								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
@@ -389,7 +381,8 @@ public class PluginMain {
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": del <QQ>");
 						}
-					} else if (msg.startsWith("reply")) {
+						break;
+					case "reply":
 						if (cmd.length >= 3) {
 							try {
 								MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
@@ -410,7 +403,8 @@ public class PluginMain {
 									ConfigUtil.getLanguage("message.id") + "> <" +
 									ConfigUtil.getLanguage("contents") + ">");
 						}
-					} else if (msg.startsWith("recall")) {
+						break;
+					case "recall":
 						if (cmd.length >= 2) {
 							try {
 								if (Integer.parseInt(cmd[1]) - 1 > 0) {
@@ -448,10 +442,10 @@ public class PluginMain {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": recall <" +
 									ConfigUtil.getLanguage("message.id") + ">");
 						}
-					} else {
-						MessageChain send = MiraiCode.deserializeMiraiCode(msg);
-						group.sendMessage(send);
-					}
+						break;
+					default:
+						group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
+						break;
 				}
 			}
 		} catch (NumberFormatException e) {
