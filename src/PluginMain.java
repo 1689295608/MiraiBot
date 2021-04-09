@@ -27,7 +27,7 @@ public class PluginMain {
 	
 	public static void main(String[] args) {
 		LogUtil.init();
-		LogUtil.messages.append(Locale.getDefault().getLanguage().equals("zh") ?
+		LogUtil.log(Locale.getDefault().getLanguage().equals("zh") ?
 				"MiraiBot 基于 Mirai-Core. 版权所有 (C) WindowX 2021" : "MiraiBot based Mirai-Core. Copyright (C) WindowX 2021");
 		File languageFile = new File("language.properties");
 		try {
@@ -111,7 +111,7 @@ public class PluginMain {
 			LogUtil.log(ConfigUtil.getLanguage("login.success").replaceAll("\\$1", bot.getNick()));
 			String os = System.getProperty("os.name").toLowerCase();
 			if (os.contains("windows")) {
-				new ProcessBuilder("cmd", "/c", "title", bot.getNick() + " (" + bot.getId() + ")").inheritIO().start().waitFor();
+				new ProcessBuilder("cmd", "/c", "title " + bot.getNick() + " (" + bot.getId() + ")").inheritIO().start().waitFor();
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
@@ -179,6 +179,33 @@ public class PluginMain {
 						LogUtil.log(out.toString());
 						break;
 					}
+					case "language":
+						if (cmd.length > 1) {
+							File now = new File("language.properties");
+							if (now.exists()) {
+								File bak = new File("language.properties.bak");
+								if (bak.exists()) {
+									if (!bak.delete()) {
+										bak.deleteOnExit();
+									}
+								}
+								if (bak.createNewFile()) {
+									FileOutputStream fos = new FileOutputStream(bak);
+									fos.write(new FileInputStream(now).readAllBytes());
+									fos.flush();
+									fos.close();
+								}
+							}
+							FileOutputStream fos = new FileOutputStream(now);
+							fos.write(LanguageUtil.languageFile(cmd[1]));
+							fos.flush();
+							fos.close();
+							LogUtil.log(ConfigUtil.getLanguage("success.change.language"));
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("usage") + ": language <" +
+									ConfigUtil.getLanguage("language") + ">");
+						}
+						break;
 					case "clear":
 						LogUtil.clear();
 						LogUtil.messages = new StringBuilder();
@@ -201,6 +228,8 @@ public class PluginMain {
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.image"));
 						LogUtil.log("kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.avatar"));
+						LogUtil.log("language <" + ConfigUtil.getLanguage("language") + ">");
+						LogUtil.log(" - " + ConfigUtil.getLanguage("command.language"));
 						LogUtil.log("newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
 								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">");
 						LogUtil.log(" - " + ConfigUtil.getLanguage("command.new.img"));
