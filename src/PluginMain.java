@@ -14,14 +14,16 @@ import net.mamoe.mirai.utils.ExternalResource;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Scanner;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class PluginMain {
+	static Group group;
 	public static void main(String[] args) {
 		LogUtil.init();
+		LogUtil.messages.append(Locale.getDefault().getLanguage().equals("zh") ?
+				"MiraiBot 基于 Mirai-Core. 版权所有 (C) WindowX 2021" : "MiraiBot based Mirai-Core. Copyright (C) WindowX 2021");
 		File languageFile = new File("language.properties");
 		try {
 			if (!languageFile.exists()) {
@@ -105,7 +107,7 @@ public class PluginMain {
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
-			Group group = null;
+			group = null;
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
 			} else if (!inGroup(bot, Long.parseLong(groupId))) {
@@ -169,9 +171,26 @@ public class PluginMain {
 						LogUtil.log(out.toString());
 						break;
 					}
+					case "short":
+						if (cmd.length > 1) {
+							try {
+								String API = ConfigUtil.getConfig("shortUrlApi");
+								String Param = ConfigUtil.getConfig("shortUrlParam");
+								if (API != null && Param != null) {
+									LogUtil.log(sendPost(API, Param.replaceAll("\\$1", cmd[1]), null));
+								} else {
+									LogUtil.log(ConfigUtil.getLanguage("api.param.not.exits"));
+								}
+							} catch (IOException e) {
+								LogUtil.log(ConfigUtil.getLanguage("failed.post.url"));
+							}
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("usage") + ": short <" + ConfigUtil.getLanguage("url") + ">");
+						}
+						break;
 					case "clear":
 						LogUtil.clear();
-						LogUtil.messages = new ArrayList<>();
+						LogUtil.messages = new StringBuilder();
 						EventListener.messages = new ArrayList<>();
 						LogUtil.log("Console cleared");
 						break;
@@ -458,7 +477,6 @@ public class PluginMain {
 			System.exit(-1);
 		}
 	}
-	
 	/**
 	 * Output image info
 	 * @param bot Bot
@@ -530,5 +548,50 @@ public class PluginMain {
 			return false;
 		}
 		return true;
+	}
+	/**
+	 * Send a POST request
+	 * @param url URL
+	 * @param param Parameters (Looks like this:"username=xxx&password=xxx")
+	 * @param header (May be null) header
+	 * @return The content obtained
+	 * @throws IOException IOException
+	 */
+	public static String sendPost(String url, String param, Map<String, String> header) throws IOException {
+		PrintWriter out;
+		BufferedReader in;
+		StringBuilder result = new StringBuilder();
+		URL realUrl = new URL(url);
+		// 打开和URL之间的连接
+		URLConnection conn = realUrl.openConnection();
+		//设置超时时间
+		conn.setConnectTimeout(5000);
+		conn.setReadTimeout(15000);
+		// 设置通用的请求属性
+		if (header!=null)
+			for (Map.Entry<String, String> entry : header.entrySet()) conn.setRequestProperty(entry.getKey(), entry.getValue());
+		conn.setRequestProperty("accept", "*/*");
+		conn.setRequestProperty("connection", "Keep-Alive");
+		conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+		conn.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+		// 发送POST请求必须设置如下两行
+		conn.setDoOutput(true);
+		conn.setDoInput(true);
+		// 获取URLConnection对象对应的输出流
+		out = new PrintWriter(conn.getOutputStream());
+		// 发送请求参数
+		out.print(param);
+		// flush输出流的缓冲
+		out.flush();
+		// 定义BufferedReader输入流来读取URL的响应
+		in = new BufferedReader(
+				new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+		String line;
+		while ((line = in.readLine()) != null) {
+			result.append(line);
+		}
+		out.close();
+		in.close();
+		return result.toString();
 	}
 }
