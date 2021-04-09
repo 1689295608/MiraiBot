@@ -9,7 +9,13 @@ public class LanguageUtil {
 			return ("# 中文（简体）\n" +
 					"config.error=配置文件出现错误，请检查配置文件后再试！\n" +
 					"qq.password.not.exits=请填写配置文件的 QQ号 与 密码！\n" +
+					"api.param.not.exits=请填写配置文件的 API 与 Param！\n" +
 					"failed.create.config=创建配置文件失败！\n" +
+					"failed.post.url=发送 POST 请求失败！\n" +
+					"failed.check.update=检测更新失败！\n" +
+					"found.new.update=发现新版本：$1\n" +
+					"checking.update=正在检测更新...\n" +
+					"already.latest.version=已是最新版本！\n" +
 					"trying.login=正在尝试使用$1登录, 稍后可能会出现验证码弹窗...\n" +
 					"registering.event=正在注册事件...\n" +
 					"login.success=登录成功，您的昵称是：$1\n" +
@@ -22,6 +28,8 @@ public class LanguageUtil {
 					"not.friend=你没有这个好友！\n" +
 					"not.qq=$1 不是一个 QQ！\n" +
 					"usage=语法\n" +
+					"url=网址\n" +
+					"file.error=该文件不存在！\n" +
 					"failed.clipboard=无法获取当前剪切板的图片！\n" +
 					"creating.word.image=正在生成文字图片...\n" +
 					"width.height.error=宽度、高度和字体大小必须为整数！\n" +
@@ -65,7 +73,13 @@ public class LanguageUtil {
 			return ("# 中文（繁體）\n" +
 					"config.error=配置文件出現錯誤，請檢查配置文件後再試！\n" +
 					"qq.password.not.exits=請填寫配置文件的 QQ號 與 密碼！\n" +
+					"api.param.not.exits=請填寫配置文件的 API 與 Param！\n" +
 					"failed.create.config=創建配置文件失敗！\n" +
+					"failed.post.url=發送 POST 請求失敗！\n" +
+					"failed.check.update=檢測更新失敗！\n" +
+					"checking.update=正在檢測更新...\n" +
+					"already.latest.version=已是最新版本！\n" +
+					"found.new.update=發現新版本：$1\n" +
 					"trying.login=正在嘗試使用$1登錄, 稍後可能會出現驗證碼彈窗...\n" +
 					"registering.event=正在註冊事件...\n" +
 					"login.success=登錄成功，您的昵稱是：$1\n" +
@@ -78,6 +92,8 @@ public class LanguageUtil {
 					"not.friend=你沒有這個好友！\n" +
 					"not.qq=$1 不是一個 QQ！\n" +
 					"usage=語法\n" +
+					"url=網址\n" +
+					"file.error=該文件不存在！\n" +
 					"failed.clipboard=無法獲取當前剪切板的圖片！\n" +
 					"creating.word.image=正在生成文字圖片...\n" +
 					"width.height.error=寬度、高度和字體大小必須為整數！\n" +
@@ -121,7 +137,13 @@ public class LanguageUtil {
 			return ("# English (" + language + ")\n" +
 					"config.error=An error occurred in the configuration file, please check the configuration file and try again!\n" +
 					"qq.password.not.exits=Please fill in the QQ number and password of the configuration file!\n" +
+					"api.param.not.exits=Please fill in the API and Param of the configuration file!\n" +
 					"failed.create.config=Failed to create configuration file!\n" +
+					"failed.post.url=Failed to send POST request!\n" +
+					"failed.check.update=Failed to detect update!\n" +
+					"checking.update=Detecting update...\n" +
+					"already.latest.version=Already the latest version!\n" +
+					"found.new.update=New version found: $1\n" +
 					"trying.login=Trying to log in with $1, a verification code pop-up window may appear later...\n" +
 					"registering.event=Registering event...\n" +
 					"login.success=Login is successful, your nickname is: $1\n" +
@@ -134,6 +156,8 @@ public class LanguageUtil {
 					"not.friend=You don't have this friend!\n" +
 					"not.qq=$1 is not a QQ!\n" +
 					"usage=Usage\n" +
+					"url=URL\n" +
+					"file.error=The file does not exist!\n" +
 					"failed.clipboard=Unable to get the picture of the current clipboard!\n" +
 					"creating.word.image=Generating text image...\n" +
 					"width.height.error=The width, height, and font size must be integers!\n" +
