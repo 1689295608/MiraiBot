@@ -517,8 +517,6 @@ public class PluginMain {
 			}
 		} catch (Exception e) {
 			LogUtil.log(ConfigUtil.getLanguage("failed.check.update"));
-			e.printStackTrace();
-			System.exit(-1);
 		}
 	}
 	
