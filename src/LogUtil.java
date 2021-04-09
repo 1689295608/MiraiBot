@@ -3,13 +3,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class LogUtil {
 	static byte[] all = new byte[0];
 	static File file;
-	private static final ArrayList<String> messages = new ArrayList<>();
+	public static StringBuilder messages = new StringBuilder();
 	/**
 	 * Initialize the log system
 	 */
@@ -64,12 +63,9 @@ public class LogUtil {
 			for (String s : allLine) {
 				try {
 					clear();
-				} catch (InterruptedException ignored) {
-				
-				}
-				messages.add((str.startsWith(">") ? "" : time) + s);
-				for (String message : messages)
-					System.out.println(message);
+				} catch (InterruptedException ignored) { }
+				messages.append("\n").append(str.startsWith(">") ? "" : time).append(s);
+				System.out.println(messages.toString());
 				System.out.print("> ");
 				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
 			}
@@ -82,7 +78,6 @@ public class LogUtil {
 			System.exit(-1);
 		}
 	}
-	
 	/**
 	 * Shut down the log system and record a shutdown log
 	 */
@@ -121,6 +116,7 @@ public class LogUtil {
 	 * @throws InterruptedException InterruptedException
 	 */
 	public static void clear() throws IOException, InterruptedException {
+		System.console().flush();
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("windows")) {
 			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
