@@ -13,7 +13,6 @@ After the verification is successful, the `device.json` in the current directory
 
 Then use `Start.bat` to log in to the account
 
-<br />
 
 ### For Linux
 **Linux** users first need to run a terminal in the `MiraiBot` directory
@@ -43,7 +42,6 @@ After successfully logging in once, you can delete `Mirai-login-solver-selenium.
 
 接下来使用 `Start.bat` 即可登录到该账户
 
-<br />
 
 ### Linux 用户
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
