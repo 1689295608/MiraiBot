@@ -521,6 +521,7 @@ public class PluginMain {
 				sb.append(line);
 			}
 			int LatestVersion = Integer.parseInt(sb.toString().replaceAll("\\.", ""));
+			/* 注：这里的 ”Version“ 文件是打包时放入的当前版本文件，并未更新于 Github，特此申明！ */
 			int ThisVersion = Integer.parseInt(new String(PluginMain.class.getResourceAsStream("Version").readAllBytes()).replaceAll("\\.", ""));
 			if (ThisVersion < LatestVersion) {
 				LogUtil.log(ConfigUtil.getLanguage("found.new.update")
