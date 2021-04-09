@@ -13,13 +13,16 @@ import net.mamoe.mirai.utils.ExternalResource;
 
 import java.awt.*;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PluginMain {
-	static Group group;
+	public static Group group;
+	
 	public static void main(String[] args) {
 		LogUtil.init();
 		LogUtil.messages.append(Locale.getDefault().getLanguage().equals("zh") ?
@@ -41,11 +44,14 @@ public class PluginMain {
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		
 		if (!checkConfig()) {
 			LogUtil.log(ConfigUtil.getLanguage("config.error"));
 			System.exit(-1);
 			return;
+		}
+		if (ConfigUtil.getConfig("checkUpdate") != null && ConfigUtil.getConfig("checkUpdate").equals("true")) {
+			LogUtil.log(ConfigUtil.getLanguage("checking.update"));
+			checkUpdate();
 		}
 		String qq = ConfigUtil.getConfig("qq");
 		String password = ConfigUtil.getConfig("password");
@@ -477,6 +483,59 @@ public class PluginMain {
 			System.exit(-1);
 		}
 	}
+	
+	/**
+	 * Check if there is a new release
+	 */
+	public static void checkUpdate() {
+		try {
+			HttpURLConnection connection;
+			URL url;
+			try {
+				url = new URL("https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+				connection = getHttpURLConnection(url);
+				connection.connect();
+			} catch (UnknownHostException e) {
+				url = new URL("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+				connection = getHttpURLConnection(url);
+				connection.connect();
+			}
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = in.readLine()) != null) {
+				sb.append(line);
+			}
+			int LatestVersion = Integer.parseInt(sb.toString().replaceAll("\\.", ""));
+			int ThisVersion = Integer.parseInt(new String(PluginMain.class.getResourceAsStream("Version").readAllBytes()).replaceAll("\\.", ""));
+			if (ThisVersion < LatestVersion) {
+				LogUtil.log(ConfigUtil.getLanguage("found.new.update")
+						.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + sb)
+				);
+			} else {
+				LogUtil.log(ConfigUtil.getLanguage("already.latest.version"));
+			}
+		} catch (Exception e) {
+			LogUtil.log(ConfigUtil.getLanguage("failed.check.update"));
+			e.printStackTrace();
+			System.exit(-1);
+		}
+	}
+	
+	/**
+	 * Quickly get an HttpURLConnection through the URL object
+	 * @param url URL
+	 * @return HttpURLConnection
+	 * @throws IOException IOException
+	 */
+	public static HttpURLConnection getHttpURLConnection(URL url) throws IOException {
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(15000);
+		connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+		return connection;
+	}
+	
 	/**
 	 * Output image info
 	 * @param bot Bot
@@ -528,6 +587,8 @@ public class PluginMain {
 									"showQQ=false\n" +
 									"# 输入你接收的好友信息（“*” 为 全部）\n" +
 									"friend=*\n" +
+									"# 每次启动时都检测更新\n" +
+									"checkUpdate=true\n" +
 									"# 输入使用“newImg”指令生成的字体\n" +
 									"font=微软雅黑\n" +
 									"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
