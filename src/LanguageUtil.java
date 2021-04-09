@@ -28,7 +28,7 @@ public class LanguageUtil {
 					"not.friend=你没有这个好友！\n" +
 					"not.qq=$1 不是一个 QQ！\n" +
 					"usage=语法\n" +
-					"url=网址\n" +
+					"language=语言\n" +
 					"file.error=该文件不存在！\n" +
 					"failed.clipboard=无法获取当前剪切板的图片！\n" +
 					"creating.word.image=正在生成文字图片...\n" +
@@ -41,6 +41,7 @@ public class LanguageUtil {
 					"failed.recall=无法撤回该消息！\n" +
 					"no.permission=该消息不是你发出的且你不是管理员！\n" +
 					"qq.password.error=请检查配置文件中的 QQ号 是否正确！\n" +
+					"success.change.language=成功修改语言为 简体中文\n" +
 					"up.loading.img=正在上传图片...\n" +
 					"recall.message=$1 撤回了一条 [$2] 消息\n" +
 					"recall.unknown.message=$1 撤回了一条消息\n" +
@@ -48,6 +49,7 @@ public class LanguageUtil {
 					"recall.others.unknown.message=$1 撤回了一条 [$2] 的消息\n" +
 					"command.stop=关闭机器人\n" +
 					"command.friend.list=获取当前机器人好友列表\n" +
+					"command.language=更改 MiraiBot 的语言\n" +
 					"command.group.list=获取当前聊群成员列表\n" +
 					"command.help=显示 MiraiBot 所有指令\n" +
 					"command.send=向好友发送消息（支持 Mirai码）\n" +
@@ -92,7 +94,7 @@ public class LanguageUtil {
 					"not.friend=你沒有這個好友！\n" +
 					"not.qq=$1 不是一個 QQ！\n" +
 					"usage=語法\n" +
-					"url=網址\n" +
+					"language=語言\n" +
 					"file.error=該文件不存在！\n" +
 					"failed.clipboard=無法獲取當前剪切板的圖片！\n" +
 					"creating.word.image=正在生成文字圖片...\n" +
@@ -105,6 +107,7 @@ public class LanguageUtil {
 					"failed.recall=無法撤回該消息！\n" +
 					"no.permission=該消息不是你發出的且你不是管理員！\n" +
 					"qq.password.error=請檢查配置文件中的 QQ號 是否正確！\n" +
+					"success.change.language=成功修改語言為 繁體中文\n" +
 					"up.loading.img=正在上傳圖片...\n" +
 					"recall.message=$1 撤回了一條 [$2] 消息\n" +
 					"recall.unknown.message=$1 撤回了一條消息\n" +
@@ -112,6 +115,7 @@ public class LanguageUtil {
 					"recall.others.unknown.message=$1 撤回了一條 [$2] 的消息\n" +
 					"command.stop=關閉機器人\n" +
 					"command.friend.list=獲取當前機器人好友列表\n" +
+					"command.language=更改 MiraiBot 的語言\n" +
 					"command.group.list=獲取當前聊群成員列表\n" +
 					"command.help=顯示 MiraiBot 所有指令\n" +
 					"command.send=向好友發送消息（支持 Mirai碼）\n" +
@@ -156,7 +160,7 @@ public class LanguageUtil {
 					"not.friend=You don't have this friend!\n" +
 					"not.qq=$1 is not a QQ!\n" +
 					"usage=Usage\n" +
-					"url=URL\n" +
+					"language=Language\n" +
 					"file.error=The file does not exist!\n" +
 					"failed.clipboard=Unable to get the picture of the current clipboard!\n" +
 					"creating.word.image=Generating text image...\n" +
@@ -169,6 +173,7 @@ public class LanguageUtil {
 					"failed.recall=The message cannot be retracted!\n" +
 					"no.permission=The message was not sent by you and you are not an administrator!\n" +
 					"qq.password.error=Please check whether the QQ number in the configuration file is correct!\n" +
+					"success.change.language=Successfully changed the language to English\n" +
 					"up.loading.img=Uploading Image...\n" +
 					"recall.message=$1 withdrew a [$2] message\n" +
 					"recall.unknown.message=$1 withdrew a message\n" +
@@ -176,6 +181,7 @@ public class LanguageUtil {
 					"recall.others.unknown.message=$1 withdrew a message for [$2]\n" +
 					"command.stop=Turn off the robot\n" +
 					"command.friend.list=Get the current robot friend list\n" +
+					"command.language=Change the language of MiraiBot\n" +
 					"command.group.list=Get the list of current chat group members\n" +
 					"command.help=Show all MiraiBot commands\n" +
 					"command.send=Send messages to friends (support Mirai code)\n" +
