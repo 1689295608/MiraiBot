@@ -211,7 +211,7 @@ public class PluginMain {
 						LogUtil.clear();
 						LogUtil.messages = new StringBuilder();
 						EventListener.messages = new ArrayList<>();
-						LogUtil.log("Console cleared");
+						LogUtil.log(ConfigUtil.getLanguage("console.cleared"));
 						break;
 					case "help":
 						String help = "· --------====== MiraiBot ======-------- ·\n" +
