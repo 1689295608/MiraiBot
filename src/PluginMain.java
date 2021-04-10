@@ -5,9 +5,7 @@ import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageSource;
-import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.message.data.QuoteReply;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 
@@ -152,7 +150,6 @@ public class PluginMain {
 								.replaceAll("\\$2", String.valueOf(bot.getId())));
 						scanner.close();
 						bot.close();
-						LogUtil.Exit();
 						System.out.println();
 						System.exit(0);
 						break command;
