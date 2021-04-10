@@ -25,7 +25,11 @@ public class LogUtil {
 					return;
 				}
 			}
-			file = new File("logs" + File.separator + time + ".log");
+			int i = 1;
+			while (new File("logs" + File.separator + time + "-" + i + ".log").exists()) {
+				i++;
+			}
+			file = new File("logs" + File.separator + time + "-" + i + ".log");
 			if (!file.exists()) {
 				if (!file.createNewFile()) {
 					System.out.println(time + ConfigUtil.getLanguage("failed.create.config"));
@@ -51,6 +55,7 @@ public class LogUtil {
 	 * @param str What to output
 	 */
 	public static void log(String str) {
+		if (str == null) return;
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
 			Date date = new Date(System.currentTimeMillis());
@@ -61,33 +66,13 @@ public class LogUtil {
 			String[] allLine = str.split("\n");
 			byte[] add = new byte[0];
 			for (String s : allLine) {
-				try {
-					clear();
-				} catch (InterruptedException ignored) { }
-				messages.append("\n").append(str.startsWith(">") ? "" : time).append(s);
+				clear();
+				messages.append(messages.toString().isEmpty() ? "" : "\n").append(str.startsWith(">") ? "" : time).append(s);
 				System.out.println(messages.toString());
 				System.out.print("> ");
 				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
 			}
 			fos.write(byteMerger(all, add));
-			fos.flush();
-			fos.close();
-		} catch (IOException e) {
-			System.out.println(ConfigUtil.getLanguage("unknown.error"));
-			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
-			System.exit(-1);
-		}
-	}
-	/**
-	 * Shut down the log system and record a shutdown log
-	 */
-	public static void Exit() {
-		try {
-			FileInputStream fis = new FileInputStream(file);
-			all = fis.readAllBytes();
-			FileOutputStream fos = new FileOutputStream(file);
-			all = byteMerger(all, ("\n----=== MiraiBot Closed ===----\n\n").getBytes());
-			fos.write(all);
 			fos.flush();
 			fos.close();
 		} catch (IOException e) {
@@ -112,16 +97,16 @@ public class LogUtil {
 	
 	/**
 	 * Clear the console text
-	 * @throws IOException IOException
-	 * @throws InterruptedException InterruptedException
 	 */
-	public static void clear() throws IOException, InterruptedException {
-		System.console().flush();
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.contains("windows")) {
-			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-		} else if (os.contains("linux")) {
-			new ProcessBuilder("clear").inheritIO().start().waitFor();
-		}
+	public static void clear() {
+		try {
+			System.console().flush();
+			String os = System.getProperty("os.name").toLowerCase();
+			if (os.contains("windows")) {
+				new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+			} else if (os.contains("linux")) {
+				new ProcessBuilder("clear").inheritIO().start().waitFor();
+			}
+		} catch (Exception ignored) { }
 	}
 }
