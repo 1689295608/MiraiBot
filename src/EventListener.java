@@ -8,16 +8,80 @@ import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.code.MiraiCode;
+import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
+import net.mamoe.mirai.utils.ExternalResource;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class EventListener implements ListenerHost {
 	public static boolean showQQ;
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
+	public static ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
+	
+	@EventHandler
+	public void onGroupJoin(MemberJoinEvent event) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("joined.group")
+				.replaceAll("\\$1", event.getMember().getNameCard())
+				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
+				.replaceAll("\\$3", event.getGroup().getName())
+				.replaceAll("\\$4", String.valueOf(event.getGroupId()))
+		);
+	}
+	
+	@EventHandler
+	public void onGroupLeave(MemberLeaveEvent.Quit event) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("left.group")
+				.replaceAll("\\$1", event.getMember().getNick())
+				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
+				.replaceAll("\\$3", event.getGroup().getName())
+				.replaceAll("\\$4", String.valueOf(event.getGroupId()))
+		);
+	}
+	
+	@EventHandler
+	public void onGroupKick(MemberLeaveEvent.Kick event) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		Member operator = event.getOperator();
+		LogUtil.log(ConfigUtil.getLanguage("kick.group")
+				.replaceAll("\\$1", event.getMember().getNick())
+				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
+				.replaceAll("\\$3", operator != null ? operator.getNameCard() : event.getBot().getNick())
+				.replaceAll("\\$4", String.valueOf(operator != null ? operator.getId() : event.getBot().getId()))
+				.replaceAll("\\$5", event.getGroup().getName())
+				.replaceAll("\\$6", String.valueOf(event.getGroupId()))
+		);
+	}
+	
+	@EventHandler
+	public void onJoinRequest(MemberJoinRequestEvent event) {
+		if (event.getGroup() == null) return;
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		requests.add(event);
+		LogUtil.log("[" + requests.size() + "] " + ConfigUtil.getLanguage("join.request.group")
+				.replaceAll("\\$1", event.getFromNick())
+				.replaceAll("\\$2", String.valueOf(event.getFromId()))
+				.replaceAll("\\$3", event.getGroup().getName())
+				.replaceAll("\\$4", String.valueOf(event.getGroupId()))
+		);
+	}
 	
 	@EventHandler
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event) {
@@ -120,11 +184,6 @@ public class EventListener implements ListenerHost {
 	}
 	
 	@EventHandler
-	public void onImageUpload(BeforeImageUploadEvent event) {
-		LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
-	}
-	
-	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
 		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
@@ -207,10 +266,7 @@ public class EventListener implements ListenerHost {
 	}
 	
 	public String showQQ(Long qq) {
-		if (showQQ) {
-			return "(" + qq + ")";
-		}
-		return "";
+		return showQQ ? "(" + qq + ")" : "";
 	}
 	
 	/**
@@ -236,6 +292,19 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%flash_id%", spl[1].equals("flash") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
 		str = str.replaceAll("%image_id%", spl[1].equals("image") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
 		str = str.replaceAll("%file_id%", spl[1].equals("file") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
+		try {
+			URL url = new URL(event.getSender().getAvatarUrl());
+			InputStream is = url.openStream();
+			BufferedInputStream bis = new BufferedInputStream(is);
+			byte[] avatar = bis.readAllBytes();
+			ExternalResource externalResource = ExternalResource.create(avatar);
+			Image img = event.getGroup().uploadImage(externalResource);
+			externalResource.close();
+			String[] imgSpl = img.serializeToMiraiCode().split(":");
+			str = str.replaceAll("%sender_avatarId%", imgSpl[2].substring(0, imgSpl[2].indexOf("]")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return str;
 	}
 }
