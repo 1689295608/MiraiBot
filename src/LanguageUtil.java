@@ -22,6 +22,7 @@ public class LanguageUtil {
 					"now.group=当前进入的聊群为：$1 ($2)\n" +
 					"stopping.bot=正在关闭机器人：$1 ($2)\n" +
 					"please.restart=请重新启动 MiraiBot\n" +
+					"console.cleared=已清除控制台！\n" +
 					"bot=机器人\n" +
 					"not.user=无法获取该用户！\n" +
 					"not.friend=你没有这个好友！\n" +
@@ -102,6 +103,7 @@ public class LanguageUtil {
 					"now.group=當前進入的聊群為：$1 ($2)\n" +
 					"stopping.bot=正在關閉機器人：$1 ($2)\n" +
 					"please.restart=請重新啓動 MiraiBot\n" +
+					"console.cleared=已清除控制臺！\n" +
 					"bot=機器人\n" +
 					"not.user=無法獲取該用戶！\n" +
 					"not.friend=你沒有這個好友！\n" +
@@ -182,6 +184,7 @@ public class LanguageUtil {
 					"now.group=The currently entered chat group is: $1 ($2)\n" +
 					"stopping.bot=Closing robot: $1 ($2)\n" +
 					"please.restart=Please restart the MiraiBot\n" +
+					"console.cleared=Console cleared!\n" +
 					"bot=Robot\n" +
 					"not.user=Unable to get the user!\n" +
 					"not.friend=You don't have this friend!\n" +
