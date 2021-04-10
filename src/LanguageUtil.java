@@ -9,13 +9,11 @@ public class LanguageUtil {
 			return ("# 中文（简体）\n" +
 					"config.error=配置文件出现错误，请检查配置文件后再试！\n" +
 					"qq.password.not.exits=请填写配置文件的 QQ号 与 密码！\n" +
-					"api.param.not.exits=请填写配置文件的 API 与 Param！\n" +
 					"failed.create.config=创建配置文件失败！\n" +
-					"failed.post.url=发送 POST 请求失败！\n" +
-					"failed.check.update=检测更新失败！\n" +
+					"failed.check.update=检测更新失败！（$1，$2）\n" +
 					"found.new.update=发现新版本：$1\n" +
 					"checking.update=正在检测更新...\n" +
-					"already.latest.version=已是最新版本！\n" +
+					"already.latest.version=已是最新版本！（$1）\n" +
 					"trying.login=正在尝试使用$1登录, 稍后可能会出现验证码弹窗...\n" +
 					"registering.event=正在注册事件...\n" +
 					"login.success=登录成功，您的昵称是：$1\n" +
@@ -56,7 +54,7 @@ public class LanguageUtil {
 					"command.reply=回复一条消息\n" +
 					"command.recall=撤回一个消息\n" +
 					"command.image=向当前聊群发送图片\n" +
-					"command.up.img=上传一个图片到服务器并获取到ID\n" +
+					"command.up.img=上传一个图片到服务器并获取到图片信息\n" +
 					"command.up.clip.img=上传当前剪切板的图片\n" +
 					"command.new.img=创建并上传一个图片\n" +
 					"command.del=删除一个好友\n" +
@@ -75,12 +73,10 @@ public class LanguageUtil {
 			return ("# 中文（繁體）\n" +
 					"config.error=配置文件出現錯誤，請檢查配置文件後再試！\n" +
 					"qq.password.not.exits=請填寫配置文件的 QQ號 與 密碼！\n" +
-					"api.param.not.exits=請填寫配置文件的 API 與 Param！\n" +
 					"failed.create.config=創建配置文件失敗！\n" +
-					"failed.post.url=發送 POST 請求失敗！\n" +
-					"failed.check.update=檢測更新失敗！\n" +
+					"failed.check.update=檢測更新失敗！（$1，$2）\n" +
 					"checking.update=正在檢測更新...\n" +
-					"already.latest.version=已是最新版本！\n" +
+					"already.latest.version=已是最新版本！（$1）\n" +
 					"found.new.update=發現新版本：$1\n" +
 					"trying.login=正在嘗試使用$1登錄, 稍後可能會出現驗證碼彈窗...\n" +
 					"registering.event=正在註冊事件...\n" +
@@ -122,7 +118,7 @@ public class LanguageUtil {
 					"command.reply=回復一條消息\n" +
 					"command.recall=撤回一個消息\n" +
 					"command.image=向當前聊群發送圖片\n" +
-					"command.up.img=上傳一個圖片到服務器並獲取到ID\n" +
+					"command.up.img=上傳一個圖片到服務器並獲取到圖片信息\n" +
 					"command.up.clip.img=上傳當前剪切板的圖片\n" +
 					"command.new.img=創建並上傳一個圖片\n" +
 					"command.del=刪除一個好友\n" +
@@ -141,12 +137,10 @@ public class LanguageUtil {
 			return ("# English (" + language + ")\n" +
 					"config.error=An error occurred in the configuration file, please check the configuration file and try again!\n" +
 					"qq.password.not.exits=Please fill in the QQ number and password of the configuration file!\n" +
-					"api.param.not.exits=Please fill in the API and Param of the configuration file!\n" +
 					"failed.create.config=Failed to create configuration file!\n" +
-					"failed.post.url=Failed to send POST request!\n" +
-					"failed.check.update=Failed to detect update!\n" +
+					"failed.check.update=Failed to detect update! ($1，$2)\n" +
 					"checking.update=Detecting update...\n" +
-					"already.latest.version=Already the latest version!\n" +
+					"already.latest.version=Already the latest version! ($1)\n" +
 					"found.new.update=New version found: $1\n" +
 					"trying.login=Trying to log in with $1, a verification code pop-up window may appear later...\n" +
 					"registering.event=Registering event...\n" +
@@ -188,7 +182,7 @@ public class LanguageUtil {
 					"command.reply=Reply to a message\n" +
 					"command.recall=Recall a message\n" +
 					"command.image=Send a picture to the current chat group\n" +
-					"command.up.img=Upload a picture to the server and get the ID\n" +
+					"command.up.img=Upload a picture to the server and get the picture information\n" +
 					"command.up.clip.img=Upload a picture of the current clipboard\n" +
 					"command.new.img=Create and upload an image\n" +
 					"command.del=Delete a friend\n" +
