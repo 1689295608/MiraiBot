@@ -15,7 +15,6 @@ import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,19 +23,25 @@ import java.util.Scanner;
 
 public class PluginMain {
 	public static Group group;
+	public static String language = Locale.getDefault().getLanguage();
 	
 	public static void main(String[] args) {
 		LogUtil.init();
-		LogUtil.log(Locale.getDefault().getLanguage().equals("zh") ?
-				"MiraiBot 基于 Mirai-Core. 版权所有 (C) WindowX 2021" : "MiraiBot based Mirai-Core. Copyright (C) WindowX 2021");
+		try {
+			String version = new String(PluginMain.class.getResourceAsStream("Version").readAllBytes());
+			LogUtil.log(language.equals("zh") ?
+					"MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" : "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		File languageFile = new File("language.properties");
 		try {
 			if (!languageFile.exists()) {
 				if (!languageFile.createNewFile()) {
-					LogUtil.log(Locale.getDefault().getLanguage().equals("zh") ? "无法创建配置文件！" : "Unable to create configuration file!");
+					LogUtil.log(language.equals("zh") ? "无法创建配置文件！" : "Unable to create configuration file!");
 				} else {
 					FileOutputStream fos = new FileOutputStream(languageFile);
-					fos.write(LanguageUtil.languageFile(Locale.getDefault().getLanguage()));
+					fos.write(LanguageUtil.languageFile(language));
 					fos.flush();
 					fos.close();
 				}
@@ -53,7 +58,7 @@ public class PluginMain {
 		}
 		if (ConfigUtil.getConfig("checkUpdate") != null && ConfigUtil.getConfig("checkUpdate").equals("true")) {
 			LogUtil.log(ConfigUtil.getLanguage("checking.update"));
-			checkUpdate();
+			checkUpdate(null);
 		}
 		String qq = ConfigUtil.getConfig("qq");
 		String password = ConfigUtil.getConfig("password");
@@ -500,26 +505,32 @@ public class PluginMain {
 	
 	/**
 	 * Check if there is a new release
+	 * @param u URL
 	 */
-	public static void checkUpdate() {
+	public static void checkUpdate(String u) {
 		try {
 			HttpURLConnection connection;
 			URL url;
-			try {
-				url = new URL("https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
-				connection = getHttpURLConnection(url);
-				connection.connect();
-			} catch (UnknownHostException e) {
-				url = new URL("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+			if (u == null) {
+				try {
+					url = new URL("https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+					connection = getHttpURLConnection(url);
+					connection.connect();
+				} catch (IOException e) {
+					url = new URL("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+					connection = getHttpURLConnection(url);
+					connection.connect();
+				}
+			} else {
+				url = new URL(u);
 				connection = getHttpURLConnection(url);
 				connection.connect();
 			}
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 			StringBuilder sb = new StringBuilder();
 			String line;
-			while ((line = in.readLine()) != null) {
+			while ((line = in.readLine()) != null)
 				sb.append(line);
-			}
 			int LatestVersion = Integer.parseInt(sb.toString().replaceAll("\\.", ""));
 			/* 注：这里的 ”Version“ 文件是打包时放入的当前版本文件，并未更新于 Github，特此申明！ */
 			int ThisVersion = Integer.parseInt(new String(PluginMain.class.getResourceAsStream("Version").readAllBytes()).replaceAll("\\.", ""));
@@ -528,10 +539,17 @@ public class PluginMain {
 						.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + sb)
 				);
 			} else {
-				LogUtil.log(ConfigUtil.getLanguage("already.latest.version"));
+				LogUtil.log(ConfigUtil.getLanguage("already.latest.version").replaceAll("\\$1", sb.toString()));
 			}
 		} catch (Exception e) {
-			LogUtil.log(ConfigUtil.getLanguage("failed.check.update"));
+			if (e.getMessage().equals("Read timed out")) {
+				checkUpdate("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+			} else {
+				LogUtil.log(ConfigUtil.getLanguage("failed.check.update")
+						.replaceAll("\\$1", String.valueOf(e.getCause()))
+						.replaceAll("\\$2", e.getMessage())
+				);
+			}
 		}
 	}
 	
@@ -543,9 +561,8 @@ public class PluginMain {
 	 */
 	public static HttpURLConnection getHttpURLConnection(URL url) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(5000);
-		connection.setReadTimeout(15000);
-		connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+		connection.setConnectTimeout(3000);
+		connection.setReadTimeout(5000);
 		return connection;
 	}
 	
