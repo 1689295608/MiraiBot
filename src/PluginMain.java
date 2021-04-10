@@ -216,38 +216,38 @@ public class PluginMain {
 					case "help":
 						String help = "· --------====== MiraiBot ======-------- ·\n" +
 								"accept <" + ConfigUtil.getLanguage("request.id") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.accept\n") +
+								" - " + ConfigUtil.getLanguage("command.accept") + "\n" +
 								"avatar <" + ConfigUtil.getLanguage("qq") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.avatar\n") +
+								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
 								"del <" + ConfigUtil.getLanguage("qq") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.del\n") +
+								" - " + ConfigUtil.getLanguage("command.del") + "\n" +
 								"friendList\n" +
-								" - " + ConfigUtil.getLanguage("command.friend.list\n") +
+								" - " + ConfigUtil.getLanguage("command.friend.list") + "\n" +
 								"groupList\n" +
-								" - " + ConfigUtil.getLanguage("command.group.list\n") +
+								" - " + ConfigUtil.getLanguage("command.group.list") + "\n" +
 								"help\n" +
-								" - " + ConfigUtil.getLanguage("command.help\n") +
+								" - " + ConfigUtil.getLanguage("command.help") + "\n" +
 								"image <" + ConfigUtil.getLanguage("file.path") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.image\n") +
+								" - " + ConfigUtil.getLanguage("command.image") + "\n" +
 								"kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.avatar\n") +
+								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
 								"language <" + ConfigUtil.getLanguage("language") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.language\n") +
-								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height\n") + "> <" +
+								" - " + ConfigUtil.getLanguage("command.language") + "\n" +
+								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "\n" + "> <" +
 								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">" +
-								" - " + ConfigUtil.getLanguage("command.new.img\n") +
+								" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
 								"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.reply\n") +
+								" - " + ConfigUtil.getLanguage("command.reply") + "\n" +
 								"recall <" + ConfigUtil.getLanguage("message.id") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.recall\n") +
+								" - " + ConfigUtil.getLanguage("command.recall") + "\n" +
 								"send <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.send\n") +
+								" - " + ConfigUtil.getLanguage("command.send") + "\n" +
 								"stop\n" +
-								" - " + ConfigUtil.getLanguage("command.stop\n") +
+								" - " + ConfigUtil.getLanguage("command.stop") + "\n" +
 								"upClipImg\n" +
-								" - " + ConfigUtil.getLanguage("command.up.clip.img\n") +
+								" - " + ConfigUtil.getLanguage("command.up.clip.img") + "\n" +
 								"upImg <" + ConfigUtil.getLanguage("file.path") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.up.img\n") +
+								" - " + ConfigUtil.getLanguage("command.up.img") + "\n" +
 								"· -------------------------------------- ·\n";
 						LogUtil.log(help);
 						break;
