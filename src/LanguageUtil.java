@@ -43,7 +43,7 @@ public class LanguageUtil {
 					"recalled=已撤回该消息！\n" +
 					"kicked=已踢出该成员！\n" +
 					"failed.recall=无法撤回该消息！\n" +
-					"no.permission=该消息不是你发出的且你不是管理员！\n" +
+					"no.permission=你没有足够的权限进行该操作！\n" +
 					"qq.password.error=请检查配置文件中的 QQ号 是否正确！\n" +
 					"success.change.language=成功修改语言为 简体中文\n" +
 					"up.loading.img=正在上传图片...\n" +
@@ -124,7 +124,7 @@ public class LanguageUtil {
 					"recalled=已撤回該消息！\n" +
 					"kicked=已踢出該成員！\n" +
 					"failed.recall=無法撤回該消息！\n" +
-					"no.permission=該消息不是你發出的且你不是管理員！\n" +
+					"no.permission=你沒有足夠的權限進行該操作！\n" +
 					"qq.password.error=請檢查配置文件中的 QQ號 是否正確！\n" +
 					"success.change.language=成功修改語言為 繁體中文\n" +
 					"up.loading.img=正在上傳圖片...\n" +
@@ -205,7 +205,7 @@ public class LanguageUtil {
 					"recalled=The message has been withdrawn!\n" +
 					"kicked=The member has been kicked out!\n" +
 					"failed.recall=The message cannot be retracted!\n" +
-					"no.permission=The message was not sent by you and you are not an administrator!\n" +
+					"no.permission=You do not have sufficient permissions to perform this operation!\n" +
 					"qq.password.error=Please check whether the QQ number in the configuration file is correct!\n" +
 					"success.change.language=Successfully changed the language to English\n" +
 					"up.loading.img=Uploading Image...\n" +
