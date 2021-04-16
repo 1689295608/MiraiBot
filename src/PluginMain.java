@@ -245,7 +245,7 @@ public class PluginMain {
 								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
 								"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.language") + "\n" +
-								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "\n" + "> <" +
+								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
 								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">" +
 								" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
 								"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
