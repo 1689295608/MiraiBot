@@ -16,22 +16,32 @@ import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class PluginMain {
-	public static Group group;
+	public static Group group = null;
 	public static final String language = Locale.getDefault().getLanguage();
 	
 	public static void main(String[] args) {
 		LogUtil.init();
 		try {
-			String version = new String(PluginMain.class.getResourceAsStream("Version").readAllBytes());
-			LogUtil.log(language.equals("zh") ?
-					"MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" : "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021");
+			InputStream stream = PluginMain.class.getResourceAsStream("Version");
+			String version = "ERROR";
+			if (stream != null) {
+				version = new String(stream.readAllBytes());
+			}
+			String copyRight;
+			if (language.equals("zh")) {
+				copyRight = "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021";
+			} else if (language.equals("tw")) {
+				copyRight = "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021";
+			} else {
+				copyRight = "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021";
+			}
+			LogUtil.log(copyRight);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,7 +92,10 @@ public class PluginMain {
 					System.exit(-1);
 				}
 				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
-				fos.write(PluginMain.class.getResourceAsStream("AutoRespond.ini").readAllBytes());
+				InputStream stream = PluginMain.class.getResourceAsStream("AutoRespond.ini");
+				if (stream != null) {
+					fos.write(stream.readAllBytes());
+				}
 				fos.flush();
 				fos.close();
 			} catch (IOException e) {
@@ -121,10 +134,9 @@ public class PluginMain {
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
-			group = null;
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
-			} else if (!inGroup(bot, Long.parseLong(groupId))) {
+			} else if (!bot.getGroups().contains(Long.parseLong(groupId))) {
 				LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groupId));
 			} else {
 				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
@@ -233,7 +245,7 @@ public class PluginMain {
 								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
 								"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.language") + "\n" +
-								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
+								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "\n" + "> <" +
 								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">" +
 								" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
 								"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
@@ -332,25 +344,6 @@ public class PluginMain {
 							LogUtil.log(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
 						}
 						break;
-						/*
-					case "nudge":
-						if (cmd.length > 1) {
-							try {
-								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
-								if (friend != null) {
-									friend.nudge().sendTo(friend);
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("not.friend"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("not.qq"));
-							}
-						}
-						break;
-						
-						暂不使用，等以后再测试
-						
-						 */
 					case "image":
 						if (cmd.length > 1) {
 							try {
@@ -558,7 +551,7 @@ public class PluginMain {
 					connection = getHttpURLConnection(url);
 					connection.connect();
 				} catch (IOException e) {
-					url = new URL("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+					url = new URL("https://raw.fastgit.org/1689295608/MiraiBot/main/LatestVersion");
 					connection = getHttpURLConnection(url);
 					connection.connect();
 				}
@@ -567,15 +560,19 @@ public class PluginMain {
 				connection = getHttpURLConnection(url);
 				connection.connect();
 			}
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), System.getProperty("sun.jnu.encoding")));
 			StringBuilder sb = new StringBuilder();
 			String line;
 			while ((line = in.readLine()) != null)
 				sb.append(line);
 			int LatestVersion = Integer.parseInt(sb.toString().replaceAll("\\.", ""));
-			/* 注：这里的 ”Version“ 文件是打包时放入的当前版本文件，并未更新于 Github，特此申明！ */
-			int ThisVersion = Integer.parseInt(new String(PluginMain.class.getResourceAsStream("Version").readAllBytes()).replaceAll("\\.", ""));
-			if (ThisVersion < LatestVersion) {
+			InputStream stream = PluginMain.class.getResourceAsStream("Version");
+			String version = "0.0.0";
+			if (stream != null) {
+				version = new String(stream.readAllBytes());
+			}
+			int ThisVersion = Integer.parseInt(version.replaceAll("\\.", ""));
+			if (ThisVersion < LatestVersion || ThisVersion <= 0) {
 				LogUtil.log(ConfigUtil.getLanguage("found.new.update")
 						.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + sb)
 				);
@@ -583,8 +580,8 @@ public class PluginMain {
 				LogUtil.log(ConfigUtil.getLanguage("already.latest.version").replaceAll("\\$1", sb.toString()));
 			}
 		} catch (Exception e) {
-			if (e.getMessage().equals("Read timed out")) {
-				checkUpdate("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
+			if (e.getMessage().contains("Read timed out")) {
+				checkUpdate("https://raw.fastgit.org/1689295608/MiraiBot/main/LatestVersion");
 			} else {
 				LogUtil.log(ConfigUtil.getLanguage("failed.check.update")
 						.replaceAll("\\$1", e.toString())
@@ -618,22 +615,6 @@ public class PluginMain {
 		LogUtil.log("MD5: " + Arrays.toString(MessageUtils.calculateImageMd5(image)));
 		LogUtil.log("MiraiCode: " + image.serializeToMiraiCode());
 		LogUtil.log("· -------------------------------- ·");
-	}
-	
-	/**
-	 * Whether the robot is in the group
-	 * @param bot Bot
-	 * @param groupId Group ID
-	 * @return Whether the robot is in the group
-	 */
-	public static boolean inGroup(Bot bot, Long groupId) {
-		ContactList<Group> groups = bot.getGroups();
-		for (Group g : groups) {
-			if (g.getId() == groupId) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	/**
