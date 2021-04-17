@@ -66,12 +66,21 @@ public class LogUtil {
 			String[] allLine = str.split("\n");
 			byte[] add = new byte[0];
 			for (String s : allLine) {
+				messages.append(messages.toString().isEmpty() ? "" : "\n").append(str.startsWith(">") ? "" : time).append(s);
+				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
+			}
+			clear();
+			System.out.println(messages.toString());
+			System.out.print("> ");
+			/* 旧的输出系统，以后可能有用...
+			for (String s : allLine) {
 				clear();
 				messages.append(messages.toString().isEmpty() ? "" : "\n").append(str.startsWith(">") ? "" : time).append(s);
 				System.out.println(messages.toString());
 				System.out.print("> ");
 				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
 			}
+			 */
 			fos.write(byteMerger(all, add));
 			fos.flush();
 			fos.close();
