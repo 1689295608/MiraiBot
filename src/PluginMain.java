@@ -11,6 +11,7 @@ import net.mamoe.mirai.message.data.MessageUtils;
 import net.mamoe.mirai.message.data.QuoteReply;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
+import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
@@ -113,6 +114,7 @@ public class PluginMain {
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
+			
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
 			} else if (!bot.getGroups().contains(Long.parseLong(groupId))) {
@@ -600,7 +602,7 @@ public class PluginMain {
 	}
 	
 	public static void loadAutoRespond() {
-		EventListener.autoRespond = new File("AutoRespond.ini");
+		EventListener.autoRespond = new File("AutoRespond.json");
 		if (!EventListener.autoRespond.exists()) {
 			try {
 				if (!EventListener.autoRespond.createNewFile()) {
@@ -608,7 +610,7 @@ public class PluginMain {
 					System.exit(-1);
 				}
 				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
-				InputStream stream = PluginMain.class.getResourceAsStream("AutoRespond.ini");
+				InputStream stream = PluginMain.class.getResourceAsStream("AutoRespond.json");
 				if (stream != null) {
 					fos.write(stream.readAllBytes());
 				}
@@ -620,7 +622,11 @@ public class PluginMain {
 				System.exit(-1);
 			}
 		}
-		IniUtil.loadData(EventListener.autoRespond);
+		try {
+			EventListener.autoRespondConfig = new JSONObject(new String(new FileInputStream(EventListener.autoRespond).readAllBytes()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
