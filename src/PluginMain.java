@@ -24,9 +24,11 @@ import java.util.Scanner;
 public class PluginMain {
 	public static Group group = null;
 	public static final String language = Locale.getDefault().getLanguage();
+	public static Bot bot;
 	
 	public static void main(String[] args) {
 		LogUtil.init();
+		ConfigUtil.init();
 		try {
 			InputStream stream = PluginMain.class.getResourceAsStream("Version");
 			String version = "ERROR";
@@ -118,7 +120,7 @@ public class PluginMain {
 			} else {
 				miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
 			}
-			Bot bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq), password, new BotConfiguration() {{
+			bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq), password, new BotConfiguration() {{
 				fileBasedDeviceInfo();
 				setProtocol(miraiProtocol);
 				noNetworkLog();
@@ -246,7 +248,7 @@ public class PluginMain {
 								"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.language") + "\n" +
 								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
-								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">" +
+								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
 								"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.reply") + "\n" +
@@ -269,7 +271,7 @@ public class PluginMain {
 							for (int i = 2; i < cmd.length; i++) {
 								tmp.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
 							}
-							try { // String 转换到 Integer 如果不是数字居然还会抛出错误，气死我了！！
+							try {
 								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
 								if (friend != null) {
 									friend.sendMessage(MiraiCode.deserializeMiraiCode(tmp.toString()));
