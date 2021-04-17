@@ -128,400 +128,15 @@ public class PluginMain {
 				System.exit(-1);
 			}
 			Scanner scanner = new Scanner(System.in);
-			command: while (true) {
+			while (true) {
 				String msg;
 				if (!scanner.hasNextLine()) continue;
 				msg = scanner.nextLine();
 				LogUtil.log("> " + msg);
-				String[] cmd = msg.split(" ");
 				if (msg.length() <= 0) continue;
-				switch (cmd[0]) {
-					case "stop":
-						LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
-								.replaceAll("\\$1", bot.getNick())
-								.replaceAll("\\$2", String.valueOf(bot.getId())));
-						scanner.close();
-						bot.close();
-						System.out.println();
-						System.exit(0);
-						break command;
-					case "reload":
-						ConfigUtil.init();
-						loadAutoRespond();
-						LogUtil.log(ConfigUtil.getLanguage("reloaded"));
-						break;
-					case "friendList": {
-						ContactList<Friend> friends = bot.getFriends();
-						StringBuilder out = new StringBuilder();
-						int c = 1;
-						for (Friend f : friends) {
-							out.append(c).append(". ").append(f.getNick()).append(" (").append(f.getId()).append(")")
-									.append((f.getId() == bot.getId() ? " (" + ConfigUtil.getLanguage("bot") + ")\n" : "\n"));
-							c++;
-						}
-						LogUtil.log(out.toString());
-						break;
-					}
-					case "groupList": {
-						ContactList<NormalMember> members = group.getMembers();
-						StringBuilder out = new StringBuilder();
-						int c = 1;
-						for (NormalMember f : members) {
-							out.append(c).append(". ").append((f.getNameCard().isEmpty() ? f.getNick() : f.getNameCard()))
-									.append(" (").append(f.getId()).append(")").append("\n");
-							c++;
-						}
-						out.append(c).append(". ").append(bot.getNick()).append(" (").append(bot.getId()).append(")")
-								.append(" (").append(ConfigUtil.getLanguage("bot")).append(")\n");
-						LogUtil.log(out.toString());
-						break;
-					}
-					case "language":
-						if (cmd.length > 1) {
-							File now = new File("language.properties");
-							if (now.exists()) {
-								File bak = new File("language.properties.bak");
-								if (bak.exists()) {
-									if (!bak.delete()) {
-										bak.deleteOnExit();
-									}
-								}
-								if (bak.createNewFile()) {
-									FileOutputStream fos = new FileOutputStream(bak);
-									fos.write(new FileInputStream(now).readAllBytes());
-									fos.flush();
-									fos.close();
-								}
-							}
-							FileOutputStream fos = new FileOutputStream(now);
-							fos.write(LanguageUtil.languageFile(cmd[1]));
-							fos.flush();
-							fos.close();
-							LogUtil.log(ConfigUtil.getLanguage("success.change.language"));
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": language <" + ConfigUtil.getLanguage("language") + ">");
-						}
-						break;
-					case "clear":
-						LogUtil.clear();
-						LogUtil.messages = new StringBuilder();
-						EventListener.messages = new ArrayList<>();
-						LogUtil.log(ConfigUtil.getLanguage("console.cleared"));
-						break;
-					case "help":
-						String help = "· --------====== MiraiBot ======-------- ·\n" +
-								"accept <" + ConfigUtil.getLanguage("request.id") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.accept") + "\n" +
-								
-								"avatar <" + ConfigUtil.getLanguage("qq") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
-								
-								"del <" + ConfigUtil.getLanguage("qq") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.del") + "\n" +
-								
-								"friendList\n" +
-								" - " + ConfigUtil.getLanguage("command.friend.list") + "\n" +
-								
-								"groupList\n" +
-								" - " + ConfigUtil.getLanguage("command.group.list") + "\n" +
-								
-								"help\n" +
-								" - " + ConfigUtil.getLanguage("command.help") + "\n" +
-								
-								"image <" + ConfigUtil.getLanguage("file.path") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.image") + "\n" +
-								
-								"kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
-								
-								"language <" + ConfigUtil.getLanguage("language") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.language") + "\n" +
-								
-								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
-								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
-								
-								"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.reply") + "\n" +
-								
-								"recall <" + ConfigUtil.getLanguage("message.id") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.recall") + "\n" +
-								
-								"send <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.send") + "\n" +
-								
-								"stop\n" +
-								" - " + ConfigUtil.getLanguage("command.stop") + "\n" +
-								
-								"upClipImg\n" +
-								" - " + ConfigUtil.getLanguage("command.up.clip.img") + "\n" +
-								
-								"upImg <" + ConfigUtil.getLanguage("file.path") + ">\n" +
-								" - " + ConfigUtil.getLanguage("command.up.img") + "\n" +
-								"· -------------------------------------- ·\n";
-						LogUtil.log(help);
-						break;
-					case "send":
-						if (cmd.length > 2) {
-							StringBuilder tmp = new StringBuilder();
-							for (int i = 2; i < cmd.length; i++) {
-								tmp.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
-							}
-							try {
-								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
-								if (friend != null) {
-									friend.sendMessage(MiraiCode.deserializeMiraiCode(tmp.toString()));
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("not.friend"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("not.qq")
-										.replaceAll("\\$1", cmd[1]));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": send <" +
-									ConfigUtil.getLanguage("qq") +
-									"> <" + ConfigUtil.getLanguage("contents") + ">");
-						}
-						break;
-					case "kick":
-						if (cmd.length > 2) {
-							try {
-								NormalMember member = null;
-								for (NormalMember m : group.getMembers()) {
-									if (String.valueOf(m.getId()).equals(cmd[1])) {
-										member = m;
-									}
-								}
-								if (member != null) {
-									if (group.getBotPermission() != MemberPermission.MEMBER && member.getPermission() != MemberPermission.OWNER) {
-										member.kick(cmd[2]);
-										LogUtil.log(ConfigUtil.getLanguage("kicked"));
-									} else {
-										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
-									}
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("not.user"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("not.qq")
-										.replaceAll("\\$1", cmd[1]));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": kick <" + ConfigUtil.getLanguage("qq") + "> <" +
-									ConfigUtil.getLanguage("reason") + ">");
-						}
-						break;
-					case "avatar":
-						if (cmd.length > 1) {
-							try {
-								Stranger stranger = bot.getStranger(Integer.parseInt(cmd[1]));
-								for (Member m : group.getMembers()) {
-									if (String.valueOf(m.getId()).equals(cmd[1])) {
-										stranger = m.getBot().getAsStranger();
-									}
-								}
-								if (stranger != null || cmd[1].equals(String.valueOf(bot.getId()))) {
-									URL url = new URL((stranger != null ? stranger : bot).getAvatarUrl());
-									InputStream is = url.openStream();
-									BufferedInputStream bis = new BufferedInputStream(is);
-									byte[] avatar = bis.readAllBytes();
-									ExternalResource externalResource = ExternalResource.create(avatar);
-									LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
-									Image img = group.uploadImage(externalResource);
-									externalResource.close();
-									imageInfo(bot, img);
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("not.user"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("not.qq")
-										.replaceAll("\\$1", cmd[1]));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
-						}
-						break;
-					case "image":
-						if (cmd.length > 1) {
-							try {
-								File file = new File(msg.substring(6));
-								ExternalResource externalResource = ExternalResource.create(file);
-								LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
-								Image img = group.uploadImage(externalResource);
-								group.sendMessage(img);
-								LogUtil.log(bot.getNick() + " : " +
-										(ConfigUtil.getConfig("debug").equals("true") ? img.serializeToMiraiCode() : img.contentToString()));
-								externalResource.close();
-								imageInfo(bot, img);
-							} catch (IOException e) {
-								LogUtil.log(ConfigUtil.getLanguage("file.error"));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": image <" +
-									ConfigUtil.getLanguage("file.path") + ">");
-						}
-						break;
-					case "upImg":
-						if (cmd.length > 1) {
-							File file = new File(msg.substring(6));
-							ExternalResource externalResource = ExternalResource.create(file);
-							Image img = group
-									.uploadImage(externalResource);
-							externalResource.close();
-							imageInfo(bot, img);
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": upImg <" +
-									ConfigUtil.getLanguage("file.path") + ">");
-						}
-						break;
-					case "upClipImg":
-						byte[] clip = ClipboardUtil.getImageFromClipboard();
-						if (clip != null) {
-							ExternalResource externalResource = ExternalResource.create(clip);
-							LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
-							Image img = group.uploadImage(externalResource);
-							externalResource.close();
-							imageInfo(bot, img);
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("failed.clipboard"));
-						}
-						break;
-					case "newImg":
-						if (cmd.length > 4) {
-							try {
-								StringBuilder content = new StringBuilder();
-								for (int i = 4; i < cmd.length; i++) {
-									content.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
-								}
-								LogUtil.log(ConfigUtil.getLanguage("creating.word.image"));
-								byte[] file = WordToImage.createImage(content.toString(),
-										new Font(ConfigUtil.getConfig("font"), Font.PLAIN, Integer.parseInt(cmd[3])),
-										Integer.parseInt(cmd[1]), Integer.parseInt(cmd[2]));
-								ExternalResource externalResource = ExternalResource.create(file);
-								LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
-								Image img = group.uploadImage(externalResource);
-								externalResource.close();
-								imageInfo(bot, img);
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("width.height.error"));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") +
-									": newImg <" + ConfigUtil.getLanguage("width") +
-									"> <" + ConfigUtil.getLanguage("height") +
-									"> <" + ConfigUtil.getLanguage("font.size") +
-									"> <" + ConfigUtil.getLanguage("contents") +
-									">");
-						}
-						break;
-					case "del":
-						if (cmd.length > 1) {
-							try {
-								Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
-								if (friend != null) {
-									friend.delete();
-									LogUtil.log(ConfigUtil.getLanguage("delete.friend")
-											.replaceAll("\\$1", friend.getNick())
-											.replaceAll("\\$2", String.valueOf(friend.getId())));
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("not.friend"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("not.qq")
-										.replaceAll("\\$1", cmd[1]));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": del <QQ>");
-						}
-						break;
-					case "reply":
-						if (cmd.length > 2) {
-							try {
-								MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
-								StringBuilder content = new StringBuilder();
-								for (int i = 2; i < cmd.length; i++) {
-									content.append(cmd[i]);
-								}
-								if (message != null) {
-									group.sendMessage(new QuoteReply(message).plus(MiraiCode.deserializeMiraiCode(content.toString())));
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("message.id.error"));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": reply <" +
-									ConfigUtil.getLanguage("message.id") + "> <" +
-									ConfigUtil.getLanguage("contents") + ">");
-						}
-						break;
-					case "accept":
-						if (cmd.length > 1) {
-							try {
-								if (Integer.parseInt(cmd[1]) - 1 >= 0) {
-									MemberJoinRequestEvent request = EventListener.requests.get(Integer.parseInt(cmd[1]) - 1);
-									if (request != null) {
-										try {
-											request.accept();
-											LogUtil.log(ConfigUtil.getLanguage("accepted"));
-										} catch (Exception e) {
-											LogUtil.log(ConfigUtil.getLanguage("failed.accept"));
-										}
-									} else {
-										LogUtil.log(ConfigUtil.getLanguage("request.not.found"));
-									}
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("request.not.found"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("request.id.error"));
-							}
-						}
-						break;
-					case "recall":
-						if (cmd.length > 1) {
-							try {
-								if (Integer.parseInt(cmd[1]) - 1 >= 0) {
-									MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
-									if (message != null) {
-										if (message.getFromId() == message.getBotId()) {
-											try {
-												Mirai.getInstance().recallMessage(bot, message);
-												LogUtil.log(ConfigUtil.getLanguage("recalled"));
-											} catch (Exception e) {
-												LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
-											}
-										} else {
-											if (group.getBotPermission() != MemberPermission.MEMBER) {
-												try {
-													Mirai.getInstance().recallMessage(bot, message);
-													LogUtil.log(ConfigUtil.getLanguage("recalled"));
-												} catch (Exception e) {
-													LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
-												}
-											} else {
-												LogUtil.log(ConfigUtil.getLanguage("no.permission"));
-											}
-										}
-									} else {
-										LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
-									}
-								} else {
-									LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
-								}
-							} catch (NumberFormatException e) {
-								LogUtil.log(ConfigUtil.getLanguage("message.id.error"));
-							}
-						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": recall <" +
-									ConfigUtil.getLanguage("message.id") + ">");
-						}
-						break;
-					default:
-						group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
-						break;
+				if (runCommand(msg)) {
+					scanner.close();
+					break;
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -535,6 +150,402 @@ public class PluginMain {
 		}
 	}
 	
+	/**
+	 * Execute an instruction.
+	 * @param msg Message
+	 * @throws Exception Exception
+	 */
+	public static boolean runCommand(String msg) throws Exception {
+		String[] cmd = msg.split(" ");
+		switch (cmd[0]) {
+			case "stop":
+				LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
+						.replaceAll("\\$1", bot.getNick())
+						.replaceAll("\\$2", String.valueOf(bot.getId())));
+				bot.close();
+				System.out.println();
+				System.exit(0);
+				return true;
+			case "reload":
+				ConfigUtil.init();
+				loadAutoRespond();
+				LogUtil.log(ConfigUtil.getLanguage("reloaded"));
+				break;
+			case "friendList": {
+				ContactList<Friend> friends = bot.getFriends();
+				StringBuilder out = new StringBuilder();
+				int c = 1;
+				for (Friend f : friends) {
+					out.append(c).append(". ").append(f.getNick()).append(" (").append(f.getId()).append(")")
+							.append((f.getId() == bot.getId() ? " (" + ConfigUtil.getLanguage("bot") + ")\n" : "\n"));
+					c++;
+				}
+				LogUtil.log(out.toString());
+				break;
+			}
+			case "groupList": {
+				ContactList<NormalMember> members = group.getMembers();
+				StringBuilder out = new StringBuilder();
+				int c = 1;
+				for (NormalMember f : members) {
+					out.append(c).append(". ").append((f.getNameCard().isEmpty() ? f.getNick() : f.getNameCard()))
+							.append(" (").append(f.getId()).append(")").append("\n");
+					c++;
+				}
+				out.append(c).append(". ").append(bot.getNick()).append(" (").append(bot.getId()).append(")")
+						.append(" (").append(ConfigUtil.getLanguage("bot")).append(")\n");
+				LogUtil.log(out.toString());
+				break;
+			}
+			case "language":
+				if (cmd.length > 1) {
+					File now = new File("language.properties");
+					if (now.exists()) {
+						File bak = new File("language.properties.bak");
+						if (bak.exists()) {
+							if (!bak.delete()) {
+								bak.deleteOnExit();
+							}
+						}
+						if (bak.createNewFile()) {
+							FileOutputStream fos = new FileOutputStream(bak);
+							fos.write(new FileInputStream(now).readAllBytes());
+							fos.flush();
+							fos.close();
+						}
+					}
+					FileOutputStream fos = new FileOutputStream(now);
+					fos.write(LanguageUtil.languageFile(cmd[1]));
+					fos.flush();
+					fos.close();
+					LogUtil.log(ConfigUtil.getLanguage("success.change.language"));
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": language <" + ConfigUtil.getLanguage("language") + ">");
+				}
+				break;
+			case "clear":
+				LogUtil.clear();
+				LogUtil.messages = new StringBuilder();
+				EventListener.messages = new ArrayList<>();
+				LogUtil.log(ConfigUtil.getLanguage("console.cleared"));
+				break;
+			case "help":
+				String help = "· --------====== MiraiBot ======-------- ·\n" +
+						"accept <" + ConfigUtil.getLanguage("request.id") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.accept") + "\n" +
+						
+						"avatar <" + ConfigUtil.getLanguage("qq") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
+						
+						"del <" + ConfigUtil.getLanguage("qq") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.del") + "\n" +
+						
+						"friendList\n" +
+						" - " + ConfigUtil.getLanguage("command.friend.list") + "\n" +
+						
+						"groupList\n" +
+						" - " + ConfigUtil.getLanguage("command.group.list") + "\n" +
+						
+						"help\n" +
+						" - " + ConfigUtil.getLanguage("command.help") + "\n" +
+						
+						"image <" + ConfigUtil.getLanguage("file.path") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.image") + "\n" +
+						
+						"kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
+						
+						"language <" + ConfigUtil.getLanguage("language") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.language") + "\n" +
+						
+						"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
+						ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
+						
+						"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.reply") + "\n" +
+						
+						"recall <" + ConfigUtil.getLanguage("message.id") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.recall") + "\n" +
+						
+						"send <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.send") + "\n" +
+						
+						"stop\n" +
+						" - " + ConfigUtil.getLanguage("command.stop") + "\n" +
+						
+						"upClipImg\n" +
+						" - " + ConfigUtil.getLanguage("command.up.clip.img") + "\n" +
+						
+						"upImg <" + ConfigUtil.getLanguage("file.path") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.up.img") + "\n" +
+						"· -------------------------------------- ·\n";
+				LogUtil.log(help);
+				break;
+			case "send":
+				if (cmd.length > 2) {
+					StringBuilder tmp = new StringBuilder();
+					for (int i = 2; i < cmd.length; i++) {
+						tmp.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
+					}
+					try {
+						Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
+						if (friend != null) {
+							friend.sendMessage(MiraiCode.deserializeMiraiCode(tmp.toString()));
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("not.friend"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("not.qq")
+								.replaceAll("\\$1", cmd[1]));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": send <" +
+							ConfigUtil.getLanguage("qq") +
+							"> <" + ConfigUtil.getLanguage("contents") + ">");
+				}
+				break;
+			case "kick":
+				if (cmd.length > 2) {
+					try {
+						NormalMember member = null;
+						for (NormalMember m : group.getMembers()) {
+							if (String.valueOf(m.getId()).equals(cmd[1])) {
+								member = m;
+							}
+						}
+						if (member != null) {
+							if (group.getBotPermission() != MemberPermission.MEMBER && member.getPermission() != MemberPermission.OWNER) {
+								member.kick(cmd[2]);
+								LogUtil.log(ConfigUtil.getLanguage("kicked"));
+							} else {
+								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+							}
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("not.user"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("not.qq")
+								.replaceAll("\\$1", cmd[1]));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": kick <" + ConfigUtil.getLanguage("qq") + "> <" +
+							ConfigUtil.getLanguage("reason") + ">");
+				}
+				break;
+			case "avatar":
+				if (cmd.length > 1) {
+					try {
+						Stranger stranger = bot.getStranger(Integer.parseInt(cmd[1]));
+						for (Member m : group.getMembers()) {
+							if (String.valueOf(m.getId()).equals(cmd[1])) {
+								stranger = m.getBot().getAsStranger();
+							}
+						}
+						if (stranger != null || cmd[1].equals(String.valueOf(bot.getId()))) {
+							URL url = new URL((stranger != null ? stranger : bot).getAvatarUrl());
+							InputStream is = url.openStream();
+							BufferedInputStream bis = new BufferedInputStream(is);
+							byte[] avatar = bis.readAllBytes();
+							ExternalResource externalResource = ExternalResource.create(avatar);
+							LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+							Image img = group.uploadImage(externalResource);
+							externalResource.close();
+							imageInfo(bot, img);
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("not.user"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("not.qq")
+								.replaceAll("\\$1", cmd[1]));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
+				}
+				break;
+			case "image":
+				if (cmd.length > 1) {
+					try {
+						File file = new File(msg.substring(6));
+						ExternalResource externalResource = ExternalResource.create(file);
+						LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+						Image img = group.uploadImage(externalResource);
+						group.sendMessage(img);
+						LogUtil.log(bot.getNick() + " : " +
+								(ConfigUtil.getConfig("debug").equals("true") ? img.serializeToMiraiCode() : img.contentToString()));
+						externalResource.close();
+						imageInfo(bot, img);
+					} catch (IOException e) {
+						LogUtil.log(ConfigUtil.getLanguage("file.error"));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": image <" +
+							ConfigUtil.getLanguage("file.path") + ">");
+				}
+				break;
+			case "upImg":
+				if (cmd.length > 1) {
+					File file = new File(msg.substring(6));
+					ExternalResource externalResource = ExternalResource.create(file);
+					Image img = group
+							.uploadImage(externalResource);
+					externalResource.close();
+					imageInfo(bot, img);
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": upImg <" +
+							ConfigUtil.getLanguage("file.path") + ">");
+				}
+				break;
+			case "upClipImg":
+				byte[] clip = ClipboardUtil.getImageFromClipboard();
+				if (clip != null) {
+					ExternalResource externalResource = ExternalResource.create(clip);
+					LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+					Image img = group.uploadImage(externalResource);
+					externalResource.close();
+					imageInfo(bot, img);
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("failed.clipboard"));
+				}
+				break;
+			case "newImg":
+				if (cmd.length > 4) {
+					try {
+						StringBuilder content = new StringBuilder();
+						for (int i = 4; i < cmd.length; i++) {
+							content.append(cmd[i]).append(i == cmd.length - 1 ? "" : " ");
+						}
+						LogUtil.log(ConfigUtil.getLanguage("creating.word.image"));
+						byte[] file = WordToImage.createImage(content.toString(),
+								new Font(ConfigUtil.getConfig("font"), Font.PLAIN, Integer.parseInt(cmd[3])),
+								Integer.parseInt(cmd[1]), Integer.parseInt(cmd[2]));
+						ExternalResource externalResource = ExternalResource.create(file);
+						LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+						Image img = group.uploadImage(externalResource);
+						externalResource.close();
+						imageInfo(bot, img);
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("width.height.error"));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") +
+							": newImg <" + ConfigUtil.getLanguage("width") +
+							"> <" + ConfigUtil.getLanguage("height") +
+							"> <" + ConfigUtil.getLanguage("font.size") +
+							"> <" + ConfigUtil.getLanguage("contents") +
+							">");
+				}
+				break;
+			case "del":
+				if (cmd.length > 1) {
+					try {
+						Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
+						if (friend != null) {
+							friend.delete();
+							LogUtil.log(ConfigUtil.getLanguage("delete.friend")
+									.replaceAll("\\$1", friend.getNick())
+									.replaceAll("\\$2", String.valueOf(friend.getId())));
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("not.friend"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("not.qq")
+								.replaceAll("\\$1", cmd[1]));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": del <QQ>");
+				}
+				break;
+			case "reply":
+				if (cmd.length > 2) {
+					try {
+						MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
+						StringBuilder content = new StringBuilder();
+						for (int i = 2; i < cmd.length; i++) {
+							content.append(cmd[i]);
+						}
+						if (message != null) {
+							group.sendMessage(new QuoteReply(message).plus(MiraiCode.deserializeMiraiCode(content.toString())));
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("message.id.error"));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": reply <" +
+							ConfigUtil.getLanguage("message.id") + "> <" +
+							ConfigUtil.getLanguage("contents") + ">");
+				}
+				break;
+			case "accept":
+				if (cmd.length > 1) {
+					try {
+						if (Integer.parseInt(cmd[1]) - 1 >= 0) {
+							MemberJoinRequestEvent request = EventListener.requests.get(Integer.parseInt(cmd[1]) - 1);
+							if (request != null) {
+								try {
+									request.accept();
+									LogUtil.log(ConfigUtil.getLanguage("accepted"));
+								} catch (Exception e) {
+									LogUtil.log(ConfigUtil.getLanguage("failed.accept"));
+								}
+							} else {
+								LogUtil.log(ConfigUtil.getLanguage("request.not.found"));
+							}
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("request.not.found"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("request.id.error"));
+					}
+				}
+				break;
+			case "recall":
+				if (cmd.length > 1) {
+					try {
+						if (Integer.parseInt(cmd[1]) - 1 >= 0) {
+							MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
+							if (message != null) {
+								if (message.getFromId() == message.getBotId()) {
+									try {
+										Mirai.getInstance().recallMessage(bot, message);
+										LogUtil.log(ConfigUtil.getLanguage("recalled"));
+									} catch (Exception e) {
+										LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
+									}
+								} else {
+									if (group.getBotPermission() != MemberPermission.MEMBER) {
+										try {
+											Mirai.getInstance().recallMessage(bot, message);
+											LogUtil.log(ConfigUtil.getLanguage("recalled"));
+										} catch (Exception e) {
+											LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
+										}
+									} else {
+										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+									}
+								}
+							} else {
+								LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
+							}
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("message.not.found"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("message.id.error"));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": recall <" +
+							ConfigUtil.getLanguage("message.id") + ">");
+				}
+				break;
+			default:
+				group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
+				break;
+		}
+		return false;
+	}
 	/**
 	 * Check if there is a new release
 	 * @param u URL
