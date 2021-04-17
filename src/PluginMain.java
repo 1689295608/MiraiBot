@@ -28,30 +28,24 @@ public class PluginMain {
 	
 	public static void main(String[] args) {
 		LogUtil.init();
-		ConfigUtil.init();
 		try {
 			InputStream stream = PluginMain.class.getResourceAsStream("Version");
 			String version = "ERROR";
 			if (stream != null) {
 				version = new String(stream.readAllBytes());
 			}
-			String copyRight;
-			if (language.equals("zh")) {
-				copyRight = "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021";
-			} else if (language.equals("tw")) {
-				copyRight = "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021";
-			} else {
-				copyRight = "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021";
-			}
-			LogUtil.log(copyRight);
+			LogUtil.log(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
+					(language.equals("tw") ? "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021" :
+							"MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		File languageFile = new File("language.properties");
 		try {
 			if (!languageFile.exists()) {
 				if (!languageFile.createNewFile()) {
-					LogUtil.log(language.equals("zh") ? "无法创建配置文件！" : "Unable to create configuration file!");
+					LogUtil.log(language.equals("zh") ? "无法创建配置文件！" : (language.equals("tw") ? "無法創建配置文件！" : "Unable to create configuration file!"));
 				} else {
 					FileOutputStream fos = new FileOutputStream(languageFile);
 					fos.write(LanguageUtil.languageFile(language));
@@ -60,10 +54,13 @@ public class PluginMain {
 				}
 			}
 		} catch (IOException e) {
-			LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+			LogUtil.log(language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!"));
 			e.printStackTrace();
 			System.exit(-1);
 		}
+		ConfigUtil.init();
+		loadAutoRespond();
+		
 		if (!checkConfig()) {
 			LogUtil.log(ConfigUtil.getLanguage("config.error"));
 			System.exit(-1);
@@ -73,6 +70,7 @@ public class PluginMain {
 			LogUtil.log(ConfigUtil.getLanguage("checking.update"));
 			checkUpdate(null);
 		}
+		
 		String qq = ConfigUtil.getConfig("qq");
 		String password = ConfigUtil.getConfig("password");
 		String groupId = ConfigUtil.getConfig("group");
@@ -86,27 +84,6 @@ public class PluginMain {
 			System.exit(-1);
 			return;
 		}
-		EventListener.autoRespond = new File("AutoRespond.ini");
-		if (!EventListener.autoRespond.exists()) {
-			try {
-				if (!EventListener.autoRespond.createNewFile()) {
-					LogUtil.log(ConfigUtil.getLanguage("failed.create.config"));
-					System.exit(-1);
-				}
-				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
-				InputStream stream = PluginMain.class.getResourceAsStream("AutoRespond.ini");
-				if (stream != null) {
-					fos.write(stream.readAllBytes());
-				}
-				fos.flush();
-				fos.close();
-			} catch (IOException e) {
-				LogUtil.log(ConfigUtil.getLanguage("failed.create.config"));
-				e.printStackTrace();
-				System.exit(-1);
-			}
-		}
-		IniUtil.loadData(EventListener.autoRespond);
 		
 		String protocol = ConfigUtil.getConfig("protocol") != null ?
 				ConfigUtil.getConfig("protocol") : "";
@@ -168,6 +145,11 @@ public class PluginMain {
 						System.out.println();
 						System.exit(0);
 						break command;
+					case "reload":
+						ConfigUtil.init();
+						loadAutoRespond();
+						LogUtil.log(ConfigUtil.getLanguage("reloaded"));
+						break;
 					case "friendList": {
 						ContactList<Friend> friends = bot.getFriends();
 						StringBuilder out = new StringBuilder();
@@ -217,8 +199,7 @@ public class PluginMain {
 							fos.close();
 							LogUtil.log(ConfigUtil.getLanguage("success.change.language"));
 						} else {
-							LogUtil.log(ConfigUtil.getLanguage("usage") + ": language <" +
-									ConfigUtil.getLanguage("language") + ">");
+							LogUtil.log(ConfigUtil.getLanguage("usage") + ": language <" + ConfigUtil.getLanguage("language") + ">");
 						}
 						break;
 					case "clear":
@@ -231,35 +212,50 @@ public class PluginMain {
 						String help = "· --------====== MiraiBot ======-------- ·\n" +
 								"accept <" + ConfigUtil.getLanguage("request.id") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.accept") + "\n" +
+								
 								"avatar <" + ConfigUtil.getLanguage("qq") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
+								
 								"del <" + ConfigUtil.getLanguage("qq") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.del") + "\n" +
+								
 								"friendList\n" +
 								" - " + ConfigUtil.getLanguage("command.friend.list") + "\n" +
+								
 								"groupList\n" +
 								" - " + ConfigUtil.getLanguage("command.group.list") + "\n" +
+								
 								"help\n" +
 								" - " + ConfigUtil.getLanguage("command.help") + "\n" +
+								
 								"image <" + ConfigUtil.getLanguage("file.path") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.image") + "\n" +
+								
 								"kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
+								
 								"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.language") + "\n" +
+								
 								"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
 								ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
+								
 								"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.reply") + "\n" +
+								
 								"recall <" + ConfigUtil.getLanguage("message.id") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.recall") + "\n" +
+								
 								"send <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.send") + "\n" +
+								
 								"stop\n" +
 								" - " + ConfigUtil.getLanguage("command.stop") + "\n" +
+								
 								"upClipImg\n" +
 								" - " + ConfigUtil.getLanguage("command.up.clip.img") + "\n" +
+								
 								"upImg <" + ConfigUtil.getLanguage("file.path") + ">\n" +
 								" - " + ConfigUtil.getLanguage("command.up.img") + "\n" +
 								"· -------------------------------------- ·\n";
@@ -590,6 +586,30 @@ public class PluginMain {
 				);
 			}
 		}
+	}
+	
+	public static void loadAutoRespond() {
+		EventListener.autoRespond = new File("AutoRespond.ini");
+		if (!EventListener.autoRespond.exists()) {
+			try {
+				if (!EventListener.autoRespond.createNewFile()) {
+					LogUtil.log(ConfigUtil.getLanguage("failed.create.config"));
+					System.exit(-1);
+				}
+				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
+				InputStream stream = PluginMain.class.getResourceAsStream("AutoRespond.ini");
+				if (stream != null) {
+					fos.write(stream.readAllBytes());
+				}
+				fos.flush();
+				fos.close();
+			} catch (IOException e) {
+				LogUtil.log(ConfigUtil.getLanguage("failed.create.config"));
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+		IniUtil.loadData(EventListener.autoRespond);
 	}
 	
 	/**
