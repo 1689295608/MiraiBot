@@ -12,6 +12,8 @@ import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
 import net.mamoe.mirai.utils.ExternalResource;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -19,12 +21,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.regex.Pattern;
 
 public class EventListener implements ListenerHost {
 	public static boolean showQQ;
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
 	public static ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
+	public static JSONObject autoRespondConfig;
 	
 	@EventHandler
 	public void onGroupJoin(MemberJoinEvent event) {
@@ -195,39 +200,66 @@ public class EventListener implements ListenerHost {
 		messages.add(event.getSource());
 		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
 		
-		for (String section : IniUtil.getSectionNames()) {
-			if (section != null) {
-				String regex = IniUtil.getValue(section, "Message");
-				String respond = IniUtil.getValue(section, "Respond");
-				if (respond != null && regex != null) {
-					respond = replacePlaceholder(event, respond);
-					if (mCode.matches(replacePlaceholder(event, regex))) {
-						boolean reply = IniUtil.getValue(section, "Reply") != null &&
-								Boolean.parseBoolean(IniUtil.getValue(section, "Reply"));
-						boolean recall = IniUtil.getValue(section, "Recall") != null &&
-								Boolean.parseBoolean(IniUtil.getValue(section, "Recall"));
-						String mute = IniUtil.getValue(section, "Mute");
-						if (mute != null && !mute.equals("0")) {
-							if (event.getSender().getPermission() != MemberPermission.OWNER &&
-									event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
-								try {
-									event.getSender().mute(Integer.parseInt(mute));
-								} catch (NumberFormatException e) {
-									e.printStackTrace();
-								}
-							}
-						}
-						if (recall) {
-							Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
-						}
-						if (reply) {
-							event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-									MiraiCode.deserializeMiraiCode(respond)));
-						} else {
-							event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
+		for (Iterator<String> it = autoRespondConfig.keys(); it.hasNext(); ) {
+			String section = it.next();
+			try {
+				if (section.startsWith("**")) {
+					continue;
+				}
+				
+				JSONObject sectionObject = autoRespondConfig.getJSONObject(section);
+				String regex = null;
+				String respond = null;
+				boolean reply = false;
+				boolean recall = false;
+				int mute = 0;
+				String runCmd = null;
+				
+				try {
+					regex = sectionObject.getString("Message");
+					respond = sectionObject.getString("Respond");
+					reply = sectionObject.getBoolean("Reply");
+					recall = sectionObject.getBoolean("Recall");
+					mute = sectionObject.getInt("Mute");
+					runCmd = sectionObject.getString("RunCommand");
+				} catch (JSONException e) {
+					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+					e.printStackTrace();
+					System.exit(-1);
+				}
+				respond = replacePlaceholder(event, respond);
+				regex = replacePlaceholder(event, regex);
+				if (!Pattern.matches(regex, mCode)) {
+					continue;
+				}
+				if (mute != 0) {
+					if (event.getSender().getPermission() != MemberPermission.OWNER &&
+							event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
+						try {
+							event.getSender().mute(mute);
+						} catch (NumberFormatException e) {
+							e.printStackTrace();
 						}
 					}
 				}
+				if (recall) {
+					Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+				}
+				if (reply) {
+					event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
+							MiraiCode.deserializeMiraiCode(respond)));
+				} else {
+					event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
+				}
+				if (runCmd != null && !runCmd.isEmpty()) {
+					try {
+						PluginMain.runCommand(replacePlaceholder(event, runCmd));
+					} catch (Exception ignored) { }
+				}
+			} catch (Exception e) {
+				LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+				e.printStackTrace();
+				System.exit(-1);
 			}
 		}
 	}
@@ -289,9 +321,25 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%message_content%", event.getMessage().contentToString());
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
-		str = str.replaceAll("%flash_id%", spl[1].equals("flash") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
-		str = str.replaceAll("%image_id%", spl[1].equals("image") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
-		str = str.replaceAll("%file_id%", spl[1].equals("file") ? spl[2].substring(0, spl[2].indexOf("]")) : "");
+		String flashId = "";
+		String imageId = "";
+		String fileId = "";
+		if (spl.length > 3) {
+			switch (spl[1]) {
+				case "flash":
+					flashId = spl[2].substring(0, spl[2].indexOf("]"));
+					break;
+				case "image":
+					imageId = spl[2].substring(0, spl[2].indexOf("]"));
+					break;
+				case "file":
+					fileId = spl[2].substring(0, spl[2].indexOf("]"));
+					break;
+			}
+		}
+		str = str.replaceAll("%flash_id%", flashId);
+		str = str.replaceAll("%image_id%", imageId);
+		str = str.replaceAll("%file_id%", fileId);
 		try {
 			URL url = new URL(event.getSender().getAvatarUrl());
 			InputStream is = url.openStream();
