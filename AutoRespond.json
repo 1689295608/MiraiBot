@@ -1,0 +1,44 @@
+{
+  "AutoRespondDemo": {
+    "Message": "\\[mirai:at:%bot_id%\\](.*)?Hello!(.*)?",
+    "Recall": false,
+    "Reply": true,
+    "Mute": 0,
+    "RunCommand": "",
+    "Respond": "[mirai:at:%sender_id%] Hello!"
+  },
+  "AutoSendFlash": {
+    "Message": "\\[mirai:flash:(.*)\\]",
+    "Recall": false,
+    "Reply": true,
+    "Mute": 0,
+    "RunCommand": "",
+    "Respond": "[mirai:image:%flash_id%]"
+  },
+  "**Prompt": {
+    "自动回复支持操作": {
+      "Reply": "Boolean",
+      "Recall": "Boolean",
+      "Mute": "Integer",
+      "RunCommand": "String"
+    },
+    "自动回复支持变量": {
+      "%sender_nick%": "发送者昵称",
+      "%sender_id%": "发送者QQ号",
+      "%sender_nameCard%": "发送者群昵称",
+      "%sender_avatarId%": "发送者头像ID",
+      "%group_name%": "本群名称",
+      "%group_id%": "本群群号",
+      "%group_owner_nick%": "本群群主昵称",
+      "%group_owner_id%": "本群群主QQ号",
+      "%group_owner_nameCard%": "发送者昵称",
+      "%message_miraiCode%": "消息的 Mirai码",
+      "%message_content%": "发送者昵称",
+      "%bot_nick%": "机器人昵称",
+      "%bot_id%": "机器人QQ号",
+      "%flash_id%": "闪照ID",
+      "%image_id%": "图片ID",
+      "%file_id%": "文件ID"
+    }
+  }
+}
