@@ -1,3 +1,5 @@
+package com.windowx.miraibot;
+
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;
@@ -28,7 +30,7 @@ public class EventListener implements ListenerHost {
 	public static boolean showQQ;
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
-	public static ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
+	public static final ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
 	public static JSONObject autoRespondConfig;
 	
 	@EventHandler
