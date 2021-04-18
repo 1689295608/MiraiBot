@@ -201,68 +201,72 @@ public class EventListener implements ListenerHost {
 		
 		messages.add(event.getSource());
 		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
-		
-		for (Iterator<String> it = autoRespondConfig.keys(); it.hasNext(); ) {
-			String section = it.next();
-			try {
-				if (section.startsWith("**")) {
-					continue;
-				}
-				
-				JSONObject sectionObject = autoRespondConfig.getJSONObject(section);
-				String regex = null;
-				String respond = null;
-				boolean reply = false;
-				boolean recall = false;
-				int mute = 0;
-				String runCmd = null;
-				
+		try {
+			for (Iterator<String> it = autoRespondConfig.keys(); it.hasNext(); ) {
+				String section = it.next();
 				try {
-					regex = sectionObject.getString("Message");
-					respond = sectionObject.getString("Respond");
-					reply = sectionObject.getBoolean("Reply");
-					recall = sectionObject.getBoolean("Recall");
-					mute = sectionObject.getInt("Mute");
-					runCmd = sectionObject.getString("RunCommand");
-				} catch (JSONException e) {
+					if (section.startsWith("**")) {
+						continue;
+					}
+					
+					JSONObject sectionObject = autoRespondConfig.getJSONObject(section);
+					String regex = null;
+					String respond = null;
+					boolean reply = false;
+					boolean recall = false;
+					int mute = 0;
+					String runCmd = null;
+					
+					try {
+						regex = sectionObject.getString("Message");
+						respond = sectionObject.getString("Respond");
+						reply = sectionObject.getBoolean("Reply");
+						recall = sectionObject.getBoolean("Recall");
+						mute = sectionObject.getInt("Mute");
+						runCmd = sectionObject.getString("RunCommand");
+					} catch (JSONException e) {
+						LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+						e.printStackTrace();
+						System.exit(-1);
+					}
+					respond = replacePlaceholder(event, respond);
+					regex = replacePlaceholder(event, regex);
+					if (!Pattern.matches(regex, mCode)) {
+						continue;
+					}
+					if (mute != 0) {
+						if (event.getSender().getPermission() != MemberPermission.OWNER &&
+								event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
+							try {
+								event.getSender().mute(mute);
+							} catch (NumberFormatException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					if (recall) {
+						Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+					}
+					if (reply) {
+						event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
+								MiraiCode.deserializeMiraiCode(respond)));
+					} else {
+						event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
+					}
+					if (runCmd != null && !runCmd.isEmpty()) {
+						try {
+							PluginMain.runCommand(replacePlaceholder(event, runCmd));
+						} catch (Exception ignored) {
+						}
+					}
+				} catch (Exception e) {
 					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
 					e.printStackTrace();
 					System.exit(-1);
 				}
-				respond = replacePlaceholder(event, respond);
-				regex = replacePlaceholder(event, regex);
-				if (!Pattern.matches(regex, mCode)) {
-					continue;
-				}
-				if (mute != 0) {
-					if (event.getSender().getPermission() != MemberPermission.OWNER &&
-							event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
-						try {
-							event.getSender().mute(mute);
-						} catch (NumberFormatException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				if (recall) {
-					Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
-				}
-				if (reply) {
-					event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-							MiraiCode.deserializeMiraiCode(respond)));
-				} else {
-					event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
-				}
-				if (runCmd != null && !runCmd.isEmpty()) {
-					try {
-						PluginMain.runCommand(replacePlaceholder(event, runCmd));
-					} catch (Exception ignored) { }
-				}
-			} catch (Exception e) {
-				LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
-				e.printStackTrace();
-				System.exit(-1);
 			}
+		} catch (Exception e) {
+			LogUtil.log(e.toString());
 		}
 	}
 	
@@ -313,13 +317,13 @@ public class EventListener implements ListenerHost {
 		String[] spl = event.getMessage().serializeToMiraiCode().split(":");
 		str = str.replaceAll("%sender_nick%", event.getSender().getNick());
 		str = str.replaceAll("%sender_id%", String.valueOf(event.getSender().getId()));
-		str = str.replaceAll("%sender_nameCard%", event.getSender().getNameCard());
+		str = str.replaceAll("%sender_name_card%", event.getSender().getNameCard());
 		str = str.replaceAll("%group_name%", event.getGroup().getName());
 		str = str.replaceAll("%group_id%", String.valueOf(event.getSender().getId()));
 		str = str.replaceAll("%group_owner_nick%", event.getGroup().getOwner().getNick());
 		str = str.replaceAll("%group_owner_id%", String.valueOf(event.getGroup().getOwner().getId()));
-		str = str.replaceAll("%group_owner_nameCard%", event.getGroup().getOwner().getNameCard());
-		str = str.replaceAll("%message_miraiCode%", event.getMessage().serializeToMiraiCode());
+		str = str.replaceAll("%group_owner_name_card%", event.getGroup().getOwner().getNameCard());
+		str = str.replaceAll("%message_mirai_code%", event.getMessage().serializeToMiraiCode());
 		str = str.replaceAll("%message_content%", event.getMessage().contentToString());
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
@@ -342,18 +346,20 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%flash_id%", flashId);
 		str = str.replaceAll("%image_id%", imageId);
 		str = str.replaceAll("%file_id%", fileId);
-		try {
-			URL url = new URL(event.getSender().getAvatarUrl());
-			InputStream is = url.openStream();
-			BufferedInputStream bis = new BufferedInputStream(is);
-			byte[] avatar = bis.readAllBytes();
-			ExternalResource externalResource = ExternalResource.create(avatar);
-			Image img = event.getGroup().uploadImage(externalResource);
-			externalResource.close();
-			String[] imgSpl = img.serializeToMiraiCode().split(":");
-			str = str.replaceAll("%sender_avatarId%", imgSpl[2].substring(0, imgSpl[2].indexOf("]")));
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (str.contains("%sender_avatar_id%")) {
+			try {
+				URL url = new URL(event.getSender().getAvatarUrl());
+				InputStream is = url.openStream();
+				BufferedInputStream bis = new BufferedInputStream(is);
+				byte[] avatar = bis.readAllBytes();
+				ExternalResource externalResource = ExternalResource.create(avatar);
+				Image img = event.getGroup().uploadImage(externalResource);
+				externalResource.close();
+				String[] imgSpl = img.serializeToMiraiCode().split(":");
+				str = str.replaceAll("%sender_avatar_id%", imgSpl[2].substring(0, imgSpl[2].indexOf("]")));
+			} catch (IOException e) {
+				LogUtil.log(e.toString());
+			}
 		}
 		return str;
 	}
