@@ -1,6 +1,7 @@
 package com.windowx.miraibot;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
@@ -14,8 +15,14 @@ public class ConfigUtil {
 	 */
 	public static void init() {
 		try {
-			config.load(new BufferedReader(new FileReader("config.properties")));
-			language.load(new BufferedReader(new FileReader("language.properties")));
+			File tmpFile = new File("config.properties");
+			if (tmpFile.exists()) {
+				config.load(new BufferedReader(new FileReader("config.properties")));
+			}
+			tmpFile = new File("language.properties");
+			if (tmpFile.exists()) {
+				language.load(new BufferedReader(new FileReader("language.properties")));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
