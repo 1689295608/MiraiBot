@@ -10,18 +10,12 @@ import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.message.data.QuoteReply;
-import net.mamoe.mirai.utils.ExternalResource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Pattern;
@@ -346,21 +340,6 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%flash_id%", flashId);
 		str = str.replaceAll("%image_id%", imageId);
 		str = str.replaceAll("%file_id%", fileId);
-		if (str.contains("%sender_avatar_id%")) {
-			try {
-				URL url = new URL(event.getSender().getAvatarUrl());
-				InputStream is = url.openStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				byte[] avatar = bis.readAllBytes();
-				ExternalResource externalResource = ExternalResource.create(avatar);
-				Image img = event.getGroup().uploadImage(externalResource);
-				externalResource.close();
-				String[] imgSpl = img.serializeToMiraiCode().split(":");
-				str = str.replaceAll("%sender_avatar_id%", imgSpl[2].substring(0, imgSpl[2].indexOf("]")));
-			} catch (IOException e) {
-				LogUtil.log(e.toString());
-			}
-		}
 		return str;
 	}
 }
