@@ -1,3 +1,9 @@
+package com.windowx.miraibot;
+
+import com.windowx.miraibot.plugin.Plugin;
+import com.windowx.miraibot.plugin.PluginManager;
+import com.windowx.miraibot.plugin.PluginService;
+import com.windowx.miraibot.plugin.XMLParser;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.Mirai;
@@ -21,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.List;
 
 public class PluginMain {
 	public static Group group = null;
@@ -28,12 +35,13 @@ public class PluginMain {
 	public static Bot bot;
 	
 	public static void main(String[] args) {
+		String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
 		LogUtil.init();
 		try {
-			InputStream stream = PluginMain.class.getResourceAsStream("Version");
+			URL url = ClassLoader.getSystemResource("Version");
 			String version = "ERROR";
-			if (stream != null) {
-				version = new String(stream.readAllBytes());
+			if (url != null) {
+				version = new String(url.openStream().readAllBytes());
 			}
 			LogUtil.log(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
 					(language.equals("tw") ? "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021" :
@@ -55,11 +63,12 @@ public class PluginMain {
 				}
 			}
 		} catch (IOException e) {
-			LogUtil.log(language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!"));
+			LogUtil.log(err);
 			e.printStackTrace();
 			System.exit(-1);
 		}
 		ConfigUtil.init();
+		
 		loadAutoRespond();
 		
 		if (!checkConfig()) {
@@ -115,6 +124,57 @@ public class PluginMain {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
 			
+			try {
+				File demo = new File("plugin");
+				if (!demo.exists()) {
+					if (demo.mkdirs()) {
+						demo = new File("plugin" + File.separator + "demo.jar");
+						if (demo.createNewFile()) {
+							FileOutputStream fos = new FileOutputStream(demo);
+							URL url = ClassLoader.getSystemResource("demo.jar");
+							if (url != null) fos.write(url.openStream().readAllBytes());
+							fos.flush(); fos.close();
+						}
+					}
+				}
+				try {
+					XMLParser.plugin = new File("plugin.xml");
+					if (!XMLParser.plugin.exists()) {
+						if (XMLParser.plugin.createNewFile()) {
+							FileOutputStream fos = new FileOutputStream(XMLParser.plugin);
+							fos.write(("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+									"<plugins>\n" +
+									"   <plugin>\n" +
+									"       <name>Demo</name>\n" +
+									"       <jar>plugin/demo.jar</jar>\n" +
+									"       <class>com.windowx.demo.Main</class>\n" +
+									"   </plugin>\n" +
+									"</plugins>").getBytes()
+							); fos.flush(); fos.close();
+						}
+					}
+					List<Plugin> pluginList = XMLParser.getPluginList();
+					PluginManager pluginManager = new PluginManager(pluginList);
+					for(Plugin plugin : pluginList) {
+						PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
+						LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
+								.replaceAll("\\$1", plugin.getName())
+						);
+						// 调用插件
+						pluginService.onEnable();
+					}
+				} catch (Exception e) {
+					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+					e.printStackTrace();
+					System.exit(-1);
+				}
+			} catch (Exception e) {
+				LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+				e.printStackTrace();
+				System.exit(-1);
+			}
+			
+			
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
 			} else if (!bot.getGroups().contains(Long.parseLong(groupId))) {
@@ -129,6 +189,7 @@ public class PluginMain {
 				LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
 				System.exit(-1);
 			}
+			
 			Scanner scanner = new Scanner(System.in);
 			while (true) {
 				String msg;
@@ -577,10 +638,10 @@ public class PluginMain {
 			while ((line = in.readLine()) != null)
 				sb.append(line);
 			int LatestVersion = Integer.parseInt(sb.toString().replaceAll("\\.", ""));
-			InputStream stream = PluginMain.class.getResourceAsStream("Version");
+			url = ClassLoader.getSystemResource("Version");
 			String version = "0.0.0";
-			if (stream != null) {
-				version = new String(stream.readAllBytes());
+			if (url != null) {
+				version = new String(url.openStream().readAllBytes());
 			}
 			int ThisVersion = Integer.parseInt(version.replaceAll("\\.", ""));
 			if (ThisVersion < LatestVersion || ThisVersion <= 0) {
@@ -610,9 +671,9 @@ public class PluginMain {
 					System.exit(-1);
 				}
 				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
-				InputStream stream = PluginMain.class.getResourceAsStream("AutoRespond.json");
-				if (stream != null) {
-					fos.write(stream.readAllBytes());
+				URL url = ClassLoader.getSystemResource("AutoRespond.json");
+				if (url != null) {
+					fos.write(url.openStream().readAllBytes());
 				}
 				fos.flush();
 				fos.close();
