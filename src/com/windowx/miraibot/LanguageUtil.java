@@ -1,3 +1,5 @@
+package com.windowx.miraibot;
+
 public class LanguageUtil {
 	/**
 	 * Get the language file by the value obtained by "Locale.getDefault().getLanguage()"
@@ -16,6 +18,7 @@ public class LanguageUtil {
 					"already.latest.version=已是最新版本！（$1）\n" +
 					"trying.login=正在尝试使用$1登录, 稍后可能会出现验证码弹窗...\n" +
 					"registering.event=正在注册事件...\n" +
+					"enabling.plugin=正在加载插件 [$1]...\n" +
 					"login.success=登录成功，您的昵称是：$1\n" +
 					"not.group.set=配置文件中的 聊群 项为空！您将无法发送和接收到聊群的消息！\n" +
 					"not.entered.group=机器人并未加入聊群 $1 , 但机器人目前可以继续使用！\n" +
@@ -71,6 +74,7 @@ public class LanguageUtil {
 					"command.avatar=获取一个用户的头像\n" +
 					"command.accept=同意一个入群请求\n" +
 					"command.kick=踢出一个用户\n" +
+					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
 					"true.or.false=是否\n" +
 					"check.update=检查更新\n" +
@@ -97,6 +101,7 @@ public class LanguageUtil {
 					"found.new.update=發現新版本：$1\n" +
 					"trying.login=正在嘗試使用$1登錄, 稍後可能會出現驗證碼彈窗...\n" +
 					"registering.event=正在註冊事件...\n" +
+					"enabling.plugin=正在加載插件 [$1]...\n" +
 					"login.success=登錄成功，您的昵稱是：$1\n" +
 					"not.group.set=配置文件中的 聊群 項為空！您將無法發送和接收到聊群的消息！\n" +
 					"not.entered.group=機器人並未加入聊群 $1 , 但機器人目前可以繼續使用！\n" +
@@ -152,6 +157,7 @@ public class LanguageUtil {
 					"command.accept=同意一個入群請求\n" +
 					"command.avatar=獲取一個用戶的頭像\n" +
 					"command.kick=踢出一個用戶\n" +
+					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
 					"true.or.false=是否\n" +
 					"check.update=檢查更新\n" +
@@ -178,6 +184,7 @@ public class LanguageUtil {
 					"found.new.update=New version found: $1\n" +
 					"trying.login=Trying to log in with $1, a verification code pop-up window may appear later...\n" +
 					"registering.event=Registering event...\n" +
+					"enabling.plugin=Loading plugin [$1]...\n" +
 					"login.success=Login is successful, your nickname is: $1\n" +
 					"not.group.set=The chat group item in the configuration file is empty! You will not be able to send and receive chat group messages!\n" +
 					"not.entered.group=The robot has not joined the chat group for $1, but the robot can continue to be used for now!\n" +
@@ -233,6 +240,7 @@ public class LanguageUtil {
 					"command.accept=Agree to a request to join the group\n" +
 					"command.avatar=Get a user's avatar\n" +
 					"command.kick=Kick an user\n" +
+					"reloaded=The configuration file has been reloaded!\n" +
 					"please.input=Please input \n" +
 					"true.or.false= whether \n" +
 					"check.update= check update\n" +
