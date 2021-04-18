@@ -19,6 +19,7 @@ public class LanguageUtil {
 					"trying.login=正在尝试使用$1登录, 稍后可能会出现验证码弹窗...\n" +
 					"registering.event=正在注册事件...\n" +
 					"enabling.plugin=正在加载插件 [$1]...\n" +
+					"failed.load.plugin=在加载插件 [$1] 时发生了错误：$2\n" +
 					"login.success=登录成功，您的昵称是：$1\n" +
 					"not.group.set=配置文件中的 聊群 项为空！您将无法发送和接收到聊群的消息！\n" +
 					"not.entered.group=机器人并未加入聊群 $1 , 但机器人目前可以继续使用！\n" +
@@ -102,6 +103,7 @@ public class LanguageUtil {
 					"trying.login=正在嘗試使用$1登錄, 稍後可能會出現驗證碼彈窗...\n" +
 					"registering.event=正在註冊事件...\n" +
 					"enabling.plugin=正在加載插件 [$1]...\n" +
+					"failed.load.plugin=在加載插件 [$1] 時發生了錯誤：$2\n" +
 					"login.success=登錄成功，您的昵稱是：$1\n" +
 					"not.group.set=配置文件中的 聊群 項為空！您將無法發送和接收到聊群的消息！\n" +
 					"not.entered.group=機器人並未加入聊群 $1 , 但機器人目前可以繼續使用！\n" +
@@ -185,6 +187,7 @@ public class LanguageUtil {
 					"trying.login=Trying to log in with $1, a verification code pop-up window may appear later...\n" +
 					"registering.event=Registering event...\n" +
 					"enabling.plugin=Loading plugin [$1]...\n" +
+					"failed.load.plugin=An error occurred while loading plugin [$1]: $2\n" +
 					"login.success=Login is successful, your nickname is: $1\n" +
 					"not.group.set=The chat group item in the configuration file is empty! You will not be able to send and receive chat group messages!\n" +
 					"not.entered.group=The robot has not joined the chat group for $1, but the robot can continue to be used for now!\n" +
