@@ -85,11 +85,11 @@ public class PluginMain {
 		String password = ConfigUtil.getConfig("password");
 		String groupId = ConfigUtil.getConfig("group");
 		if (ConfigUtil.getConfig("showQQ") != null) {
-			EventListener.showQQ = ConfigUtil.getConfig("showQQ").equals("true");
+			EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ"));
 		} else {
 			EventListener.showQQ = false;
 		}
-		if (qq.isEmpty() || password.isEmpty()) {
+		if ((qq == null || password == null) || (qq.isEmpty() || password.isEmpty())) {
 			LogUtil.log(ConfigUtil.getLanguage("qq.password.not.exits"));
 			System.exit(-1);
 			return;
@@ -100,12 +100,16 @@ public class PluginMain {
 		LogUtil.log(ConfigUtil.getLanguage("trying.login").replaceAll("\\$1", protocol));
 		try {
 			BotConfiguration.MiraiProtocol miraiProtocol;
-			if (protocol.equals("PAD")) {
-				miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD;
-			} else if (protocol.equals("WATCH")) {
-				miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH;
-			} else {
-				miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+			switch (protocol) {
+				case "PAD":
+					miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PAD;
+					break;
+				case "WATCH":
+					miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+					break;
+				default:
+					miraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+					break;
 			}
 			bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq), password, new BotConfiguration() {{
 				fileBasedDeviceInfo();
@@ -156,12 +160,19 @@ public class PluginMain {
 					List<Plugin> pluginList = XMLParser.getPluginList();
 					PluginManager pluginManager = new PluginManager(pluginList);
 					for(Plugin plugin : pluginList) {
-						PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
-						LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
-								.replaceAll("\\$1", plugin.getName())
-						);
-						// 调用插件
-						pluginService.onEnable();
+						try {
+							PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
+							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
+									.replaceAll("\\$1", plugin.getName())
+							);
+							// 调用插件
+							pluginService.onEnable();
+						} catch (Exception e) {
+							LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
+									.replaceAll("\\$1", plugin.getName())
+									.replaceAll("\\$2", e.toString())
+							);
+						}
 					}
 				} catch (Exception e) {
 					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
@@ -173,7 +184,6 @@ public class PluginMain {
 				e.printStackTrace();
 				System.exit(-1);
 			}
-			
 			
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
@@ -220,6 +230,10 @@ public class PluginMain {
 	 */
 	public static boolean runCommand(String msg) throws Exception {
 		String[] cmd = msg.split(" ");
+		if (cmd.length <= 0) {
+			group.sendMessage(msg);
+			return false;
+		}
 		switch (cmd[0]) {
 			case "stop":
 				LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
@@ -281,6 +295,7 @@ public class PluginMain {
 					fos.write(LanguageUtil.languageFile(cmd[1]));
 					fos.flush();
 					fos.close();
+					ConfigUtil.init();
 					LogUtil.log(ConfigUtil.getLanguage("success.change.language"));
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": language <" + ConfigUtil.getLanguage("language") + ">");
@@ -316,7 +331,7 @@ public class PluginMain {
 						" - " + ConfigUtil.getLanguage("command.image") + "\n" +
 						
 						"kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">\n" +
-						" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
+						" - " + ConfigUtil.getLanguage("command.kick") + "\n" +
 						
 						"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.language") + "\n" +
