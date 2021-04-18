@@ -1,11 +1,13 @@
+package com.windowx.miraibot;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigUtil {
-	public static Properties config = new Properties();
-	public static Properties language = new Properties();
+	public static final Properties config = new Properties();
+	public static final Properties language = new Properties();
 	
 	/**
 	 * Initialize the config system
