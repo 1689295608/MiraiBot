@@ -49,6 +49,10 @@ public class LanguageUtil {
 					"failed.recall=无法撤回该消息！\n" +
 					"no.permission=你没有足够的权限进行该操作！\n" +
 					"bot.is.being.muted=机器人已被禁言！无法发送消息！\n" +
+					"member.mute=$1 ($2) 被 $3 ($4) 禁言 $5 秒！\n" +
+					"open=已开启\n" +
+					"off=已关闭\n" +
+					"mute.all=全员禁言\n" +
 					"qq.password.error=请检查配置文件中的 QQ号 是否正确！\n" +
 					"success.change.language=成功修改语言为 简体中文\n" +
 					"up.loading.img=正在上传图片...\n" +
@@ -134,6 +138,10 @@ public class LanguageUtil {
 					"failed.recall=無法撤回該消息！\n" +
 					"no.permission=你沒有足夠的權限進行該操作！\n" +
 					"bot.is.being.muted=機器人已被禁言！無發發送消息！\n" +
+					"member.mute=$1 ($2) 被 $3 ($4) 禁言 $5 秒！\n" +
+					"open=已開啟！\n" +
+					"off=已關閉\n" +
+					"mute.all=全員禁言\n" +
 					"qq.password.error=請檢查配置文件中的 QQ號 是否正確！\n" +
 					"success.change.language=成功修改語言為 繁體中文\n" +
 					"up.loading.img=正在上傳圖片...\n" +
@@ -219,6 +227,10 @@ public class LanguageUtil {
 					"failed.recall=The message cannot be retracted!\n" +
 					"no.permission=You do not have sufficient permissions to perform this operation!\n" +
 					"bot.is.being.muted=The bot has been muted! Unable to send message!\n" +
+					"member.mute=$1 ($2) was banned by $3 ($4) for $5 seconds!\n" +
+					"open=turned on\n" +
+					"off=turned off\n" +
+					"mute.all=Mute all \n" +
 					"qq.password.error=Please check whether the QQ number in the configuration file is correct!\n" +
 					"success.change.language=Successfully changed the language to English\n" +
 					"up.loading.img=Uploading Image...\n" +
