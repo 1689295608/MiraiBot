@@ -239,13 +239,17 @@ public class EventListener implements ListenerHost {
 								event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
 							try {
 								event.getSender().mute(mute);
-							} catch (NumberFormatException e) {
-								e.printStackTrace();
+							} catch (Exception e) {
+								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
 							}
 						}
 					}
 					if (recall) {
-						Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+						try {
+							Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+						} catch (Exception e) {
+							LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+						}
 					}
 					if (reply) {
 						event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
@@ -256,8 +260,7 @@ public class EventListener implements ListenerHost {
 					if (runCmd != null && !runCmd.isEmpty()) {
 						try {
 							PluginMain.runCommand(replacePlaceholder(event, runCmd));
-						} catch (Exception ignored) {
-						}
+						} catch (Exception ignored) { }
 					}
 				} catch (Exception e) {
 					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
