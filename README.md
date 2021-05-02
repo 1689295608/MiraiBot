@@ -1,5 +1,5 @@
 # MiraiBot
-A Mirai-based console robot.
+A [Mirai](https://github.com/mamoe/mirai)-based console robot.
 
 **Please note before use:**
 
@@ -20,7 +20,7 @@ See https://github.com/1689295608/MiraiBot/blob/main/LICENSE for details
 MiraiBot inherits [Mirai](https://github.com/mamoe/mirai) Open source using AGPLv3 protocol. For the healthy development of the entire community, we strongly recommend that you do the following:
 
 - Software indirectly exposed to MiraiBot uses AGPLv3 open source
-- Does not encourage and does not support all commercial use
+- **Does not encourage and does not support all commercial use**
 
 ### Derivative software needs to declare and quote
 
@@ -72,7 +72,7 @@ After successfully logging in once, you can delete `Mirai-login-solver-selenium.
 MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开源。为了整个社区的良性发展，我们强烈建议您做到以下几点：
 
 - 间接接触到 MiraiBot 的软件使用 AGPLv3 开源
-- 不鼓励，不支持一切商业使用
+- **不鼓励，不支持一切商业使用**
 
 ### 衍生软件需声明引用
 
