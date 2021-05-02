@@ -227,11 +227,16 @@ public class PluginMain {
 	 * Execute an instruction.
 	 * @param msg Message
 	 * @throws Exception Exception
+	 * @return Whether to terminate the process
 	 */
 	public static boolean runCommand(String msg) throws Exception {
 		String[] cmd = msg.split(" ");
 		if (cmd.length <= 0) {
-			group.sendMessage(msg);
+			try {
+				group.sendMessage(msg);
+			} catch (BotIsBeingMutedException e) {
+				LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+			}
 			return false;
 		}
 		switch (cmd[0]) {
