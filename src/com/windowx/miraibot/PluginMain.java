@@ -131,10 +131,10 @@ public class PluginMain {
 			}
 			
 			try {
-				File demo = new File("plugin");
+				File demo = new File("plugins");
 				if (!demo.exists()) {
 					if (demo.mkdirs()) {
-						demo = new File("plugin" + File.separator + "demo.jar");
+						demo = new File("plugins" + File.separator + "demo.jar");
 						if (demo.createNewFile()) {
 							FileOutputStream fos = new FileOutputStream(demo);
 							URL url = ClassLoader.getSystemResource("demo.jar");
@@ -144,7 +144,7 @@ public class PluginMain {
 					}
 				}
 				try {
-					XMLParser.plugin = new File("plugin.xml");
+					XMLParser.plugin = new File("plugins.xml");
 					if (!XMLParser.plugin.exists()) {
 						if (XMLParser.plugin.createNewFile()) {
 							FileOutputStream fos = new FileOutputStream(XMLParser.plugin);
@@ -209,9 +209,29 @@ public class PluginMain {
 				msg = scanner.nextLine();
 				LogUtil.log("> " + msg);
 				if (msg.length() <= 0) continue;
-				if (runCommand(msg)) {
-					scanner.close();
-					break;
+				if (msg.equals("stop")) {
+					LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
+							.replaceAll("\\$1", bot.getNick())
+							.replaceAll("\\$2", String.valueOf(bot.getId())));
+					bot.close();
+					System.out.println();
+					System.exit(0);
+				}
+				if (!runCommand(msg)) {
+					try {
+						boolean send = true;
+						for(Plugin plugin : pluginList) {
+							try {
+								PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
+								send = pluginService.onCommand(msg);
+							} catch (Exception e) {
+								LogUtil.log(e.toString());
+							}
+						}
+						if (send) group.sendMessage(msg);
+					} catch (BotIsBeingMutedException e) {
+						LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
+					}
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -229,41 +249,16 @@ public class PluginMain {
 	 * Execute an instruction.
 	 * @param msg Message
 	 * @throws Exception Exception
-	 * @return Whether to terminate the process
+	 * @return Is it an instruction
 	 */
 	public static boolean runCommand(String msg) throws Exception {
 		String[] cmd = msg.split(" ");
-		if (cmd.length <= 0) {
-			try {
-				boolean send = false;
-				for(Plugin plugin : pluginList) {
-					try {
-						PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
-						send = pluginService.onCommand(msg);
-					} catch (Exception e) {
-						LogUtil.log(e.toString());
-					}
-				}
-				if (send) group.sendMessage(msg);
-			} catch (BotIsBeingMutedException e) {
-				LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
-			}
-			return false;
-		}
 		switch (cmd[0]) {
-			case "stop":
-				LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
-						.replaceAll("\\$1", bot.getNick())
-						.replaceAll("\\$2", String.valueOf(bot.getId())));
-				bot.close();
-				System.out.println();
-				System.exit(0);
-				return true;
 			case "reload":
 				ConfigUtil.init();
 				loadAutoRespond();
 				LogUtil.log(ConfigUtil.getLanguage("reloaded"));
-				break;
+				return true;
 			case "friendList": {
 				ContactList<Friend> friends = bot.getFriends();
 				StringBuilder out = new StringBuilder();
@@ -274,7 +269,7 @@ public class PluginMain {
 					c++;
 				}
 				LogUtil.log(out.toString());
-				break;
+				return true;
 			}
 			case "groupList": {
 				ContactList<NormalMember> members = group.getMembers();
@@ -288,7 +283,7 @@ public class PluginMain {
 				out.append(c).append(". ").append(bot.getNick()).append(" (").append(bot.getId()).append(")")
 						.append(" (").append(ConfigUtil.getLanguage("bot")).append(")\n");
 				LogUtil.log(out.toString());
-				break;
+				return true;
 			}
 			case "language":
 				if (cmd.length > 1) {
@@ -316,13 +311,13 @@ public class PluginMain {
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": language <" + ConfigUtil.getLanguage("language") + ">");
 				}
-				break;
+				return true;
 			case "clear":
 				LogUtil.clear();
 				LogUtil.messages = new StringBuilder();
 				EventListener.messages = new ArrayList<>();
 				LogUtil.log(ConfigUtil.getLanguage("console.cleared"));
-				break;
+				return true;
 			case "help":
 				String help = "· --------====== MiraiBot ======-------- ·\n" +
 						"accept <" + ConfigUtil.getLanguage("request.id") + ">\n" +
@@ -375,7 +370,7 @@ public class PluginMain {
 						" - " + ConfigUtil.getLanguage("command.up.img") + "\n" +
 						"· -------------------------------------- ·\n";
 				LogUtil.log(help);
-				break;
+				return true;
 			case "send":
 				if (cmd.length > 2) {
 					StringBuilder tmp = new StringBuilder();
@@ -398,7 +393,7 @@ public class PluginMain {
 							ConfigUtil.getLanguage("qq") +
 							"> <" + ConfigUtil.getLanguage("contents") + ">");
 				}
-				break;
+				return true;
 			case "kick":
 				if (cmd.length > 2) {
 					try {
@@ -426,7 +421,7 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": kick <" + ConfigUtil.getLanguage("qq") + "> <" +
 							ConfigUtil.getLanguage("reason") + ">");
 				}
-				break;
+				return true;
 			case "avatar":
 				if (cmd.length > 1) {
 					try {
@@ -456,7 +451,7 @@ public class PluginMain {
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
 				}
-				break;
+				return true;
 			case "image":
 				if (cmd.length > 1) {
 					try {
@@ -476,7 +471,7 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": image <" +
 							ConfigUtil.getLanguage("file.path") + ">");
 				}
-				break;
+				return true;
 			case "upImg":
 				if (cmd.length > 1) {
 					File file = new File(msg.substring(6));
@@ -489,7 +484,7 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": upImg <" +
 							ConfigUtil.getLanguage("file.path") + ">");
 				}
-				break;
+				return true;
 			case "upClipImg":
 				byte[] clip = ClipboardUtil.getImageFromClipboard();
 				if (clip != null) {
@@ -501,7 +496,7 @@ public class PluginMain {
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("failed.clipboard"));
 				}
-				break;
+				return true;
 			case "newImg":
 				if (cmd.length > 4) {
 					try {
@@ -529,7 +524,7 @@ public class PluginMain {
 							"> <" + ConfigUtil.getLanguage("contents") +
 							">");
 				}
-				break;
+				return true;
 			case "del":
 				if (cmd.length > 1) {
 					try {
@@ -549,7 +544,7 @@ public class PluginMain {
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": del <QQ>");
 				}
-				break;
+				return true;
 			case "reply":
 				if (cmd.length > 2) {
 					try {
@@ -571,7 +566,7 @@ public class PluginMain {
 							ConfigUtil.getLanguage("message.id") + "> <" +
 							ConfigUtil.getLanguage("contents") + ">");
 				}
-				break;
+				return true;
 			case "accept":
 				if (cmd.length > 1) {
 					try {
@@ -594,7 +589,7 @@ public class PluginMain {
 						LogUtil.log(ConfigUtil.getLanguage("request.id.error"));
 					}
 				}
-				break;
+				return true;
 			case "recall":
 				if (cmd.length > 1) {
 					try {
@@ -633,12 +628,10 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": recall <" +
 							ConfigUtil.getLanguage("message.id") + ">");
 				}
-				break;
+				return true;
 			default:
-				group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
-				break;
+				return false;
 		}
-		return false;
 	}
 	/**
 	 * Check if there is a new release
