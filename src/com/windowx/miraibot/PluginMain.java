@@ -23,6 +23,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -152,10 +153,10 @@ public class PluginMain {
 									"<plugins>\n" +
 									"   <plugin>\n" +
 									"       <name>Demo</name>\n" +
-									"       <jar>plugin/demo.jar</jar>\n" +
+									"       <jar>plugins/demo.jar</jar>\n" +
 									"       <class>com.windowx.demo.Main</class>\n" +
 									"   </plugin>\n" +
-									"</plugins>").getBytes()
+									"</plugins>").getBytes(StandardCharsets.UTF_8)
 							); fos.flush(); fos.close();
 						}
 					}
