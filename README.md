@@ -25,7 +25,7 @@ MiraiBot inherits [Mirai](https://github.com/mamoe/mirai) Open source using AGPL
 ### Derivative software needs to declare and quote
 
 - If you quote the package released by MiraiBot without modifying MiraiBot, the derivative project needs to mention MiraiBot in any part of the description.
-- If the MiraiBot source code is modified and then released, or another project is released by referring to MiraiBot's internal implementation, the derivative project must be clearly stated in the first part of the article or at the location where'MiraiBot'-related content first appears from this repository (https://github.com/1689295608/MiraiBot). The fact that it is free and open source must not be distorted or hidden.
+- If the MiraiBot source code is modified and then released, or another project is released by referring to MiraiBot's internal implementation, the derivative project must be clearly stated in the first part of the article or at the location where'MiraiBot'-related content first appears from this repository ([MiraiBot](https://github.com/1689295608/MiraiBot)). The fact that it is free and open source must not be distorted or hidden.
 
 ---
 
@@ -77,7 +77,7 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 ### 衍生软件需声明引用
 
 - 若引用 MiraiBot 发布的软件包而不修改 MiraiBot，则衍生项目需在描述的任意部位提及使用 MiraiBot。
-- 若修改 MiraiBot 源代码再发布，或参考 MiraiBot 内部实现发布另一个项目，则衍生项目必须在文章首部或 'MiraiBot' 相关内容首次出现的位置明确声明来源于本仓库 ( [MiraiBot](https://github.com/1689295608/MiraiBot))。不得扭曲或隐藏免费且开源的事实。
+- 若修改 MiraiBot 源代码再发布，或参考 MiraiBot 内部实现发布另一个项目，则衍生项目必须在文章首部或 'MiraiBot' 相关内容首次出现的位置明确声明来源于本仓库 ([MiraiBot](https://github.com/1689295608/MiraiBot))。不得扭曲或隐藏免费且开源的事实。
 
 ---
 
