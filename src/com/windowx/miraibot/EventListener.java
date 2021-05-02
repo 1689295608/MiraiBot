@@ -187,6 +187,47 @@ public class EventListener implements ListenerHost {
 		}
 	}
 	
+	private void logMute(Member op, Member member, Group group, int time) {
+		if (op == null) {
+			op = group.getBotAsMember();
+		}
+		if (member == null) {
+			member = group.getBotAsMember();
+		}
+		LogUtil.log(ConfigUtil.getLanguage("member.mute")
+				.replaceAll("\\$1", member.getNameCard())
+				.replaceAll("\\$2", String.valueOf(member.getId()))
+				.replaceAll("\\$3", op.getNameCard())
+				.replaceAll("\\$4", String.valueOf(op.getId()))
+				.replaceAll("\\$5", String.valueOf(time))
+		);
+	}
+	
+	@EventHandler
+	public void onMemberMute(MemberMuteEvent event) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		logMute(event.getOperator(), event.getMember(), event.getGroup(), event.getDurationSeconds());
+	}
+	
+	@EventHandler
+	public void onBotMute(BotMuteEvent event) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		logMute(event.getOperator(), null, event.getGroup(), event.getDurationSeconds());
+	}
+	
+	@EventHandler
+	public void onMuteAll(GroupMuteAllEvent event) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("mute.all") +
+				(event.getNew() ? ConfigUtil.getConfig("on") : ConfigUtil.getConfig("off")));
+	}
+	
 	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
 		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
