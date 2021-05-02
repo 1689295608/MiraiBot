@@ -33,6 +33,8 @@ public class PluginMain {
 	public static Group group = null;
 	public static final String language = Locale.getDefault().getLanguage();
 	public static Bot bot;
+	public static List<Plugin> pluginList;
+	public static PluginManager pluginManager;
 	
 	public static void main(String[] args) {
 		String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
@@ -157,8 +159,8 @@ public class PluginMain {
 							); fos.flush(); fos.close();
 						}
 					}
-					List<Plugin> pluginList = XMLParser.getPluginList();
-					PluginManager pluginManager = new PluginManager(pluginList);
+					pluginList = XMLParser.getPluginList();
+					pluginManager = new PluginManager(pluginList);
 					for(Plugin plugin : pluginList) {
 						try {
 							PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
@@ -233,9 +235,18 @@ public class PluginMain {
 		String[] cmd = msg.split(" ");
 		if (cmd.length <= 0) {
 			try {
-				group.sendMessage(msg);
+				boolean send = false;
+				for(Plugin plugin : pluginList) {
+					try {
+						PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
+						send = pluginService.onCommand(msg);
+					} catch (Exception e) {
+						LogUtil.log(e.toString());
+					}
+				}
+				if (send) group.sendMessage(msg);
 			} catch (BotIsBeingMutedException e) {
-				LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+				LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
 			}
 			return false;
 		}
