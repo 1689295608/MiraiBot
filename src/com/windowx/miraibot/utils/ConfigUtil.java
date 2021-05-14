@@ -1,4 +1,4 @@
-package com.windowx.miraibot;
+package com.windowx.miraibot.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +24,9 @@ public class ConfigUtil {
 				language.load(new BufferedReader(new FileReader("language.properties")));
 			}
 		} catch (IOException e) {
+			LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
 			e.printStackTrace();
+			System.exit(-1);
 		}
 	}
 	/**
