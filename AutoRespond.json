@@ -33,7 +33,7 @@
       "%group_owner_id%": "本群群主 QQ 号",
       "%group_owner_name_card%": "发送者昵称",
       "%message_mirai_code%": "消息的 Mirai 码",
-      "%message_content%": "发送者昵称",
+      "%message_content%": "消息的内容",
       "%bot_nick%": "机器人昵称",
       "%bot_id%": "机器人 QQ 号",
       "%flash_id%": "闪照 ID",
