@@ -21,14 +21,10 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Scanner;
 import java.util.List;
+import java.util.*;
 
 public class PluginMain {
 	public static Group group = null;
@@ -229,7 +225,7 @@ public class PluginMain {
 								LogUtil.log(e.toString());
 							}
 						}
-						if (send) group.sendMessage(msg);
+						if (send) group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
 					} catch (BotIsBeingMutedException e) {
 						LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
 					}
@@ -636,54 +632,31 @@ public class PluginMain {
 	}
 	/**
 	 * Check if there is a new release
-	 * @param u URL
 	 */
 	public static void checkUpdate(String u) {
 		try {
-			HttpURLConnection connection;
-			URL url;
-			if (u == null) {
-				try {
-					url = new URL("https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion");
-					connection = getHttpURLConnection(url);
-					connection.connect();
-				} catch (IOException e) {
-					url = new URL("https://raw.fastgit.org/1689295608/MiraiBot/main/LatestVersion");
-					connection = getHttpURLConnection(url);
-					connection.connect();
-				}
-			} else {
-				url = new URL(u);
-				connection = getHttpURLConnection(url);
-				connection.connect();
-			}
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), System.getProperty("sun.jnu.encoding")));
-			StringBuilder sb = new StringBuilder();
-			String line;
-			while ((line = in.readLine()) != null)
-				sb.append(line);
-			int LatestVersion = Integer.parseInt(sb.toString().replaceAll("\\.", ""));
-			url = ClassLoader.getSystemResource("Version");
+			URL update;
+			update = new URL(Objects.requireNonNullElse(u, "https://raw.fastgit.org/1689295608/MiraiBot/main/LatestVersion"));
+			InputStream is = update.openStream();
+			BufferedInputStream bis = new BufferedInputStream(is);
+			String LatestVersion = new String(bis.readAllBytes()).replaceAll("\\n", "");
+			URL url = ClassLoader.getSystemResource("Version");
 			String version = "0.0.0";
 			if (url != null) {
 				version = new String(url.openStream().readAllBytes());
 			}
-			int ThisVersion = Integer.parseInt(version.replaceAll("\\.", ""));
-			if (ThisVersion < LatestVersion || ThisVersion <= 0) {
-				LogUtil.log(ConfigUtil.getLanguage("found.new.update")
-						.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + sb)
-				);
-			} else {
-				LogUtil.log(ConfigUtil.getLanguage("already.latest.version").replaceAll("\\$1", sb.toString()));
+			try {
+				if (Integer.parseInt(version.replaceAll("[^0-9]", "")) < Integer.parseInt(LatestVersion.replaceAll("[^0-9]", ""))) {
+					LogUtil.log(ConfigUtil.getLanguage("found.new.update")
+							.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion));
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("already.latest.version").replaceAll("\\$1", LatestVersion));
+				}
+			} catch (Exception e) {
+				LogUtil.log(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
 			}
 		} catch (Exception e) {
-			if (e.getMessage().contains("Read timed out")) {
-				checkUpdate("https://raw.fastgit.org/1689295608/MiraiBot/main/LatestVersion");
-			} else {
-				LogUtil.log(ConfigUtil.getLanguage("failed.check.update")
-						.replaceAll("\\$1", e.toString())
-				);
-			}
+			LogUtil.log(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
 		}
 	}
 	
@@ -713,19 +686,6 @@ public class PluginMain {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * Quickly get an HttpURLConnection through the URL object
-	 * @param url URL
-	 * @return HttpURLConnection
-	 * @throws IOException IOException
-	 */
-	public static HttpURLConnection getHttpURLConnection(URL url) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(3000);
-		connection.setReadTimeout(5000);
-		return connection;
 	}
 	
 	/**
