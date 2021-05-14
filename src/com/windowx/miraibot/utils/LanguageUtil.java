@@ -1,4 +1,4 @@
-package com.windowx.miraibot;
+package com.windowx.miraibot.utils;
 
 public class LanguageUtil {
 	/**
