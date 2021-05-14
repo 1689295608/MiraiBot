@@ -1,4 +1,4 @@
-package com.windowx.miraibot;
+package com.windowx.miraibot.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
