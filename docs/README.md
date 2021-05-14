@@ -10,7 +10,7 @@
 > - [Mute](#Mute)
 > - [RunCommand](#RunCommand)
 
---
+---
 
 ### Message
 用于执行该自动回复项的唯一方法
@@ -47,6 +47,6 @@
 ### RunCommand
 执行后是否执行机器人指令，例如 `kick %sender_id%` 即可踢出该成员
 
---
+---
 
 # 该文档暂未完成 并且 MiraiBot 的功能还未完善。
