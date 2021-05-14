@@ -1,4 +1,4 @@
-package com.windowx.miraibot;
+package com.windowx.miraibot.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
