@@ -46,6 +46,7 @@ public class LanguageUtil {
 					"failed.accept=无法同意该入群请求！\n" +
 					"recalled=已撤回该消息！\n" +
 					"kicked=已踢出该成员！\n" +
+					"time=时长\n" +
 					"failed.recall=无法撤回该消息！\n" +
 					"no.permission=你没有足够的权限进行该操作！\n" +
 					"bot.is.being.muted=机器人已被禁言！无法发送消息！\n" +
@@ -80,6 +81,7 @@ public class LanguageUtil {
 					"command.avatar=获取一个用户的头像\n" +
 					"command.accept=同意一个入群请求\n" +
 					"command.kick=踢出一个用户\n" +
+					"command.mute=禁言一個用戶指定時間（單位：秒）\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
 					"true.or.false=是否\n" +
@@ -135,6 +137,7 @@ public class LanguageUtil {
 					"failed.accept=無法同意該入群請求！\n" +
 					"recalled=已撤回該消息！\n" +
 					"kicked=已踢出該成員！\n" +
+					"time=時長\n" +
 					"failed.recall=無法撤回該消息！\n" +
 					"no.permission=你沒有足夠的權限進行該操作！\n" +
 					"bot.is.being.muted=機器人已被禁言！無發發送消息！\n" +
@@ -224,6 +227,7 @@ public class LanguageUtil {
 					"failed.accept=Unable to agree to the request to join the group!\n" +
 					"recalled=The message has been withdrawn!\n" +
 					"kicked=The member has been kicked out!\n" +
+					"time=Time\n" +
 					"failed.recall=The message cannot be retracted!\n" +
 					"no.permission=You do not have sufficient permissions to perform this operation!\n" +
 					"bot.is.being.muted=The bot has been muted! Unable to send message!\n" +
@@ -258,6 +262,7 @@ public class LanguageUtil {
 					"command.accept=Agree to a request to join the group\n" +
 					"command.avatar=Get a user's avatar\n" +
 					"command.kick=Kick an user\n" +
+					"command.mute=Mute a user-specified time (unit: second)\n" +
 					"reloaded=The configuration file has been reloaded!\n" +
 					"please.input=Please input \n" +
 					"true.or.false= whether \n" +
