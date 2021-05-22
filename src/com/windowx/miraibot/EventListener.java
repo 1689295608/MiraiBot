@@ -1,5 +1,7 @@
 package com.windowx.miraibot;
 
+import com.windowx.miraibot.utils.ConfigUtil;
+import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.EventHandler;
@@ -177,11 +179,11 @@ public class EventListener implements ListenerHost {
 		if (event.getReceipt() != null) {
 			messages.add(event.getReceipt().getSource());
 			LogUtil.log("[" + messages.size() + "] " + event.getBot().getNick() + " -> " +
-					event.getTarget().getNick() + showQQ(event.getTarget().getId()) +
+					event.getTarget().getNick() + showQQ(event.getTarget().getId()) + " " +
 					(ConfigUtil.getConfig("debug").equals("true") ?
 							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
 		} else {
-			LogUtil.log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + showQQ(event.getTarget().getId()) +
+			LogUtil.log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + showQQ(event.getTarget().getId()) + " " +
 					(ConfigUtil.getConfig("debug").equals("true") ?
 							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
 		}
@@ -254,7 +256,7 @@ public class EventListener implements ListenerHost {
 						boolean recall = sectionObject.has("Recall") && sectionObject.getBoolean("Recall");
 						int mute = sectionObject.has("Mute") ? sectionObject.getInt("Mute") : 0;
 						String runCmd = sectionObject.has("RunCommand") ? sectionObject.getString("RunCommand") : null;
-					
+						
 						respond = replacePlaceholder(event, respond);
 						regex = replacePlaceholder(event, regex);
 						if (!Pattern.matches(regex, mCode)) {
@@ -278,11 +280,13 @@ public class EventListener implements ListenerHost {
 							}
 						}
 						try {
-							if (reply) {
-								event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
-										MiraiCode.deserializeMiraiCode(respond)));
-							} else {
-								event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
+							if (!respond.isEmpty()) {
+								if (reply) {
+									event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
+											MiraiCode.deserializeMiraiCode(respond)));
+								} else {
+									event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(respond));
+								}
 							}
 						} catch (BotIsBeingMutedException e) {
 							LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
@@ -348,6 +352,7 @@ public class EventListener implements ListenerHost {
 	 * @return Replaced text
 	 */
 	public String replacePlaceholder(GroupMessageEvent event, String str) {
+		if (str == null) return "";
 		String[] spl = event.getMessage().serializeToMiraiCode().split(":");
 		str = str.replaceAll("%sender_nick%", event.getSender().getNick());
 		str = str.replaceAll("%sender_id%", String.valueOf(event.getSender().getId()));
@@ -359,6 +364,7 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%group_owner_name_card%", event.getGroup().getOwner().getNameCard());
 		str = str.replaceAll("%message_mirai_code%", event.getMessage().serializeToMiraiCode());
 		str = str.replaceAll("%message_content%", event.getMessage().contentToString());
+		str = str.replaceAll("%message_id%", String.valueOf(messages.size()));
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
 		String flashId = "";
