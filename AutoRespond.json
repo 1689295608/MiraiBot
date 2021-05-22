@@ -17,10 +17,10 @@
   },
   "**Prompt": {
     "自动回复支持操作": {
-      "Reply": "Boolean",
-      "Recall": "Boolean",
-      "Mute": "Integer",
-      "RunCommand": "String"
+      "Reply": "Boolean, 是否回复该消息",
+      "Recall": "Boolean, 是否撤回该消息",
+      "Mute": "Integer, 禁言该消息的发送者",
+      "RunCommand": "String, 运行指令"
     },
     "自动回复支持变量": {
       "%sender_nick%": "发送者昵称",
@@ -34,6 +34,7 @@
       "%group_owner_name_card%": "发送者昵称",
       "%message_mirai_code%": "消息的 Mirai 码",
       "%message_content%": "消息的内容",
+      "%message_id$": "消息的 ID",
       "%bot_nick%": "机器人昵称",
       "%bot_id%": "机器人 QQ 号",
       "%flash_id%": "闪照 ID",
