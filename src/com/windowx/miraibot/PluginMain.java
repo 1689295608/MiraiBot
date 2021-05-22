@@ -348,6 +348,9 @@ public class PluginMain {
 						"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.language") + "\n" +
 						
+						"mute <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("time") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.mute") + "\n" +
+						
 						"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
 						ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
@@ -398,12 +401,7 @@ public class PluginMain {
 			case "kick":
 				if (cmd.length > 2) {
 					try {
-						NormalMember member = null;
-						for (NormalMember m : group.getMembers()) {
-							if (String.valueOf(m.getId()).equals(cmd[1])) {
-								member = m;
-							}
-						}
+						NormalMember member = group.get(Long.parseLong(cmd[1]));
 						if (member != null) {
 							if (group.getBotPermission() != MemberPermission.MEMBER && member.getPermission() != MemberPermission.OWNER) {
 								member.kick(cmd[2]);
@@ -423,10 +421,32 @@ public class PluginMain {
 							ConfigUtil.getLanguage("reason") + ">");
 				}
 				return true;
+			case "mute":
+				if (cmd.length > 2) {
+					try {
+						NormalMember member = group.get(Long.parseLong(cmd[1]));
+						if (member != null) {
+							if (group.getBotPermission() != MemberPermission.MEMBER && member.getPermission() != MemberPermission.OWNER) {
+								member.mute(Integer.parseInt(cmd[1]));
+							} else {
+								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+							}
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("not.user"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("not.qq")
+								.replaceAll("\\$1", cmd[1]));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": mute <" + ConfigUtil.getLanguage("qq") + "> <" +
+							ConfigUtil.getLanguage("time") + ">");
+				}
+				return true;
 			case "avatar":
 				if (cmd.length > 1) {
 					try {
-						Stranger stranger = bot.getStranger(Integer.parseInt(cmd[1]));
+						Stranger stranger = bot.getStranger(Long.parseLong(cmd[1]));
 						for (Member m : group.getMembers()) {
 							if (String.valueOf(m.getId()).equals(cmd[1])) {
 								stranger = m.getBot().getAsStranger();
