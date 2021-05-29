@@ -1,5 +1,7 @@
 package com.windowx.miraibot;
 
+import com.windowx.miraibot.plugin.Plugin;
+import com.windowx.miraibot.plugin.PluginService;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.Mirai;
@@ -23,7 +25,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
 public class EventListener implements ListenerHost {
 	public static boolean showQQ;
@@ -34,7 +35,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupJoin(MemberJoinEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("joined.group")
@@ -47,7 +48,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupLeave(MemberLeaveEvent.Quit event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("left.group")
@@ -60,7 +61,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupKick(MemberLeaveEvent.Kick event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -77,7 +78,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onJoinRequest(MemberJoinRequestEvent event) {
 		if (event.getGroup() == null) return;
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		requests.add(event);
@@ -207,7 +208,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onMemberMute(MemberMuteEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		logMute(event.getOperator(), event.getMember(), event.getGroup(), event.getDurationSeconds());
@@ -215,7 +216,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onBotMute(BotMuteEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		logMute(event.getOperator(), null, event.getGroup(), event.getDurationSeconds());
@@ -223,7 +224,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onMuteAll(GroupMuteAllEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("mute.all") +
@@ -232,7 +233,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
 			return;
 		}
 		String mCode = event.getMessage().serializeToMiraiCode();
@@ -241,6 +242,17 @@ public class EventListener implements ListenerHost {
 		
 		messages.add(event.getSource());
 		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
+		
+		messages.add(event.getSource());
+		for(Plugin plugin : PluginMain.pluginList) {
+			try {
+				PluginService pluginService = PluginMain.pluginManager.getInstance(plugin.getClassName());
+				pluginService.onGroupMessage(event);
+			} catch (Exception e) {
+				LogUtil.log(e.toString());
+			}
+		}
+		
 		try {
 			for (Iterator<String> it = autoRespondConfig.keys(); it.hasNext(); ) {
 				String section = it.next();
@@ -250,16 +262,17 @@ public class EventListener implements ListenerHost {
 					}
 					try {
 						JSONObject sectionObject = autoRespondConfig.getJSONObject(section);
-						String regex = sectionObject.has("Message") ? sectionObject.getString("Message") : null;
-						String respond = sectionObject.has("Respond") ? sectionObject.getString("Respond") : null;
+						String regex = sectionObject.has("Message") ? sectionObject.getString("Message") : "";
+						String respond = sectionObject.has("Respond") ? sectionObject.getString("Respond") : "";
 						boolean reply = sectionObject.has("Reply") && sectionObject.getBoolean("Reply");
 						boolean recall = sectionObject.has("Recall") && sectionObject.getBoolean("Recall");
 						int mute = sectionObject.has("Mute") ? sectionObject.getInt("Mute") : 0;
-						String runCmd = sectionObject.has("RunCommand") ? sectionObject.getString("RunCommand") : null;
+						String runCmd = sectionObject.has("RunCommand") ? sectionObject.getString("RunCommand") : "";
+						runCmd = mCode.replaceAll(regex, runCmd);
 						
-						respond = replacePlaceholder(event, respond);
 						regex = replacePlaceholder(event, regex);
-						if (!Pattern.matches(regex, mCode)) {
+						respond = replacePlaceholder(event, mCode.replaceAll(regex, respond));
+						if (!mCode.matches(regex)) {
 							continue;
 						}
 						if (mute != 0) {
@@ -291,7 +304,7 @@ public class EventListener implements ListenerHost {
 						} catch (BotIsBeingMutedException e) {
 							LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
 						}
-						if (runCmd != null && !runCmd.isEmpty()) {
+						if (!runCmd.isEmpty()) {
 							try {
 								PluginMain.runCommand(replacePlaceholder(event, runCmd));
 							} catch (Exception ignored) { }
@@ -311,7 +324,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onFriendMessage(FriendMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+				ConfigUtil.getConfig("group").contains(String.valueOf(event.getSender().getId())))) {
 			return;
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
@@ -322,7 +335,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onTempMessage(GroupTempMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+				ConfigUtil.getConfig("group").contains(String.valueOf(event.getSender().getId())))) {
 			return;
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
@@ -333,7 +346,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onStrangerMessage(StrangerMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+				ConfigUtil.getConfig("group").contains(String.valueOf(event.getSender().getId())))) {
 			return;
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
