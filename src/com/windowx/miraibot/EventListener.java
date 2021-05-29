@@ -35,7 +35,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupJoin(MemberJoinEvent event) {
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("joined.group")
@@ -48,7 +48,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupLeave(MemberLeaveEvent.Quit event) {
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("left.group")
@@ -61,7 +61,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupKick(MemberLeaveEvent.Kick event) {
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -78,7 +78,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onJoinRequest(MemberJoinRequestEvent event) {
 		if (event.getGroup() == null) return;
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		requests.add(event);
@@ -208,7 +208,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onMemberMute(MemberMuteEvent event) {
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		logMute(event.getOperator(), event.getMember(), event.getGroup(), event.getDurationSeconds());
@@ -216,7 +216,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onBotMute(BotMuteEvent event) {
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		logMute(event.getOperator(), null, event.getGroup(), event.getDurationSeconds());
@@ -224,7 +224,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onMuteAll(GroupMuteAllEvent event) {
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("mute.all") +
@@ -233,7 +233,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
-		if (ConfigUtil.getConfig("group").contains(String.valueOf(event.getGroup().getId()))) {
+		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		String mCode = event.getMessage().serializeToMiraiCode();
@@ -324,7 +324,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onFriendMessage(FriendMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				ConfigUtil.getConfig("group").contains(String.valueOf(event.getSender().getId())))) {
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			return;
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
@@ -335,7 +335,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onTempMessage(GroupTempMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				ConfigUtil.getConfig("group").contains(String.valueOf(event.getSender().getId())))) {
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			return;
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
@@ -346,7 +346,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onStrangerMessage(StrangerMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") ||
-				ConfigUtil.getConfig("group").contains(String.valueOf(event.getSender().getId())))) {
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			return;
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
