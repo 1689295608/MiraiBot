@@ -189,10 +189,10 @@ public class PluginMain {
 			
 			if (groupId.isEmpty()) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
-			} else if (!bot.getGroups().contains(Long.parseLong(groupId.split(",")[0]))) {
-				LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groupId.split(",")[0]));
+			} else if (!bot.getGroups().contains(Long.parseLong(groupId))) {
+				LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groupId));
 			} else {
-				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group").split(",")[0]));
+				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
 				LogUtil.log(ConfigUtil.getLanguage("now.group")
 						.replaceAll("\\$1", group.getName())
 						.replaceAll("\\$2", String.valueOf(group.getId())));
