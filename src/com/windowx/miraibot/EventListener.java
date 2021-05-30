@@ -1,7 +1,7 @@
 package com.windowx.miraibot;
 
 import com.windowx.miraibot.plugin.Plugin;
-import com.windowx.miraibot.plugin.PluginService;
+import com.windowx.miraibot.plugin.JavaPlugin;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.Mirai;
@@ -245,8 +245,8 @@ public class EventListener implements ListenerHost {
 		
 		for(Plugin plugin : PluginMain.pluginList) {
 			try {
-				PluginService pluginService = PluginMain.pluginManager.getInstance(plugin.getClassName());
-				pluginService.onGroupMessage(event);
+				JavaPlugin javaPlugin = PluginMain.pluginManager.getInstance(plugin.getClassName());
+				javaPlugin.onGroupMessage(event);
 			} catch (Exception e) {
 				LogUtil.log(e.toString());
 			}
