@@ -268,6 +268,8 @@ public class EventListener implements ListenerHost {
 						boolean recall = sectionObject.has("Recall") && sectionObject.getBoolean("Recall");
 						int mute = sectionObject.has("Mute") ? sectionObject.getInt("Mute") : 0;
 						String runCmd = sectionObject.has("RunCommand") ? sectionObject.getString("RunCommand") : "";
+						String permission = sectionObject.has("Permission") ? sectionObject.getString("Permission") : "*";
+						String[] owners = ConfigUtil.getConfig("owner").split(",");
 						runCmd = mCode.replaceAll(regex, runCmd);
 						
 						regex = replacePlaceholder(event, regex);
@@ -275,6 +277,14 @@ public class EventListener implements ListenerHost {
 						if (!mCode.matches(regex)) {
 							continue;
 						}
+						boolean b = true;
+						if (!permission.equals("*")) {
+							for (String s : permission.split(","))
+								if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
+							if (!b) for (String s : owners) if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
+						}
+						if (!b) continue;
+						
 						if (mute != 0) {
 							if (event.getSender().getPermission() != MemberPermission.OWNER &&
 									event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
