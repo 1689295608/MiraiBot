@@ -752,6 +752,8 @@ public class PluginMain {
 									"password=" + password + "\n" +
 									"# 输入你要聊天的聊群\n" +
 									"group=" + group + "\n" +
+									"# 机器人主人 QQ 号, 即拥有一切权力的 QQ 号. 用 \",\" 分隔\n" +
+									"owner=00000\n" +
 									"# 每一个新消息是否都显示发送者的 QQ 号\n" +
 									"showQQ=false\n" +
 									"# 输入你接收的好友信息（“*” 为 全部）\n" +
