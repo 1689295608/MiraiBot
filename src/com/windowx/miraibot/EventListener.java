@@ -243,7 +243,6 @@ public class EventListener implements ListenerHost {
 		messages.add(event.getSource());
 		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
 		
-		messages.add(event.getSource());
 		for(Plugin plugin : PluginMain.pluginList) {
 			try {
 				PluginService pluginService = PluginMain.pluginManager.getInstance(plugin.getClassName());
