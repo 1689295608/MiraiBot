@@ -2,7 +2,7 @@ package com.windowx.miraibot;
 
 import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.plugin.PluginManager;
-import com.windowx.miraibot.plugin.PluginService;
+import com.windowx.miraibot.plugin.JavaPlugin;
 import com.windowx.miraibot.plugin.XMLParser;
 import com.windowx.miraibot.utils.ClipboardUtil;
 import com.windowx.miraibot.utils.ConfigUtil;
@@ -164,11 +164,11 @@ public class PluginMain {
 					pluginManager = new PluginManager(pluginList);
 					for(Plugin plugin : pluginList) {
 						try {
-							PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
+							JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
 							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
 									.replaceAll("\\$1", plugin.getName())
 							);
-							pluginService.onEnable();
+							javaPlugin.onEnable();
 						} catch (Exception e) {
 							LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
 									.replaceAll("\\$1", plugin.getName())
@@ -213,6 +213,14 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
 							.replaceAll("\\$1", bot.getNick())
 							.replaceAll("\\$2", String.valueOf(bot.getId())));
+					for(Plugin plugin : pluginList) {
+						try {
+							JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
+							javaPlugin.onDisable();
+						} catch (Exception e) {
+							LogUtil.log(e.toString());
+						}
+					}
 					bot.close();
 					System.out.println();
 					System.exit(0);
@@ -222,8 +230,8 @@ public class PluginMain {
 						boolean send = true;
 						for(Plugin plugin : pluginList) {
 							try {
-								PluginService pluginService = pluginManager.getInstance(plugin.getClassName());
-								send = pluginService.onCommand(msg);
+								JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
+								send = javaPlugin.onCommand(msg);
 							} catch (Exception e) {
 								LogUtil.log(e.toString());
 							}
@@ -436,6 +444,7 @@ public class PluginMain {
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("not.qq")
 								.replaceAll("\\$1", cmd[1]));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": mute <" + ConfigUtil.getLanguage("qq") + "> <" +
@@ -467,6 +476,7 @@ public class PluginMain {
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("not.qq")
 								.replaceAll("\\$1", cmd[1]));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
@@ -486,6 +496,7 @@ public class PluginMain {
 						imageInfo(bot, img);
 					} catch (IOException e) {
 						LogUtil.log(ConfigUtil.getLanguage("file.error"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": image <" +
@@ -535,6 +546,7 @@ public class PluginMain {
 						imageInfo(bot, img);
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("width.height.error"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") +
@@ -560,6 +572,7 @@ public class PluginMain {
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("not.qq")
 								.replaceAll("\\$1", cmd[1]));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": del <QQ>");
@@ -580,6 +593,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("message.id.error"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": reply <" +
@@ -607,6 +621,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("request.id.error"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				}
 				return true;
@@ -643,6 +658,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("message.id.error"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": recall <" +
@@ -677,9 +693,11 @@ public class PluginMain {
 				}
 			} catch (Exception e) {
 				LogUtil.log(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
+				if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 			}
 		} catch (Exception e) {
 			LogUtil.log(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
+			if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 		}
 	}
 	
