@@ -77,8 +77,9 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onJoinRequest(MemberJoinRequestEvent event) {
-		if (event.getGroup() == null) return;
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		Group group = event.getGroup();
+		if (group == null) return;
+		if (group.getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
 			return;
 		}
 		requests.add(event);
@@ -271,8 +272,8 @@ public class EventListener implements ListenerHost {
 						String[] owners = ConfigUtil.getConfig("owner").split(",");
 						runCmd = mCode.replaceAll(regex, runCmd);
 						
-						regex = replacePlaceholder(event, regex);
-						respond = replacePlaceholder(event, mCode.replaceAll(regex, respond));
+						regex = replaceGroupMsgPlaceholder(event, regex);
+						respond = replaceGroupMsgPlaceholder(event, mCode.replaceAll(regex, respond));
 						if (!mCode.matches(regex)) {
 							continue;
 						}
@@ -280,7 +281,8 @@ public class EventListener implements ListenerHost {
 						if (!permission.equals("*")) {
 							for (String s : permission.split(","))
 								if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
-							if (!b) for (String s : owners) if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
+							if (b) for (String s : owners)
+								if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
 						}
 						if (!b) continue;
 						
@@ -315,7 +317,7 @@ public class EventListener implements ListenerHost {
 						}
 						if (!runCmd.isEmpty()) {
 							try {
-								PluginMain.runCommand(replacePlaceholder(event, runCmd));
+								PluginMain.runCommand(replaceGroupMsgPlaceholder(event, runCmd));
 							} catch (Exception ignored) { }
 						}
 					} catch (JSONException ignored) { }
@@ -363,6 +365,11 @@ public class EventListener implements ListenerHost {
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
+	/**
+	 * An useless function.
+	 * @param qq qq
+	 * @return show qq
+	 */
 	public String showQQ(Long qq) {
 		return showQQ ? "(" + qq + ")" : "";
 	}
@@ -373,7 +380,7 @@ public class EventListener implements ListenerHost {
 	 * @param str Text to replace
 	 * @return Replaced text
 	 */
-	public String replacePlaceholder(GroupMessageEvent event, String str) {
+	public String replaceGroupMsgPlaceholder(GroupMessageEvent event, String str) {
 		if (str == null) return "";
 		String[] spl = event.getMessage().serializeToMiraiCode().split(":");
 		str = str.replaceAll("%sender_nick%", event.getSender().getNick());
@@ -389,10 +396,10 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%message_id%", String.valueOf(messages.size()));
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
-		String flashId = "";
-		String imageId = "";
-		String fileId = "";
 		if (spl.length > 3) {
+			String flashId = "";
+			String imageId = "";
+			String fileId = "";
 			switch (spl[1]) {
 				case "flash":
 					flashId = spl[2].substring(0, spl[2].indexOf("]"));
@@ -404,10 +411,10 @@ public class EventListener implements ListenerHost {
 					fileId = spl[2].substring(0, spl[2].indexOf("]"));
 					break;
 			}
+			str = str.replaceAll("%flash_id%", flashId);
+			str = str.replaceAll("%image_id%", imageId);
+			str = str.replaceAll("%file_id%", fileId);
 		}
-		str = str.replaceAll("%flash_id%", flashId);
-		str = str.replaceAll("%image_id%", imageId);
-		str = str.replaceAll("%file_id%", fileId);
 		if (str.contains("%sender_avatar_id%")) {
 			try {
 				URL url = new URL(event.getSender().getAvatarUrl());
