@@ -3,7 +3,7 @@ A [Mirai](https://github.com/mamoe/mirai)-based console robot.
 
 **Please note before use:**
 
-This project is developed based on JDK11, so please use Java above JDK11 to run this program!
+	This project is developed based on JDK11, so please use Java above JDK11 to run this program!
 
 ## Statement
 
