@@ -396,10 +396,10 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%message_id%", String.valueOf(messages.size()));
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
-		if (spl.length > 3) {
-			String flashId = "";
-			String imageId = "";
-			String fileId = "";
+		String flashId = "";
+		String imageId = "";
+		String fileId = "";
+		if (spl.length >= 3) {
 			switch (spl[1]) {
 				case "flash":
 					flashId = spl[2].substring(0, spl[2].indexOf("]"));
@@ -411,10 +411,10 @@ public class EventListener implements ListenerHost {
 					fileId = spl[2].substring(0, spl[2].indexOf("]"));
 					break;
 			}
-			str = str.replaceAll("%flash_id%", flashId);
-			str = str.replaceAll("%image_id%", imageId);
-			str = str.replaceAll("%file_id%", fileId);
 		}
+		str = str.replaceAll("%flash_id%", flashId);
+		str = str.replaceAll("%image_id%", imageId);
+		str = str.replaceAll("%file_id%", fileId);
 		if (str.contains("%sender_avatar_id%")) {
 			try {
 				URL url = new URL(event.getSender().getAvatarUrl());
