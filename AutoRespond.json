@@ -1,18 +1,12 @@
 {
   "AutoRespondDemo": {
     "Message": "\\[mirai:at:%bot_id%\\](.*)?Hello!(.*)?",
-    "Recall": false,
     "Reply": true,
-    "Mute": 0,
-    "RunCommand": "",
     "Respond": "[mirai:at:%sender_id%] Hello!"
   },
   "AutoSendFlash": {
     "Message": "\\[mirai:flash:(.*)\\]",
-    "Recall": false,
     "Reply": true,
-    "Mute": 0,
-    "RunCommand": "",
     "Respond": "[mirai:image:%flash_id%]"
   },
   "**Prompt": {
@@ -20,7 +14,9 @@
       "Reply": "Boolean, 是否回复该消息",
       "Recall": "Boolean, 是否撤回该消息",
       "Mute": "Integer, 禁言该消息的发送者",
-      "RunCommand": "String, 运行指令"
+      "Permission": "String, 允许运行该自动回复的 QQ 号, 用 \",\" 分隔, 为 \"*\" 时所有人都可以运行",
+      "RunCommand": "String, 运行指令",
+      "ChangeNameCard": "String, 修改群昵称"
     },
     "自动回复支持变量": {
       "%sender_nick%": "发送者昵称",
