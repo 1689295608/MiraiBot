@@ -646,7 +646,7 @@ public class PluginMain {
 			case "nameCard":
 				if (cmd.length > 2) {
 					try {
-						NormalMember member = group.get(Integer.parseInt(cmd[1]));
+						NormalMember member = group.get(Long.parseLong(cmd[1]));
 						if (member != null) {
 							member.setNameCard(cmd[2]);
 						} else {
