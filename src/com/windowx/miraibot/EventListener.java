@@ -268,6 +268,7 @@ public class EventListener implements ListenerHost {
 						boolean recall = sectionObject.has("Recall") && sectionObject.getBoolean("Recall");
 						int mute = sectionObject.has("Mute") ? sectionObject.getInt("Mute") : 0;
 						String runCmd = sectionObject.has("RunCommand") ? sectionObject.getString("RunCommand") : "";
+						String changeNameCard = sectionObject.has("ChangeNameCard") ? sectionObject.getString("ChangeNameCard") : null;
 						String permission = sectionObject.has("Permission") ? sectionObject.getString("Permission") : "*";
 						String[] owners = ConfigUtil.getConfig("owner").split(",");
 						runCmd = mCode.replaceAll(regex, runCmd);
@@ -319,6 +320,13 @@ public class EventListener implements ListenerHost {
 							try {
 								PluginMain.runCommand(replaceGroupMsgPlaceholder(event, runCmd));
 							} catch (Exception ignored) { }
+						}
+						if (changeNameCard != null) {
+							try {
+								((NormalMember) event.getSender()).setNameCard(replaceGroupMsgPlaceholder(event, mCode.replaceAll(regex, changeNameCard)));
+							} catch (Exception e) {
+								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+							}
 						}
 					} catch (JSONException ignored) { }
 				} catch (Exception e) {
