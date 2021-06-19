@@ -1,8 +1,8 @@
 package com.windowx.miraibot;
 
+import com.windowx.miraibot.plugin.JavaPlugin;
 import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.plugin.PluginManager;
-import com.windowx.miraibot.plugin.JavaPlugin;
 import com.windowx.miraibot.plugin.XMLParser;
 import com.windowx.miraibot.utils.ClipboardUtil;
 import com.windowx.miraibot.utils.ConfigUtil;
@@ -312,7 +312,6 @@ public class PluginMain {
 					}
 					FileOutputStream fos = new FileOutputStream(now);
 					fos.write(LanguageUtil.languageFile(cmd[1]));
-					fos.flush();
 					fos.close();
 					ConfigUtil.init();
 					LogUtil.log(ConfigUtil.getLanguage("success.change.language"));
@@ -349,6 +348,9 @@ public class PluginMain {
 						"image <" + ConfigUtil.getLanguage("file.path") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.image") + "\n" +
 						
+						"imageInfo <" + ConfigUtil.getLanguage("image.id") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.image.info") + "\n" +
+						
 						"kick <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("reason") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.kick") + "\n" +
 						
@@ -357,6 +359,9 @@ public class PluginMain {
 						
 						"mute <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("time") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.mute") + "\n" +
+						
+						"nameCard <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("name.card") + ">" + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.name.card") + "\n" +
 						
 						"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
 						ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
@@ -503,6 +508,19 @@ public class PluginMain {
 							ConfigUtil.getLanguage("file.path") + ">");
 				}
 				return true;
+			case "imageInfo":
+				if (cmd.length > 1) {
+					try {
+						Image image = Image.fromId(cmd[1]);
+						imageInfo(bot, image);
+					} catch (IllegalArgumentException e) {
+						LogUtil.log(e.toString());
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": imageInfo <" +
+							ConfigUtil.getLanguage("image.id") + ">");
+				}
+				return true;
 			case "upImg":
 				if (cmd.length > 1) {
 					File file = new File(msg.substring(6));
@@ -625,6 +643,22 @@ public class PluginMain {
 					}
 				}
 				return true;
+			case "nameCard":
+				if (cmd.length > 2) {
+					try {
+						NormalMember member = group.get(Integer.parseInt(cmd[1]));
+						if (member != null) {
+							member.setNameCard(cmd[2]);
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("not.user"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("not.qq"));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": nameCard <" +
+							ConfigUtil.getLanguage("qq") + "> " + ConfigUtil.getLanguage("name.card"));
+				}
 			case "recall":
 				if (cmd.length > 1) {
 					try {
