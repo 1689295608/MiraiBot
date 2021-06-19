@@ -438,17 +438,16 @@ public class PluginMain {
 					try {
 						NormalMember member = group.get(Long.parseLong(cmd[1]));
 						if (member != null) {
-							if (group.getBotPermission() != MemberPermission.MEMBER && member.getPermission() != MemberPermission.OWNER) {
-								member.mute(Integer.parseInt(cmd[1]));
-							} else {
-								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
-							}
+							member.mute(Integer.parseInt(cmd[1]));
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("not.user"));
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("not.qq")
 								.replaceAll("\\$1", cmd[1]));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
+					} catch (PermissionDeniedException e) {
+						LogUtil.log(ConfigUtil.getLanguage("no.permission"));
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
@@ -648,12 +647,23 @@ public class PluginMain {
 					try {
 						NormalMember member = group.get(Long.parseLong(cmd[1]));
 						if (member != null) {
-							member.setNameCard(cmd[2]);
+							StringBuilder nameCard = new StringBuilder();
+							for (int i = 2 ; i < cmd.length ; i ++) {
+								nameCard.append(cmd[i]);
+								if (i != cmd.length - 1) {
+									nameCard.append(" ");
+								}
+							}
+							member.setNameCard(nameCard.toString());
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("not.user"));
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("not.qq"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
+					} catch (PermissionDeniedException e) {
+						LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": nameCard <" +
@@ -673,15 +683,14 @@ public class PluginMain {
 										LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
 									}
 								} else {
-									if (group.getBotPermission() != MemberPermission.MEMBER) {
-										try {
-											Mirai.getInstance().recallMessage(bot, message);
-											LogUtil.log(ConfigUtil.getLanguage("recalled"));
-										} catch (Exception e) {
-											LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
-										}
-									} else {
+									try {
+										Mirai.getInstance().recallMessage(bot, message);
+										LogUtil.log(ConfigUtil.getLanguage("recalled"));
+									} catch (PermissionDeniedException e) {
 										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+										if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
+									} catch (Exception e) {
+										LogUtil.log(ConfigUtil.getLanguage("failed.recall"));
 									}
 								}
 							} else {
