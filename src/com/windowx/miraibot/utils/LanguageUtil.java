@@ -65,6 +65,7 @@ public class LanguageUtil {
 					"recall.unknown.message=$1 撤回了一条消息\n" +
 					"recall.others.message=$1 撤回了一条 $2 的 [$3] 消息\n" +
 					"recall.others.unknown.message=$1 撤回了一条 [$2] 的消息\n" +
+					"image.id=图片ID\n" +
 					"command.stop=关闭机器人\n" +
 					"command.friend.list=获取当前机器人好友列表\n" +
 					"command.language=更改 MiraiBot 的语言\n" +
@@ -74,6 +75,7 @@ public class LanguageUtil {
 					"command.reply=回复一条消息\n" +
 					"command.recall=撤回一个消息\n" +
 					"command.image=向当前聊群发送图片\n" +
+					"command.image.info=查看一个图片的信息\n" +
 					"command.up.img=上传一个图片到服务器并获取到图片信息\n" +
 					"command.up.clip.img=上传当前剪切板的图片\n" +
 					"command.new.img=创建并上传一个图片\n" +
@@ -81,12 +83,14 @@ public class LanguageUtil {
 					"command.avatar=获取一个用户的头像\n" +
 					"command.accept=同意一个入群请求\n" +
 					"command.kick=踢出一个用户\n" +
-					"command.mute=禁言一個用戶指定時間（單位：秒）\n" +
+					"command.mute=禁言一个用户指定时间（单位：秒）\n" +
+					"command.name.card=修改一个用户的群昵称\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
 					"true.or.false=是否\n" +
 					"check.update=检查更新\n" +
 					"group=群\n" +
+					"name.card=群昵称\n" +
 					"password=密码\n" +
 					"qq=QQ\n" +
 					"reason=原因\n" +
@@ -156,6 +160,7 @@ public class LanguageUtil {
 					"recall.unknown.message=$1 撤回了一條消息\n" +
 					"recall.others.message=$1 撤回了一條 $2 的 [$3] 消息\n" +
 					"recall.others.unknown.message=$1 撤回了一條 [$2] 的消息\n" +
+					"image.id=圖片ID\n" +
 					"command.stop=關閉機器人\n" +
 					"command.friend.list=獲取當前機器人好友列表\n" +
 					"command.language=更改 MiraiBot 的語言\n" +
@@ -165,6 +170,7 @@ public class LanguageUtil {
 					"command.reply=回復一條消息\n" +
 					"command.recall=撤回一個消息\n" +
 					"command.image=向當前聊群發送圖片\n" +
+					"command.image.info=查看一個圖片的信息\n" +
 					"command.up.img=上傳一個圖片到服務器並獲取到圖片信息\n" +
 					"command.up.clip.img=上傳當前剪切板的圖片\n" +
 					"command.new.img=創建並上傳一個圖片\n" +
@@ -172,11 +178,14 @@ public class LanguageUtil {
 					"command.accept=同意一個入群請求\n" +
 					"command.avatar=獲取一個用戶的頭像\n" +
 					"command.kick=踢出一個用戶\n" +
+					"command.mute=禁言一個用戶指定時間（單位：秒）\n" +
+					"command.name.card=修改一個用戶的群昵稱\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
 					"true.or.false=是否\n" +
 					"check.update=檢查更新\n" +
 					"group=群\n" +
+					"name.card=群昵稱\n" +
 					"password=密碼\n" +
 					"qq=QQ\n" +
 					"reason=原因\n" +
@@ -246,6 +255,7 @@ public class LanguageUtil {
 					"recall.unknown.message=$1 withdrew a message\n" +
 					"recall.others.message=$1 withdrew a $3 message for [$2]\n" +
 					"recall.others.unknown.message=$1 withdrew a message for [$2]\n" +
+					"image.id=Image ID\n" +
 					"command.stop=Turn off the robot\n" +
 					"command.friend.list=Get the current robot friend list\n" +
 					"command.language=Change the language of MiraiBot\n" +
@@ -255,6 +265,7 @@ public class LanguageUtil {
 					"command.reply=Reply to a message\n" +
 					"command.recall=Recall a message\n" +
 					"command.image=Send a picture to the current chat group\n" +
+					"command.image.info=View the information of a picture\n" +
 					"command.up.img=Upload a picture to the server and get the picture information\n" +
 					"command.up.clip.img=Upload a picture of the current clipboard\n" +
 					"command.new.img=Create and upload an image\n" +
@@ -263,11 +274,13 @@ public class LanguageUtil {
 					"command.avatar=Get a user's avatar\n" +
 					"command.kick=Kick an user\n" +
 					"command.mute=Mute a user-specified time (unit: second)\n" +
+					"command.name.card=Modify a user’s group nickname\n" +
 					"reloaded=The configuration file has been reloaded!\n" +
 					"please.input=Please input \n" +
 					"true.or.false= whether \n" +
 					"check.update= check update\n" +
 					"group=Group\n" +
+					"name.card=Group Name Card\n" +
 					"password=Password\n" +
 					"qq=QQ\n" +
 					"reason=Reason\n" +
