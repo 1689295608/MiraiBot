@@ -1,9 +1,6 @@
 package com.windowx.miraibot;
 
-import com.windowx.miraibot.plugin.JavaPlugin;
-import com.windowx.miraibot.plugin.Plugin;
-import com.windowx.miraibot.plugin.PluginManager;
-import com.windowx.miraibot.plugin.XMLParser;
+import com.windowx.miraibot.plugin.*;
 import com.windowx.miraibot.utils.ClipboardUtil;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LanguageUtil;
@@ -164,6 +161,7 @@ public class PluginMain {
 					pluginManager = new PluginManager(pluginList);
 					for(Plugin plugin : pluginList) {
 						try {
+							PluginCore.plugin = plugin;
 							JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
 							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
 									.replaceAll("\\$1", plugin.getName())
@@ -215,8 +213,9 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
 							.replaceAll("\\$1", bot.getNick())
 							.replaceAll("\\$2", String.valueOf(bot.getId())));
-					for(Plugin plugin : pluginList) {
+					for (Plugin plugin : pluginList) {
 						try {
+							PluginCore.plugin = plugin;
 							JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
 							javaPlugin.onDisable();
 						} catch (Exception e) {
@@ -230,8 +229,9 @@ public class PluginMain {
 				if (!runCommand(msg)) {
 					try {
 						boolean send = true;
-						for(Plugin plugin : pluginList) {
+						for (Plugin plugin : pluginList) {
 							try {
+								PluginCore.plugin = plugin;
 								JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
 								send = javaPlugin.onCommand(msg);
 							} catch (Exception e) {
