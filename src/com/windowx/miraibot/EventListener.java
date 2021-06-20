@@ -270,6 +270,8 @@ public class EventListener implements ListenerHost {
 						String runCmd = sectionObject.has("RunCommand") ? sectionObject.getString("RunCommand") : "";
 						String changeNameCard = sectionObject.has("ChangeNameCard") ? sectionObject.getString("ChangeNameCard") : null;
 						String permission = sectionObject.has("Permission") ? sectionObject.getString("Permission") : "*";
+						String noPermission = sectionObject.has("NoPermission") ? sectionObject.getString("NoPermission") : "";
+						String noPermissionMsg = sectionObject.has("NoPermissionMsg") ? sectionObject.getString("NoPermissionMsg") : null;
 						String[] owners = ConfigUtil.getConfig("owner").split(",");
 						runCmd = mCode.replaceAll(regex, runCmd);
 						
@@ -279,22 +281,61 @@ public class EventListener implements ListenerHost {
 							continue;
 						}
 						boolean b = true;
-						if (!permission.equals("*")) {
-							for (String s : permission.split(","))
-								if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
-							if (b) for (String s : owners)
-								if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
+						if (noPermission.equals("")) {
+							if (!permission.equals("*")) {
+								for (String s : permission.split(","))
+									if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
+								if (b) for (String s : owners)
+									if (!String.valueOf(event.getSender().getId()).equals(s)) b = false;
+							}
+						} else {
+							if (noPermission.equals("*")) {
+								b = false;
+							} else {
+								for (String s : noPermission.split(","))
+									if (String.valueOf(event.getSender().getId()).equals(s)) b = false;
+							}
 						}
-						if (!b) continue;
+						if (!b) {
+							if (noPermissionMsg != null) {
+								boolean noPermissionReply = sectionObject.has("NoPermissionReply") && sectionObject.getBoolean("NoPermissionReply");
+								boolean noPermissionRecall = sectionObject.has("NoPermissionRecall") && sectionObject.getBoolean("NoPermissionRecall");
+								int noPermissionMute = sectionObject.has("NoPermissionMute") ? sectionObject.getInt("NoPermissionMute") : 0;
+								String noPermissionRunCmd = sectionObject.has("NoPermissionRunCmd") ? sectionObject.getString("NoPermissionRunCmd") : null;
+								noPermissionMsg = replaceGroupMsgPlaceholder(event, mCode.replaceAll(regex, noPermissionMsg));
+								if (noPermissionRecall) {
+									try {
+										Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+									} catch (Exception e) {
+										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+									}
+								}
+								if (noPermissionMute != 0) {
+									try {
+										event.getSender().mute(mute);
+									} catch (Exception e) {
+										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+									}
+								}
+								if (noPermissionRunCmd != null) {
+									try {
+										PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
+									} catch (Exception ignored) { }
+								}
+								if (!noPermissionReply) {
+									event.getGroup().sendMessage(noPermissionMsg);
+								} else {
+									event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(noPermissionMsg));
+								}
+							}
+							continue;
+						}
 						
 						if (mute != 0) {
-							if (event.getSender().getPermission() != MemberPermission.OWNER &&
-									event.getGroup().getBotPermission() != MemberPermission.MEMBER) {
-								try {
-									event.getSender().mute(mute);
-								} catch (Exception e) {
-									LogUtil.log(ConfigUtil.getLanguage("no.permission"));
-								}
+							try {
+								event.getSender().mute(mute);
+							} catch (Exception e) {
+								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
 							}
 						}
 						if (recall) {
