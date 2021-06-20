@@ -580,7 +580,7 @@ public class PluginMain {
 						Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
 						if (friend != null) {
 							friend.delete();
-							LogUtil.log(ConfigUtil.getLanguage("delete.friend")
+							LogUtil.log(ConfigUtil.getLanguage("deleted.friend")
 									.replaceAll("\\$1", friend.getNick())
 									.replaceAll("\\$2", String.valueOf(friend.getId())));
 						} else {
