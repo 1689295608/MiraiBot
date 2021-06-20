@@ -202,13 +202,15 @@ public class PluginMain {
 				System.exit(-1);
 			}
 			
-			Scanner scanner = new Scanner(System.in);
+			InputStreamReader isr = new InputStreamReader(System.in);
+			BufferedReader br = new BufferedReader(isr);
 			while (true) {
 				String msg;
-				if (!scanner.hasNextLine()) continue;
-				msg = scanner.nextLine();
-				LogUtil.log("> " + msg);
-				if (msg.length() <= 0) continue;
+				msg = br.readLine();
+				if (msg.length() <= 0) {
+					System.out.print("> ");
+					continue;
+				}
 				if (msg.equals("stop")) {
 					LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
 							.replaceAll("\\$1", bot.getNick())
