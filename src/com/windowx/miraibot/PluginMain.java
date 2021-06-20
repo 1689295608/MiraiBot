@@ -659,7 +659,7 @@ public class PluginMain {
 							LogUtil.log(ConfigUtil.getLanguage("not.user"));
 						}
 					} catch (NumberFormatException e) {
-						LogUtil.log(ConfigUtil.getLanguage("not.qq"));
+						LogUtil.log(ConfigUtil.getLanguage("not.qq").replaceAll("\\$1", cmd[1]));
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 					} catch (PermissionDeniedException e) {
 						LogUtil.log(ConfigUtil.getLanguage("no.permission"));
