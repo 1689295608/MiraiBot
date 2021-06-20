@@ -1,5 +1,7 @@
 package com.windowx.miraibot.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -56,7 +58,7 @@ public class LogUtil {
 	 * Output a message and record it in the log file
 	 * @param str What to output
 	 */
-	public static void log(String str) {
+	public static void log(@Nullable String str) {
 		if (str == null) return;
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
@@ -68,21 +70,9 @@ public class LogUtil {
 			String[] allLine = str.split("\n");
 			byte[] add = new byte[0];
 			for (String s : allLine) {
-				messages.append(messages.toString().isEmpty() ? "" : "\n").append(str.startsWith(">") ? "" : time).append(s);
-				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
+				add = byteMerger(add, (time + s + "\n").getBytes());
 			}
-			clear();
-			System.out.println(messages.toString());
-			System.out.print("> ");
-			/* 旧的输出系统，以后可能有用...
-			for (String s : allLine) {
-				clear();
-				messages.append(messages.toString().isEmpty() ? "" : "\n").append(str.startsWith(">") ? "" : time).append(s);
-				System.out.println(messages.toString());
-				System.out.print("> ");
-				add = byteMerger(add, ((str.startsWith(">") ? "" : time) + s + "\n").getBytes());
-			}
-			 */
+			System.out.print("\r" + time + str + "\n> ");
 			fos.write(byteMerger(all, add));
 			fos.flush();
 			fos.close();
