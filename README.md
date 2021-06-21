@@ -91,7 +91,7 @@ MiraiBot inherits [Mirai](https://github.com/mamoe/mirai) and uses the AGPLv3 pr
 ### Derivative software needs to declare and quote
 
 - If the package released by MiraiBot is quoted without modifying MiraiBot, the derivative project needs to clearly state that the part where the relevant content first appears comes from this warehouse ([MiraiBot](https://github.com/1689295608/MiraiBot)).
-- If the MiraiBot source code is modified and then released, or another project is released by referring to MiraiBot's internal implementation, the derivative project must be clearly stated in the first part of the article or at the position where'MiraiBot'-related content first appears from this warehouse ([MiraiBot](https:/ /github.com/1689295608/MiraiBot)). The fact that it is free and open source must not be distorted or hidden.
+- If the MiraiBot source code is modified and then released, or another project is released by referring to MiraiBot's internal implementation, the derivative project must be clearly stated in the first part of the article or at the position where'MiraiBot'-related content first appears from this warehouse. The fact that it is free and open source must not be distorted or hidden.
 
 ---
 
