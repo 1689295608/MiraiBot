@@ -10,13 +10,13 @@ public class PluginCore {
 		File config = new File("plugins/" + plugin.getName() + "/");
 		if (!config.exists()) {
 			if (!config.mkdirs()) {
-				throw new IOException("cloud not create dirs: " + config);
+				throw new IOException("Cloud not create dirs: " + config);
 			}
 		}
 		config = new File("plugins/" + plugin.getName() + "/config.ini");
 		if (!config.exists()) {
 			if (!config.createNewFile()) {
-				throw new IOException("cloud not create config file: " + config);
+				throw new IOException("Cloud not create config file: " + config);
 			}
 		}
 		properties.load(new FileReader(config));
@@ -36,13 +36,13 @@ public class PluginCore {
 		File config = new File("plugins/" + plugin.getName() + "/");
 		if (!config.exists()) {
 			if (!config.mkdirs()) {
-				throw new IOException("cloud not create dirs: " + config);
+				throw new IOException("Cloud not create dirs: " + config);
 			}
 		}
 		config = new File("plugins/" + plugin.getName() + "/config.ini");
 		if (!config.exists()) {
 			if (!config.createNewFile()) {
-				throw new IOException("cloud not create config file: " + config);
+				throw new IOException("Cloud not create config file: " + config);
 			}
 		}
 		FileOutputStream fos = new FileOutputStream(config);
@@ -60,5 +60,9 @@ public class PluginCore {
 	
 	public Properties getProperties() {
 		return properties;
+	}
+	
+	public void setProperties(Properties properties) {
+		PluginCore.properties = properties;
 	}
 }
