@@ -291,7 +291,7 @@ public class LanguageUtil {
 					"width=Width\n" +
 					"height=Height\n" +
 					"font.size=Font size\n" +
-					"unknown.error=An error occurred! Now shutting down the robot!\n").getBytes();
+					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
 }
