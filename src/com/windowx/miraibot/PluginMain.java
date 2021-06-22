@@ -238,7 +238,13 @@ public class PluginMain {
 								LogUtil.log(e.toString());
 							}
 						}
-						if (send) group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
+						String decode;
+						try {
+							decode = decodeUnicode(msg);
+						} catch (Exception e) {
+							decode = msg;
+						}
+						if (send) group.sendMessage(MiraiCode.deserializeMiraiCode(decode));
 					} catch (BotIsBeingMutedException e) {
 						LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
 					}
@@ -254,7 +260,25 @@ public class PluginMain {
 			System.exit(-1);
 		}
 	}
-	
+	public static String decodeUnicode(final String dataStr) {
+		int start = 0;
+		int end;
+		final StringBuilder buffer = new StringBuilder();
+		while (start > -1) {
+			end = dataStr.indexOf("\\u", start + 2);
+			String charStr;
+			if (end == -1) {
+				charStr = dataStr.substring(start + 2);
+			} else {
+				charStr = dataStr.substring(start + 2, end);
+			}
+			char letter = (char) Integer.parseInt(charStr, 16);
+			buffer.append(letter);
+			start = end;
+		}
+		return buffer.toString();
+	}
+
 	/**
 	 * Execute an instruction.
 	 * @param msg Message
