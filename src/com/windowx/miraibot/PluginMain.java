@@ -624,8 +624,8 @@ public class PluginMain {
 				}
 				return true;
 			case "checkUpdate":
-				checkUpdate(null);
 				LogUtil.log(ConfigUtil.getLanguage("checking.update"));
+				checkUpdate(null);
 				return true;
 			case "accept":
 				if (cmd.length > 1) {
