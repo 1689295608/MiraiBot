@@ -202,7 +202,7 @@ public class PluginMain {
 			
 			InputStreamReader isr = new InputStreamReader(System.in);
 			BufferedReader br = new BufferedReader(isr);
-			while (true) {
+			do {
 				String msg;
 				msg = br.readLine();
 				if (msg.length() <= 0) {
@@ -223,7 +223,7 @@ public class PluginMain {
 						}
 					}
 					bot.close();
-					System.out.println();
+					System.out.print("\n");
 					System.exit(0);
 				}
 				if (!runCommand(msg)) {
@@ -243,7 +243,7 @@ public class PluginMain {
 						LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
 					}
 				}
-			}
+			} while (true);
 		} catch (NumberFormatException e) {
 			LogUtil.log(ConfigUtil.getLanguage("qq.password.error"));
 			e.printStackTrace();
@@ -735,11 +735,15 @@ public class PluginMain {
 				version = new String(url.openStream().readAllBytes());
 			}
 			try {
-				if (Integer.parseInt(version.replaceAll("[^0-9]", "")) < Integer.parseInt(LatestVersion.replaceAll("[^0-9]", ""))) {
+				int nowV = Integer.parseInt(version.replaceAll("[^0-9]", ""));
+				int newV = Integer.parseInt(LatestVersion.replaceAll("[^0-9]", ""));
+				if (nowV < newV) {
 					LogUtil.log(ConfigUtil.getLanguage("found.new.update")
 							.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion));
-				} else {
+				} else if (nowV == newV) {
 					LogUtil.log(ConfigUtil.getLanguage("already.latest.version").replaceAll("\\$1", LatestVersion));
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("too.new.version"));
 				}
 			} catch (Exception e) {
 				LogUtil.log(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
