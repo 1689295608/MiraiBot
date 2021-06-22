@@ -312,11 +312,6 @@ public class EventListener implements ListenerHost {
 								int noPermissionMute = sectionObject.has("NoPermissionMute") ? sectionObject.getInt("NoPermissionMute") : 0;
 								String noPermissionRunCmd = sectionObject.has("NoPermissionRunCmd") ? sectionObject.getString("NoPermissionRunCmd") : null;
 								noPermissionMsg = replaceGroupMsgPlaceholder(event, mCode.replaceAll(regex, noPermissionMsg));
-								if (noPermissionRunCmd != null) {
-									try {
-										PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
-									} catch (Exception ignored) { }
-								}
 								if (noPermissionRecall) {
 									try {
 										Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
@@ -336,17 +331,15 @@ public class EventListener implements ListenerHost {
 								} else {
 									event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(noPermissionMsg));
 								}
+								if (noPermissionRunCmd != null) {
+									try {
+										PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
+									} catch (Exception ignored) { }
+								}
 							}
 							continue;
 						}
 						
-						if (!runCmd.isEmpty()) {
-							try {
-								PluginMain.runCommand(replaceGroupMsgPlaceholder(event, runCmd));
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
 						if (mute != 0) {
 							try {
 								event.getSender().mute(mute);
@@ -378,6 +371,13 @@ public class EventListener implements ListenerHost {
 								((NormalMember) event.getSender()).setNameCard(replaceGroupMsgPlaceholder(event, mCode.replaceAll(regex, changeNameCard)));
 							} catch (Exception e) {
 								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+							}
+						}
+						if (!runCmd.isEmpty()) {
+							try {
+								PluginMain.runCommand(replaceGroupMsgPlaceholder(event, runCmd));
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
 						}
 					} catch (JSONException ignored) { }
