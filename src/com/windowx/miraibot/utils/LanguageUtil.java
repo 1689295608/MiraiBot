@@ -68,6 +68,7 @@ public class LanguageUtil {
 					"recall.others.unknown.message=$1 撤回了一条 [$2] 的消息\n" +
 					"image.id=图片ID\n" +
 					"command.stop=关闭机器人\n" +
+					"command.check.update=手动检查 MiraiBot 是否有更新\n" +
 					"command.friend.list=获取当前机器人好友列表\n" +
 					"command.language=更改 MiraiBot 的语言\n" +
 					"command.group.list=获取当前聊群成员列表\n" +
@@ -165,6 +166,7 @@ public class LanguageUtil {
 					"recall.others.unknown.message=$1 撤回了一條 [$2] 的消息\n" +
 					"image.id=圖片ID\n" +
 					"command.stop=關閉機器人\n" +
+					"command.check.update=手動檢查 MiraiBot 是否有更新\n" +
 					"command.friend.list=獲取當前機器人好友列表\n" +
 					"command.language=更改 MiraiBot 的語言\n" +
 					"command.group.list=獲取當前聊群成員列表\n" +
@@ -262,6 +264,7 @@ public class LanguageUtil {
 					"recall.others.unknown.message=$1 recalled a message for [$2]\n" +
 					"image.id=Image ID\n" +
 					"command.stop=Close the robot\n" +
+					"command.check.update=Manually check if MiraiBot is updated\n" +
 					"command.friend.list=Get the current robot's friend list\n" +
 					"command.language=Change the language of MiraiBot\n" +
 					"command.group.list=Get the list of current chat group members\n" +
