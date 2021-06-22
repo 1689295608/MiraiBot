@@ -335,6 +335,9 @@ public class PluginMain {
 						"avatar <" + ConfigUtil.getLanguage("qq") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
 						
+						"checkUpdate \n" +
+						" - " + ConfigUtil.getLanguage("command.check.update") + "\n" +
+						
 						"del <" + ConfigUtil.getLanguage("qq") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.del") + "\n" +
 						
@@ -619,6 +622,10 @@ public class PluginMain {
 							ConfigUtil.getLanguage("message.id") + "> <" +
 							ConfigUtil.getLanguage("contents") + ">");
 				}
+				return true;
+			case "checkUpdate":
+				checkUpdate(null);
+				LogUtil.log(ConfigUtil.getLanguage("checking.update"));
 				return true;
 			case "accept":
 				if (cmd.length > 1) {
