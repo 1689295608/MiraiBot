@@ -85,6 +85,7 @@ public class LanguageUtil {
 					"command.kick=踢出一个用户\n" +
 					"command.mute=禁言一个用户指定时间（单位：秒）\n" +
 					"command.name.card=修改一个用户的群昵称\n" +
+					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
 					"true.or.false=是否\n" +
@@ -180,6 +181,7 @@ public class LanguageUtil {
 					"command.kick=踢出一個用戶\n" +
 					"command.mute=禁言一個用戶指定時間（單位：秒）\n" +
 					"command.name.card=修改一個用戶的群昵稱\n" +
+					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
 					"true.or.false=是否\n" +
@@ -275,6 +277,7 @@ public class LanguageUtil {
 					"command.kick=Kick an user\n" +
 					"command.mute=Mute a user-specified time (unit: second)\n" +
 					"command.name.card=Modify a user’s group nickname\n" +
+					"name.card.set=The group nickname of $1 has been set to $1\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"please.input=Please input \n" +
 					"true.or.false= whether \n" +
