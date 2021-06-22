@@ -657,6 +657,10 @@ public class PluginMain {
 								}
 							}
 							member.setNameCard(nameCard.toString());
+							LogUtil.log(ConfigUtil.getLanguage("name.card.set")
+									.replaceAll("\\$1", member.getNick())
+									.replaceAll("\\$2", nameCard.toString())
+							);
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("not.user"));
 						}
@@ -669,8 +673,9 @@ public class PluginMain {
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": nameCard <" +
-							ConfigUtil.getLanguage("qq") + "> " + ConfigUtil.getLanguage("name.card"));
+							ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("name.card") + ">");
 				}
+				return true;
 			case "recall":
 				if (cmd.length > 1) {
 					try {
@@ -837,7 +842,7 @@ public class PluginMain {
 					fos.flush();
 					fos.close();
 					LogUtil.log(ConfigUtil.getLanguage("please.restart"));
-					System.exit(-1);
+					System.exit(0);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
