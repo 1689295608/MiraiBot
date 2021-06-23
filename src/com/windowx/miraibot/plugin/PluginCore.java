@@ -28,6 +28,9 @@ public class PluginCore {
 		}
 		properties.load(new FileReader(config));
 		properties.setProperty(key, value);
+		FileOutputStream fos = new FileOutputStream(config);
+		properties.store(fos, null);
+		fos.close();
 	}
 	
 	public void setConfigByName(String name, String key, String value) throws IOException {
@@ -45,6 +48,9 @@ public class PluginCore {
 		}
 		properties.load(new FileReader(config));
 		properties.setProperty(key, value);
+		FileOutputStream fos = new FileOutputStream(config);
+		properties.store(fos, null);
+		fos.close();
 	}
 	
 	/**
@@ -72,29 +78,7 @@ public class PluginCore {
 		return properties.getProperty(key, defaultValue);
 	}
 	
-	/**
-	 * Save configuration file to file
-	 * @throws IOException IOException
-	 */
-	@Deprecated public void saveConfig() throws IOException {
-		File config = new File("plugins/" + plugin.getName() + "/");
-		if (!config.exists()) {
-			if (!config.mkdirs()) {
-				throw new IOException("Cloud not create dirs: " + config);
-			}
-		}
-		config = new File("plugins/" + plugin.getName() + "/config.ini");
-		if (!config.exists()) {
-			if (!config.createNewFile()) {
-				throw new IOException("Cloud not create config file: " + config);
-			}
-		}
-		FileOutputStream fos = new FileOutputStream(config);
-		properties.store(fos, null);
-		fos.close();
-	}
-	
-	public void saveConfigByName(String name) throws IOException {
+	public void loadConfigByName(String name) throws IOException {
 		File config = new File("plugins/" + name + "/");
 		if (!config.exists()) {
 			if (!config.mkdirs()) {
@@ -107,11 +91,8 @@ public class PluginCore {
 				throw new IOException("Cloud not create config file: " + config);
 			}
 		}
-		FileOutputStream fos = new FileOutputStream(config);
-		properties.store(fos, null);
-		fos.close();
+		properties.load(new FileReader(config));
 	}
-	
 	/**
 	 * Get whether the key is included in the configuration file
 	 * @param key Key
