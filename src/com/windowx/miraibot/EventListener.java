@@ -251,7 +251,7 @@ public class EventListener implements ListenerHost {
 				JavaPlugin javaPlugin = PluginMain.pluginManager.getInstance(plugin.getClassName());
 				javaPlugin.onGroupMessage(event);
 			} catch (Exception e) {
-				LogUtil.log(e.toString());
+				e.printStackTrace();
 			}
 		}
 		
