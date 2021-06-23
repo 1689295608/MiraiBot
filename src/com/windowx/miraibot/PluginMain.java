@@ -172,6 +172,7 @@ public class PluginMain {
 									.replaceAll("\\$1", plugin.getName())
 									.replaceAll("\\$2", e.toString())
 							);
+							e.printStackTrace();
 						}
 					}
 				} catch (Exception e) {
@@ -235,7 +236,7 @@ public class PluginMain {
 								JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
 								send = javaPlugin.onCommand(msg);
 							} catch (Exception e) {
-								LogUtil.log(e.toString());
+								e.printStackTrace();
 							}
 						}
 						String decode;
