@@ -1,6 +1,6 @@
 package com.windowx.miraibot;
 
-import com.windowx.miraibot.plugin.*;
+import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.utils.ClipboardUtil;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LanguageUtil;
@@ -23,16 +23,14 @@ import org.json.JSONObject;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.net.URLClassLoader;
 import java.util.*;
 
 public class PluginMain {
 	public static Group group = null;
 	public static final String language = Locale.getDefault().getLanguage();
 	public static Bot bot;
-	public static List<Plugin> pluginList;
-	public static PluginManager pluginManager;
+	static ArrayList<Plugin> plugins;
 	
 	public static void main(String[] args) {
 		String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
@@ -47,6 +45,7 @@ public class PluginMain {
 					(language.equals("tw") ? "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021" :
 							"MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021"));
 		} catch (Exception e) {
+			System.out.println();
 			e.printStackTrace();
 		}
 		
@@ -64,6 +63,7 @@ public class PluginMain {
 			}
 		} catch (IOException e) {
 			LogUtil.log(err);
+			System.out.println();
 			e.printStackTrace();
 			System.exit(-1);
 		}
@@ -141,47 +141,63 @@ public class PluginMain {
 						}
 					}
 				}
+				File pluginsDir = new File("plugins");
+				plugins = new ArrayList<>();
 				try {
-					XMLParser.plugin = new File("plugins.xml");
-					if (!XMLParser.plugin.exists()) {
-						if (XMLParser.plugin.createNewFile()) {
-							FileOutputStream fos = new FileOutputStream(XMLParser.plugin);
-							fos.write(("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-									"<plugins>\n" +
-									"   <plugin>\n" +
-									"       <name>Demo</name>\n" +
-									"       <jar>plugins/demo.jar</jar>\n" +
-									"       <class>com.windowx.demo.Main</class>\n" +
-									"   </plugin>\n" +
-									"</plugins>").getBytes(StandardCharsets.UTF_8)
-							); fos.flush(); fos.close();
+					File[] pluginsFile = pluginsDir.listFiles();
+					if (pluginsFile != null) {
+						for (File f : pluginsFile) {
+							if (f.getName().endsWith(".jar")) {
+								URLClassLoader u = new URLClassLoader(new URL[]{ f.toURI().toURL() });
+								InputStream is = u.getResourceAsStream("plugin.ini");
+								if (is != null) {
+									try {
+										Properties plugin = new Properties();
+										plugin.load(is);
+										Plugin p = new Plugin();
+										p.setName(plugin.getProperty("name"));
+										p.setClassName(plugin.getProperty("main"));
+										p.setInstance((Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance());
+										plugins.add(p);
+									} catch (Exception e) {
+										System.out.println();
+										e.printStackTrace();
+									}
+								} else {
+									LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
+											.replaceAll("\\$1", f.getName())
+											.replaceAll("\\$2", "\"plugin.ini\" not found")
+									);
+								}
+							}
 						}
 					}
-					pluginList = XMLParser.getPluginList();
-					pluginManager = new PluginManager(pluginList);
-					for(Plugin plugin : pluginList) {
-						try {
-							PluginCore.plugin = plugin;
-							JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
-							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
-									.replaceAll("\\$1", plugin.getName())
-							);
-							javaPlugin.onEnable();
-						} catch (Exception e) {
-							LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
-									.replaceAll("\\$1", plugin.getName())
-									.replaceAll("\\$2", e.toString())
-							);
-							e.printStackTrace();
+					if (!plugins.isEmpty()) {
+						for (Plugin p : plugins) {
+							try {
+								LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
+												.replaceAll("\\$1", p.getName())
+								);
+								p.getInstance().onEnable();
+							} catch (Exception e) {
+								LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
+										.replaceAll("\\$1", p.getName())
+										.replaceAll("\\$2", e.toString())
+								);
+								System.out.println();
+								e.printStackTrace();
+							}
 						}
 					}
 				} catch (Exception e) {
 					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+					System.out.println();
 					e.printStackTrace();
 					System.exit(-1);
 				}
 			} catch (Exception e) {
 				LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+				System.out.println();
 				e.printStackTrace();
 				System.exit(-1);
 			}
@@ -214,13 +230,14 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
 							.replaceAll("\\$1", bot.getNick())
 							.replaceAll("\\$2", String.valueOf(bot.getId())));
-					for (Plugin plugin : pluginList) {
-						try {
-							PluginCore.plugin = plugin;
-							JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
-							javaPlugin.onDisable();
-						} catch (Exception e) {
-							LogUtil.log(e.toString());
+					if (!plugins.isEmpty()) {
+						for (Plugin p : plugins) {
+							try {
+								p.getInstance().onDisable();
+							} catch (Exception e) {
+								System.out.println();
+								e.printStackTrace();
+							}
 						}
 					}
 					bot.close();
@@ -230,13 +247,14 @@ public class PluginMain {
 				if (!runCommand(msg)) {
 					try {
 						boolean send = true;
-						for (Plugin plugin : pluginList) {
-							try {
-								PluginCore.plugin = plugin;
-								JavaPlugin javaPlugin = pluginManager.getInstance(plugin.getClassName());
-								send = javaPlugin.onCommand(msg);
-							} catch (Exception e) {
-								e.printStackTrace();
+						if (!plugins.isEmpty()) {
+							for (Plugin p : plugins) {
+								try {
+									send = p.getInstance().onCommand(msg);
+								} catch (Exception e) {
+									System.out.println();
+									e.printStackTrace();
+								}
 							}
 						}
 						String decode;
@@ -253,10 +271,12 @@ public class PluginMain {
 			} while (true);
 		} catch (NumberFormatException e) {
 			LogUtil.log(ConfigUtil.getLanguage("qq.password.error"));
+			System.out.println();
 			e.printStackTrace();
 			System.exit(-1);
 		} catch (Exception e) {
 			LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+			System.out.println();
 			e.printStackTrace();
 			System.exit(-1);
 		}
@@ -804,6 +824,7 @@ public class PluginMain {
 				fos.close();
 			} catch (IOException e) {
 				LogUtil.log(ConfigUtil.getLanguage("failed.create.config"));
+				System.out.println();
 				e.printStackTrace();
 				System.exit(-1);
 			}
@@ -811,6 +832,7 @@ public class PluginMain {
 		try {
 			EventListener.autoRespondConfig = new JSONObject(new String(new FileInputStream(EventListener.autoRespond).readAllBytes()));
 		} catch (IOException e) {
+			System.out.println();
 			e.printStackTrace();
 		}
 	}
@@ -829,6 +851,14 @@ public class PluginMain {
 		LogUtil.log("· -------------------------------- ·");
 	}
 	
+	/**
+	 * Determine whether the group is allowed
+	 * @param id GroupID
+	 * @return Is Not Allowed Group
+	 */
+	public static boolean isNotAllowedGroup(long id) {
+		return id != Long.parseLong(ConfigUtil.getConfig("group"));
+	}
 	/**
 	 * Check config file
 	 * @return Whether the config file is exists
@@ -881,6 +911,7 @@ public class PluginMain {
 					System.exit(0);
 				}
 			} catch (IOException e) {
+				System.out.println();
 				e.printStackTrace();
 			}
 			return false;
