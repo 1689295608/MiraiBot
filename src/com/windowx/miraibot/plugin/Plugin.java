@@ -1,25 +1,25 @@
 package com.windowx.miraibot.plugin;
 
-public class Plugin {
+public class Plugin extends JavaPlugin {
 	private String name;
-	private String jar;
 	private String className;
+	private Plugin instance;
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getName() {
 		return this.name;
 	}
-	public String getJar() {
-		return this.jar;
+	public void setClassName(String className) {
+		this.className = name;
 	}
 	public String getClassName() {
 		return this.className;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setInstance(Plugin instance) {
+		this.instance = instance;
 	}
-	public void setJar(String jar) {
-		this.jar = jar;
-	}
-	public void setClassName(String className) {
-		this.className = className;
+	public Plugin getInstance() {
+		return this.instance;
 	}
 }
