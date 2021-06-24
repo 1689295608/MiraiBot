@@ -1,8 +1,6 @@
 package com.windowx.miraibot;
 
-import com.windowx.miraibot.plugin.JavaPlugin;
 import com.windowx.miraibot.plugin.Plugin;
-import com.windowx.miraibot.plugin.PluginCore;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.Mirai;
@@ -36,7 +34,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupJoin(MemberJoinEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("joined.group")
@@ -49,7 +47,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupLeave(MemberLeaveEvent.Quit event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("left.group")
@@ -62,7 +60,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupKick(MemberLeaveEvent.Kick event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -94,7 +92,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -210,7 +208,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onMemberMute(MemberMuteEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			return;
 		}
 		logMute(event.getOperator(), event.getMember(), event.getGroup(), event.getDurationSeconds());
@@ -218,7 +216,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onBotMute(BotMuteEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			return;
 		}
 		logMute(event.getOperator(), null, event.getGroup(), event.getDurationSeconds());
@@ -226,7 +224,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onMuteAll(GroupMuteAllEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("mute.all") +
@@ -235,7 +233,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler
 	public void onGroupMessage(GroupMessageEvent event) {
-		if (event.getGroup().getId() != Long.parseLong(ConfigUtil.getConfig("group"))) {
+		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
 			return;
 		}
 		String mCode = event.getMessage().serializeToMiraiCode();
@@ -245,13 +243,14 @@ public class EventListener implements ListenerHost {
 		messages.add(event.getSource());
 		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
 		
-		for (Plugin plugin : PluginMain.pluginList) {
-			try {
-				PluginCore.plugin = plugin;
-				JavaPlugin javaPlugin = PluginMain.pluginManager.getInstance(plugin.getClassName());
-				javaPlugin.onGroupMessage(event);
-			} catch (Exception e) {
-				e.printStackTrace();
+		if (!PluginMain.plugins.isEmpty()) {
+			for (Plugin p : PluginMain.plugins) {
+				try {
+					p.getInstance().onGroupMessage(event);
+				} catch (Exception e) {
+					System.out.println();
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -377,12 +376,14 @@ public class EventListener implements ListenerHost {
 							try {
 								PluginMain.runCommand(replaceGroupMsgPlaceholder(event, runCmd));
 							} catch (Exception e) {
+								System.out.println();
 								e.printStackTrace();
 							}
 						}
 					} catch (JSONException ignored) { }
 				} catch (Exception e) {
 					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+					System.out.println();
 					e.printStackTrace();
 					System.exit(-1);
 				}
