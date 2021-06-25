@@ -217,11 +217,10 @@ public class PluginMain {
 				System.exit(-1);
 			}
 			
-			InputStreamReader isr = new InputStreamReader(System.in);
-			BufferedReader br = new BufferedReader(isr);
+			Scanner scanner = new Scanner(System.in);
 			do {
-				String msg;
-				msg = br.readLine();
+				if (!scanner.hasNextLine()) continue;
+				String msg = scanner.nextLine();
 				if (msg.length() <= 0) {
 					System.out.print("> ");
 					continue;
@@ -263,7 +262,7 @@ public class PluginMain {
 						} catch (Exception e) {
 							decode = msg;
 						}
-						if (send) group.sendMessage(MiraiCode.deserializeMiraiCode(decode));
+						if (send) group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
 					} catch (BotIsBeingMutedException e) {
 						LogUtil.log(ConfigUtil.getLanguage("bot.is.being.muted"));
 					}
