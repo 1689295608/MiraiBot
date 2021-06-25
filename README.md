@@ -96,13 +96,13 @@ MiraiBot inherits [Mirai](https://github.com/mamoe/mirai) and uses the AGPLv3 pr
 ---
 
 ## First use
-**First-time users**, please go to [Release](https://github.com/1689295608/MiraiBot/releases/latest) to download the latest .zip package
+**The newbies**, please go to [Release](https://github.com/1689295608/MiraiBot/releases/latest) to download the latest .zip package
 
 Then unzip it to any folder (*folders and paths containing special characters are not recommended* ), and then you can proceed.
 
 
 ### Windows users
-**Windows** users, please run `Login.bat` first and then verify your qq number & password.
+For **Windows** users, please run `Login.bat` first and then verify your qq number & password.
 
 You can also use the `device.json` that has been logged in to the account to log in to the account directly
 
