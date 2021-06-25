@@ -879,29 +879,29 @@ public class PluginMain {
 					
 					FileOutputStream fos = new FileOutputStream(file);
 					String config =
-							"# 输入你的 QQ\n" +
+							"# QQ Number\n" +
 									"qq=" + qq + "\n" +
-									"# 输入你的 QQ 密码\n" +
+									"# QQ Password\n" +
 									"password=" + password + "\n" +
-									"# 输入你要聊天的聊群\n" +
+									"# The chat group you want to join. (Group Number)\n" +
 									"group=" + group + "\n" +
-									"# 机器人主人 QQ 号, 即拥有一切权力的 QQ 号. 用 \",\" 分隔\n" +
+									"# The owner's qq number of the robot. (use \",\" to split)\n" +
 									"owner=00000\n" +
-									"# 每一个新消息是否都显示发送者的 QQ 号\n" +
+									"# To show sender's QQ number on every message?\n" +
 									"showQQ=false\n" +
-									"# 输入你接收的好友信息（“*” 为 全部）\n" +
+									"# Which QQ friend's message do you want to receive?（“*” for all）\n" +
 									"friend=*\n" +
-									"# 每次启动时都检测更新\n" +
+									"# Do you want to check updates on every start-up?\n" +
 									"checkUpdate=" + checkUpdate + "\n" +
-									"# 输入使用“newImg”指令生成的字体\n" +
-									"font=微软雅黑\n" +
-									"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
+									"# The font used by the command \"newImg\"\n" +
+									"font=\n" +
+									"# Login Protocol（PAD: 平板/Pads，WATCH: 手表/Watches，PHONE: 手机/Smartphones），the default is PHONE\n" +
 									"protocol=PHONE\n" +
-									"# 是否启用 Debug 模式（即显示 MiraiCode）\n" +
+									"# Enable Debug mode? (show mirai codes)\n" +
 									"debug=false\n" +
 									"\n" +
 									"# ----=== MiraiBot ===----\n" +
-									"# 使用“help”获取帮助！\n" +
+									"# Use \"help\" to get help.\n" +
 									"# -----------------------------\n";
 					fos.write(config.getBytes());
 					fos.flush();
