@@ -102,19 +102,19 @@ Then unzip it to any folder (*folders and paths containing special characters ar
 
 
 ### Windows users
-For **Windows** users, please run `Login.bat` first and then verify your qq number & password.
+For **Windows** users, please run `Login.bat` first and then verify.
 
 You can also use the `device.json` that has been logged in to the account to log in to the account directly
 
 The `device.json` in the current directory can be used to log in to the account on any other device
 
-Then double-click `Start.bat` to log in to the account
+Then run `Start.bat` to log in to the account
 
 
 ### Linux users
 **Linux** users need to run a terminal in the `MiraiBot` directory first.
 
-For the first run, please run `Login.sh` and verify your qq number & password.
+For the first run, please run `Login.sh` and verify.
 
 You can also use the `device.json` that has been logged in to the account to log in to the account directly
 
