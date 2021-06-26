@@ -29,16 +29,16 @@ jobs:
       
       - name: Creating Files
       - run: |
-        echo "./src/com/windowx/miraibot/PluginMain.java">"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/WordToImage.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/EventListener.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/plugin/JavaPlugin.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/plugin/Plugin.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/plugin/PluginCore.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/utils/ConfigUtil.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/utils/LogUtil.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/utils/LanguageUtil.java">>"sourcelist.txt"
-        echo "./src/com/windowx/miraibot/utils/ClipboardUtil.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/PluginMain.java">./sourcelist.txt
+        echo "./src/com/windowx/miraibot/WordToImage.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/EventListener.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/plugin/JavaPlugin.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/plugin/Plugin.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/plugin/PluginCore.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/utils/ConfigUtil.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/utils/LogUtil.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/utils/LanguageUtil.java">>./sourcelist.txt
+        echo "./src/com/windowx/miraibot/utils/ClipboardUtil.java">>./sourcelist.txt
         mkdir Libs
       
       - name: DStep1
