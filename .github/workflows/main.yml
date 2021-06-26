@@ -29,17 +29,17 @@ jobs:
       
       - name: Creating Files
       - run: |
-      echo "./src/com/windowx/miraibot/PluginMain.java">"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/WordToImage.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/EventListener.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/plugin/JavaPlugin.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/plugin/Plugin.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/plugin/PluginCore.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/utils/ConfigUtil.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/utils/LogUtil.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/utils/LanguageUtil.java">>"sourcelist.txt"
-      echo "./src/com/windowx/miraibot/utils/ClipboardUtil.java">>"sourcelist.txt"
-      mkdir Libs
+        echo "./src/com/windowx/miraibot/PluginMain.java">"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/WordToImage.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/EventListener.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/plugin/JavaPlugin.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/plugin/Plugin.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/plugin/PluginCore.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/utils/ConfigUtil.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/utils/LogUtil.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/utils/LanguageUtil.java">>"sourcelist.txt"
+        echo "./src/com/windowx/miraibot/utils/ClipboardUtil.java">>"sourcelist.txt"
+        mkdir Libs
       
       - name: DStep1
       uses: wei/wget@v1
@@ -82,9 +82,9 @@ jobs:
       distributin: 'adopt'
       java-version: '11'
       - run: |
-      javac -encoding utf-8 -classpath ./Libs/* -d ./Build-Classes/ @sourcelist.txt
-      cp -r ./extras/* ./Build-Classes/
-      jar -cvfm MiraiBot.jar mf.txt -C ./Build-Classes/ .
+        javac -encoding utf-8 -classpath ./Libs/* -d ./Build-Classes/ @sourcelist.txt
+        cp -r ./extras/* ./Build-Classes/
+        jar -cvfm MiraiBot.jar mf.txt -C ./Build-Classes/ .
 
 - name: Upload a Build Artifact
   uses: actions/upload-artifact@v2.2.4
