@@ -28,18 +28,13 @@ jobs:
       # Runs a single command using the runners shell
       
       - name: Creating Files
-      - run: |
-        echo "./src/com/windowx/miraibot/PluginMain.java">./sourcelist.txt
-        echo "./src/com/windowx/miraibot/WordToImage.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/EventListener.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/plugin/JavaPlugin.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/plugin/Plugin.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/plugin/PluginCore.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/utils/ConfigUtil.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/utils/LogUtil.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/utils/LanguageUtil.java">>./sourcelist.txt
-        echo "./src/com/windowx/miraibot/utils/ClipboardUtil.java">>./sourcelist.txt
-        mkdir Libs
+      - run: mkdir Libs
+      
+      - name: DStep0
+      uses: wei/wget@v1
+      with:
+        args: -O sourcelist.txt https://github.com/XIAYM-gh/MiraiXLibs/raw/main/sourcelist.txt
+      - run: echo Download Sourcelist...
       
       - name: DStep1
       uses: wei/wget@v1
