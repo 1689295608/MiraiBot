@@ -58,7 +58,7 @@ public class LanguageUtil {
 					"qq.password.error=请检查配置文件中的 QQ号 是否正确！\n" +
 					"success.change.language=成功修改语言为 简体中文\n" +
 					"up.loading.img=正在上传图片...\n" +
-					"join.request.group=$1 ($2) 请求加入聊群 $3 ($4)\n" +
+					"join.request.group=[$1] $2 ($3) 请求加入聊群 $4 ($5)\n" +
 					"joined.group=$1 ($2) 加入了聊群 $3 ($4)\n" +
 					"left.group=$1 ($2) 离开了聊群 $3 ($4)\n" +
 					"kick.group=$1 ($2) 被 $3 ($4) 请出了聊群 $5 ($6)\n" +
@@ -67,6 +67,10 @@ public class LanguageUtil {
 					"recall.others.message=$1 撤回了一条 $2 的 [$3] 消息\n" +
 					"recall.others.unknown.message=$1 撤回了一条 [$2] 的消息\n" +
 					"image.id=图片ID\n" +
+					"format.group.message=$1($2): $3\n" +
+					"format.group.recallable.message=[$1] $2($3): $4\n" +
+					"format.user.message=$1($2) -> $3($4): $5\n" +
+					"format.user.recallable.message=[$1] $2($3) -> $4($5): $6\n" +
 					"command.stop=关闭机器人\n" +
 					"command.check.update=手动检查 MiraiBot 是否有更新\n" +
 					"command.friend.list=获取当前机器人好友列表\n" +
@@ -156,7 +160,7 @@ public class LanguageUtil {
 					"qq.password.error=請檢查配置文件中的 QQ號 是否正確！\n" +
 					"success.change.language=成功修改語言為 繁體中文\n" +
 					"up.loading.img=正在上傳圖片...\n" +
-					"join.request.group=$1 ($2) 請求加入聊群 $3 ($4)\n" +
+					"join.request.group=[$1] $2 ($3) 請求加入聊群 $4 ($5)\n" +
 					"joined.group=$1 ($2) 加入了聊群 $3 ($4)\n" +
 					"left.group=$1 ($2) 離開了聊群 $3 ($4)\n" +
 					"kick.group=$1 ($2) 被 $3 ($4) 請出了聊群 $5 ($6)\n" +
@@ -165,6 +169,10 @@ public class LanguageUtil {
 					"recall.others.message=$1 撤回了一條 $2 的 [$3] 消息\n" +
 					"recall.others.unknown.message=$1 撤回了一條 [$2] 的消息\n" +
 					"image.id=圖片ID\n" +
+					"format.group.message=$1($2): $3\n" +
+					"format.group.recallable.message=[$1] $2($3): $4\n" +
+					"format.user.message=$1($2) -> $3($4): $5\n" +
+					"format.user.recallable.message=[$1] $2($3) -> $4($5): $6\n" +
 					"command.stop=關閉機器人\n" +
 					"command.check.update=手動檢查 MiraiBot 是否有更新\n" +
 					"command.friend.list=獲取當前機器人好友列表\n" +
@@ -254,7 +262,7 @@ public class LanguageUtil {
 					"qq.password.error=Please check whether the QQ number in the configuration file is correct!\n" +
 					"success.change.language=Successfully changed the language to English\n" +
 					"up.loading.img=Uploading Image File...\n" +
-					"join.request.group=$1 ($2) request to join the chat group $3 ($4)\n" +
+					"join.request.group=[$1] $2 ($3) request to join the chat group $4 ($5)\n" +
 					"joined.group=$1 ($2) joined the chat group $3 ($4)\n" +
 					"left.group=$1 ($2) left the chat group $3 ($4)\n" +
 					"kick.group=$1 ($2) was invited out of chat group by $3 ($4) $5 ($6)\n" +
@@ -263,6 +271,10 @@ public class LanguageUtil {
 					"recall.others.message=$1 recalled a $3 message for [$2]\n" +
 					"recall.others.unknown.message=$1 recalled a message for [$2]\n" +
 					"image.id=Image ID\n" +
+					"format.group.message=$1($2): $3\n" +
+					"format.group.recallable.message=[$1] $2($3): $4\n" +
+					"format.user.message=$1($2) -> $3($4): $5\n" +
+					"format.user.recallable.message=[$1] $2($3) -> $4($5): $6\n" +
 					"command.stop=Close the robot\n" +
 					"command.check.update=Manually check if MiraiBot is updated\n" +
 					"command.friend.list=Get the current robot's friend list\n" +
