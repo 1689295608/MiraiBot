@@ -82,11 +82,12 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		requests.add(event);
-		LogUtil.log("[" + requests.size() + "] " + ConfigUtil.getLanguage("join.request.group")
-				.replaceAll("\\$1", event.getFromNick())
-				.replaceAll("\\$2", String.valueOf(event.getFromId()))
-				.replaceAll("\\$3", event.getGroup().getName())
-				.replaceAll("\\$4", String.valueOf(event.getGroupId()))
+		LogUtil.log(ConfigUtil.getLanguage("join.request.group")
+				.replaceAll("\\$1", String.valueOf(requests.size()))
+				.replaceAll("\\$2", event.getFromNick())
+				.replaceAll("\\$3", String.valueOf(event.getFromId()))
+				.replaceAll("\\$4", event.getGroup().getName())
+				.replaceAll("\\$5", String.valueOf(event.getGroupId()))
 		);
 	}
 	
@@ -163,30 +164,46 @@ public class EventListener implements ListenerHost {
 	@EventHandler
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
 		MessageReceipt<Group> receipt = event.getReceipt();
+		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
 		if (receipt != null) {
 			messages.add(receipt.getSource());
-			LogUtil.log("[" + messages.size() + "] " + event.getBot().getNick() + showQQ(event.getBot().getId()) + " : " +
-					(ConfigUtil.getConfig("debug").equals("true") ?
-							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
+			LogUtil.log(ConfigUtil.getLanguage("format.group.recallable.message")
+					.replaceAll("\\$1", String.valueOf(messages.size()))
+					.replaceAll("\\$2", event.getBot().getNick())
+					.replaceAll("\\$3", String.valueOf(event.getBot().getId()))
+					.replaceAll("\\$4", msg)
+			);
 		} else {
-			LogUtil.log(event.getBot().getNick() + showQQ(event.getBot().getId()) + " : " +
-					(ConfigUtil.getConfig("debug").equals("true") ?
-							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
+			LogUtil.log(ConfigUtil.getLanguage("format.group.message")
+					.replaceAll("\\$1", event.getBot().getNick())
+					.replaceAll("\\$2", String.valueOf(event.getBot().getId()))
+					.replaceAll("\\$3", msg)
+			);
 		}
 	}
 	
 	@EventHandler
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
-		if (event.getReceipt() != null) {
-			messages.add(event.getReceipt().getSource());
-			LogUtil.log("[" + messages.size() + "] " + event.getBot().getNick() + " -> " +
-					event.getTarget().getNick() + showQQ(event.getTarget().getId()) + " " +
-					(ConfigUtil.getConfig("debug").equals("true") ?
-							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
+		MessageReceipt<Friend> receipt = event.getReceipt();
+		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
+		if (receipt != null) {
+			messages.add(receipt.getSource());
+			LogUtil.log(ConfigUtil.getLanguage("format.user.recallable.message")
+					.replaceAll("\\$1", String.valueOf(messages.size()))
+					.replaceAll("\\$2", event.getBot().getNick())
+					.replaceAll("\\$3", String.valueOf(event.getBot().getId()))
+					.replaceAll("\\$4", event.getTarget().getNick())
+					.replaceAll("\\$5", String.valueOf(event.getTarget().getId()))
+					.replaceAll("\\$6", msg)
+			);
 		} else {
-			LogUtil.log(event.getBot().getNick() + " -> " + event.getTarget().getNick() + showQQ(event.getTarget().getId()) + " " +
-					(ConfigUtil.getConfig("debug").equals("true") ?
-							event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString()));
+			LogUtil.log(ConfigUtil.getLanguage("format.user.recallable.message")
+					.replaceAll("\\$1", event.getBot().getNick())
+					.replaceAll("\\$2", String.valueOf(event.getBot().getId()))
+					.replaceAll("\\$3", event.getTarget().getNick())
+					.replaceAll("\\$4", String.valueOf(event.getTarget().getId()))
+					.replaceAll("\\$5", msg)
+			);
 		}
 	}
 	
@@ -241,7 +258,12 @@ public class EventListener implements ListenerHost {
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
 		
 		messages.add(event.getSource());
-		LogUtil.log("[" + messages.size() + "] " + event.getSender().getNameCard() + showQQ(event.getSender().getId()) + ": " + msg);
+		LogUtil.log(ConfigUtil.getLanguage("format.group.message")
+				.replaceAll("\\$1", String.valueOf(messages.size()))
+				.replaceAll("\\$2", event.getSenderName())
+				.replaceAll("\\$3", String.valueOf(event.getSender().getId()))
+				.replaceAll("\\$4", msg)
+		);
 		
 		if (!PluginMain.plugins.isEmpty()) {
 			for (Plugin p : PluginMain.plugins) {
@@ -258,9 +280,7 @@ public class EventListener implements ListenerHost {
 			for (Iterator<String> it = autoRespondConfig.keys(); it.hasNext(); ) {
 				String section = it.next();
 				try {
-					if (section.startsWith("**")) {
-						continue;
-					}
+					if (section.startsWith("**")) continue;
 					try {
 						JSONObject sectionObject = autoRespondConfig.getJSONObject(section);
 						String regex = sectionObject.has("Message") ? sectionObject.getString("Message") : "";
@@ -380,7 +400,11 @@ public class EventListener implements ListenerHost {
 								e.printStackTrace();
 							}
 						}
-					} catch (JSONException ignored) { }
+					} catch (JSONException e) {
+						LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+						System.out.println();
+						e.printStackTrace();
+					}
 				} catch (Exception e) {
 					LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
 					System.out.println();
@@ -457,9 +481,7 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%message_id%", String.valueOf(messages.size()));
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
-		String flashId = "";
-		String imageId = "";
-		String fileId = "";
+		String flashId = "", imageId = "", fileId = "";
 		if (spl.length >= 3) {
 			switch (spl[1]) {
 				case "flash":
