@@ -154,10 +154,14 @@ public class PluginMain {
 									try {
 										Properties plugin = new Properties();
 										plugin.load(is);
-										Plugin p = new Plugin();
+										Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
 										p.setName(plugin.getProperty("name"));
+										p.setOwner(plugin.getProperty("owner"));
 										p.setClassName(plugin.getProperty("main"));
-										p.setInstance((Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance());
+										Properties config = new Properties();
+										File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
+										if (file.exists()) config.load(new FileReader(file));
+										p.setConfig(config);
 										plugins.add(p);
 									} catch (Exception e) {
 										System.out.println();
@@ -178,7 +182,7 @@ public class PluginMain {
 								LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
 												.replaceAll("\\$1", p.getName())
 								);
-								p.getInstance().onEnable();
+								p.onEnable();
 							} catch (Exception e) {
 								LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
 										.replaceAll("\\$1", p.getName())
@@ -233,7 +237,7 @@ public class PluginMain {
 					if (!plugins.isEmpty()) {
 						for (Plugin p : plugins) {
 							try {
-								p.getInstance().onDisable();
+								p.onDisable();
 							} catch (Exception e) {
 								System.out.println();
 								e.printStackTrace();
@@ -250,7 +254,7 @@ public class PluginMain {
 						if (!plugins.isEmpty()) {
 							for (Plugin p : plugins) {
 								try {
-									send = p.getInstance().onCommand(msg);
+									send = p.onCommand(msg);
 								} catch (Exception e) {
 									System.out.println();
 									e.printStackTrace();
