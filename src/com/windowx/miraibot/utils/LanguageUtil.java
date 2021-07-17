@@ -94,6 +94,8 @@ public class LanguageUtil {
 					"command.mute=禁言一个用户指定时间（单位：秒）\n" +
 					"command.name.card=修改一个用户的群昵称\n" +
 					"command.group=切换到已设置的某个群\n" +
+					"command.unload=卸载某个插件\n" +
+					"command.load=加载某个插件\n" +
 					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
@@ -111,7 +113,15 @@ public class LanguageUtil {
 					"file.path=文件路径\n" +
 					"width=宽度\n" +
 					"height=高度\n" +
+					"plugin.name=插件名\n" +
 					"font.size=字体大小\n" +
+					"plugin.not.exits=插件 $1 不存在或已被卸载!\n" +
+					"unloading.plugin=正在卸载插件 $1...\n" +
+					"unloaded.plugin=插件 $1 已成功卸载！\n" +
+					"file.name=文件名\n" +
+					"plugin.file.not.exits=未找到插件文件 $1!\n" +
+					"loading.plugin=正在加载插件 $1...\n" +
+					"loaded.plugin=插件 $1 已成功加载！\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -200,6 +210,8 @@ public class LanguageUtil {
 					"command.mute=禁言一個用戶指定時間（單位：秒）\n" +
 					"command.name.card=修改一個用戶的群昵稱\n" +
 					"command.group=切換到已設置的某個群\n" +
+					"command.unload=卸載某個插件\n" +
+					"command.load=加載某個插件\n" +
 					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
@@ -217,7 +229,15 @@ public class LanguageUtil {
 					"file.path=文件路徑\n" +
 					"width=寬度\n" +
 					"height=高度\n" +
+					"plugin.name=插件名\n" +
 					"font.size=字體大小\n" +
+					"plugin.not.exits=插件 $1 不存在或已被卸載!\n" +
+					"unloading.plugin=正在卸載插件 $1...\n" +
+					"unloaded.plugin=插件 $1 已成功卸載！\n" +
+					"file.name=文件名\n" +
+					"plugin.file.not.exits=未找到插件文件 $1!\n" +
+					"loading.plugin=正在加載插件 $1...\n" +
+					"loaded.plugin=插件 $1 已成功加載！\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -306,6 +326,8 @@ public class LanguageUtil {
 					"command.mute=Mute a user-specified time (unit: second)\n" +
 					"command.name.card=Modify a user’s group nickname\n" +
 					"command.group=Switch to a group that has been set\n" +
+					"command.unload=Uninstall a plugin\n" +
+					"command.load=Load a plugin\n" +
 					"name.card.set=The group nickname of $1 has been set to $1\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"please.input=Please input \n" +
@@ -323,7 +345,15 @@ public class LanguageUtil {
 					"file.path=File path\n" +
 					"width=Width\n" +
 					"height=Height\n" +
+					"plugin.name=Plugin name\n" +
 					"font.size=Font size\n" +
+					"plugin.not.exits=Plugin $1 does not exist or has been uninstalled!\n" +
+					"unloading.plugin=Uninstalling plugin $1...\n" +
+					"unloaded.plugin=Plugin $1 has been successfully uninstalled!\n" +
+					"file.name=File name\n" +
+					"plugin.file.not.exits=Plugin file not found $1!\n" +
+					"loading.plugin=Loading plugin $1...\n" +
+					"loaded.plugin=Plugin $1 has been successfully loaded!\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
