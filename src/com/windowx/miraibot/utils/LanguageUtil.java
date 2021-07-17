@@ -96,6 +96,7 @@ public class LanguageUtil {
 					"command.group=切换到已设置的某个群\n" +
 					"command.unload=卸载某个插件\n" +
 					"command.load=加载某个插件\n" +
+					"command.plugins=列出目前已加载的所有插件\n" +
 					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
@@ -212,6 +213,7 @@ public class LanguageUtil {
 					"command.group=切換到已設置的某個群\n" +
 					"command.unload=卸載某個插件\n" +
 					"command.load=加載某個插件\n" +
+					"command.plugins=列出目前已加載的所有插件\n" +
 					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
@@ -328,6 +330,7 @@ public class LanguageUtil {
 					"command.group=Switch to a group that has been set\n" +
 					"command.unload=Uninstall a plugin\n" +
 					"command.load=Load a plugin\n" +
+					"command.plugins=List all plugins currently loaded\n" +
 					"name.card.set=The group nickname of $1 has been set to $1\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"please.input=Please input \n" +
