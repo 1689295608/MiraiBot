@@ -9,7 +9,7 @@ public class Plugin extends JavaPlugin {
 	private String name;
 	private String owner;
 	private String className;
-	private double version;
+	private String version;
 	private Properties config;
 	public void setConfig(Properties properties) {
 		this.config = properties;
@@ -32,10 +32,10 @@ public class Plugin extends JavaPlugin {
 		}
 		config.store(new FileOutputStream(file), null);
 	}
-	public void setVersion(double version) {
+	public void setVersion(String version) {
 		this.version = version;
 	}
-	public double getVersion() {
+	public String getVersion() {
 		return this.version;
 	}
 	public void setName(String name) {
