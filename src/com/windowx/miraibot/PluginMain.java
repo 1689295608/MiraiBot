@@ -244,7 +244,8 @@ public class PluginMain {
 						if (!plugins.isEmpty()) {
 							for (Plugin p : plugins) {
 								try {
-									send = p.onCommand(msg);
+									boolean s = p.onCommand(msg);
+									if (!s) send = false;
 								} catch (Exception e) {
 									System.out.println();
 									e.printStackTrace();
