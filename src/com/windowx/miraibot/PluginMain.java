@@ -796,17 +796,21 @@ public class PluginMain {
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", String.valueOf(id)));
 					}
-					if (id <= groups.length && id > 0) {
-						if (bot.getGroups().contains(Long.parseLong(groups[id]))) {
+					String g = "";
+					try {
+						g = groups[id];
+					} catch (Exception e) {
+						LogUtil.log(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", cmd[1]));
+					}
+					if (!g.isEmpty()) {
+						if (bot.getGroups().contains(Long.parseLong(g))) {
 							group = bot.getGroup(Long.parseLong(groups[id]));
 							LogUtil.log(ConfigUtil.getLanguage("now.group")
 									.replaceAll("\\$1", group.getName())
 									.replaceAll("\\$2", String.valueOf(group.getId())));
 						} else {
-							LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groups[id]));
+							LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", g));
 						}
-					} else {
-						LogUtil.log(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", String.valueOf(id)));
 					}
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": group <" +
