@@ -6,6 +6,7 @@ import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.EventHandler;
+import net.mamoe.mirai.event.EventPriority;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.message.MessageReceipt;
@@ -248,9 +249,10 @@ public class EventListener implements ListenerHost {
 				(event.getNew() ? ConfigUtil.getConfig("on") : ConfigUtil.getConfig("off")));
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onGroupMessage(GroupMessageEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
+			event.cancel();
 			return;
 		}
 		String mCode = event.getMessage().serializeToMiraiCode();
@@ -268,7 +270,7 @@ public class EventListener implements ListenerHost {
 		if (!PluginMain.plugins.isEmpty()) {
 			for (Plugin p : PluginMain.plugins) {
 				try {
-					p.getInstance().onGroupMessage(event);
+					p.onGroupMessage(event);
 				} catch (Exception e) {
 					System.out.println();
 					e.printStackTrace();
