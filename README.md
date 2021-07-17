@@ -33,7 +33,7 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 ---
 
 ## 初次使用
-**初次使用** 的用户, 请前往 [Release](https://github.com/1689295608/MiraiBot/releases/latest) 下载最新的 .zip 包
+**初次使用** 的用户, 请前往 [Release](https://github.com/1689295608/MiraiBot/releases/latest) 下载最新的 .zip/.7z 包
 
 然后将其解压到任意文件夹内 ( *不推荐包含特殊字符的文件夹及路径* ), 即可进行后续操作.
 
@@ -96,7 +96,7 @@ MiraiBot inherits [Mirai](https://github.com/mamoe/mirai) and uses the AGPLv3 pr
 ---
 
 ## First use
-**The newbies**, please go to [Release](https://github.com/1689295608/MiraiBot/releases/latest) to download the latest .zip package
+**The newbies**, please go to [Release](https://github.com/1689295608/MiraiBot/releases/latest) to download the latest .zip/.7z package
 
 Then unzip it to any folder (*folders and paths containing special characters are not recommended* ), and then you can proceed.
 
