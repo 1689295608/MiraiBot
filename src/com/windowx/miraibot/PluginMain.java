@@ -960,7 +960,7 @@ public class PluginMain {
 		p.setName(plugin.getProperty("name", "Untitled"));
 		p.setOwner(plugin.getProperty("owner", "Unnamed"));
 		p.setClassName(plugin.getProperty("main"));
-		p.setVersion(Double.parseDouble(plugin.getProperty("version", "0")));
+		p.setVersion(plugin.getProperty("version", "1.0.0"));
 		Properties config = new Properties();
 		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
 		if (file.exists()) config.load(new FileReader(file));
