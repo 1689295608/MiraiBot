@@ -334,6 +334,15 @@ public class PluginMain {
 				LogUtil.log(out.toString());
 				return true;
 			}
+			case "plugins":
+				StringBuilder out = new StringBuilder();
+				int c = 1;
+				for (Plugin p : plugins) {
+					out.append(c).append(". ").append(p.getName()).append(" v").append(p.getVersion()).append(" by ").append(p.getOwner()).append("\n");
+					c++;
+				}
+				LogUtil.log(out.toString());
+				return true;
 			case "language":
 				if (cmd.length > 1) {
 					File now = new File("language.properties");
@@ -416,6 +425,9 @@ public class PluginMain {
 						"newImg <" + ConfigUtil.getLanguage("width") + "> <" + ConfigUtil.getLanguage("height") + "> <" +
 						ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
+						
+						"plugins\n" +
+						" - " + ConfigUtil.getLanguage("command.plugins") + "\n" +
 						
 						"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.reply") + "\n" +
@@ -657,7 +669,7 @@ public class PluginMain {
 			case "reply":
 				if (cmd.length > 2) {
 					try {
-						MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
+						MessageSource message = getMessageById(Integer.parseInt(cmd[1]));
 						StringBuilder content = new StringBuilder();
 						for (int i = 2; i < cmd.length; i++) {
 							content.append(cmd[i]);
@@ -904,6 +916,13 @@ public class PluginMain {
 		}
 	}
 	
+	public static MessageSource getMessageById(int id) {
+		if (id > 0) {
+			return EventListener.messages.get(id - 1);
+		}
+		return null;
+	}
+	
 	public static void loadAutoRespond() {
 		EventListener.autoRespond = new File("AutoRespond.json");
 		if (!EventListener.autoRespond.exists()) {
@@ -938,9 +957,10 @@ public class PluginMain {
 		Properties plugin = new Properties();
 		plugin.load(is);
 		Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
-		p.setName(plugin.getProperty("name"));
-		p.setOwner(plugin.getProperty("owner"));
+		p.setName(plugin.getProperty("name", "Untitled"));
+		p.setOwner(plugin.getProperty("owner", "Unnamed"));
 		p.setClassName(plugin.getProperty("main"));
+		p.setVersion(Double.parseDouble(plugin.getProperty("version", "0")));
 		Properties config = new Properties();
 		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
 		if (file.exists()) config.load(new FileReader(file));
