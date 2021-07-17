@@ -28,6 +28,7 @@ import java.util.*;
 
 public class PluginMain {
 	public static Group group = null;
+	public static String[] groups = null;
 	public static final String language = Locale.getDefault().getLanguage();
 	public static Bot bot;
 	static ArrayList<Plugin> plugins;
@@ -83,7 +84,7 @@ public class PluginMain {
 		
 		String qq = ConfigUtil.getConfig("qq");
 		String password = ConfigUtil.getConfig("password");
-		String groupId = ConfigUtil.getConfig("group");
+		groups = ConfigUtil.getConfig("group").split(",");
 		if (ConfigUtil.getConfig("showQQ") != null) {
 			EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ"));
 		} else {
@@ -127,7 +128,6 @@ public class PluginMain {
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
-			
 			try {
 				File demo = new File("plugins");
 				if (!demo.exists()) {
@@ -202,12 +202,13 @@ public class PluginMain {
 				System.exit(-1);
 			}
 			
-			if (groupId.isEmpty()) {
+			if (groups.length < 1) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
-			} else if (!bot.getGroups().contains(Long.parseLong(groupId))) {
-				LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groupId));
+			} else if (!bot.getGroups().contains(Long.parseLong(groups[0]))) {
+				LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groups[0]));
 			} else {
-				group = bot.getGroupOrFail(Long.parseLong(ConfigUtil.getConfig("group")));
+				for (int i = 0; i < groups.length; i ++) groups[i] = groups[i].trim();
+				group = bot.getGroupOrFail(Long.parseLong(groups[0]));
 				LogUtil.log(ConfigUtil.getLanguage("now.group")
 						.replaceAll("\\$1", group.getName())
 						.replaceAll("\\$2", String.valueOf(group.getId())));
@@ -388,6 +389,9 @@ public class PluginMain {
 						"friendList\n" +
 						" - " + ConfigUtil.getLanguage("command.friend.list") + "\n" +
 						
+						"group\n" +
+						" - " + ConfigUtil.getLanguage("command.group") + "\n" +
+						
 						"groupList\n" +
 						" - " + ConfigUtil.getLanguage("command.group.list") + "\n" +
 						
@@ -464,10 +468,10 @@ public class PluginMain {
 					try {
 						NormalMember member = group.get(Long.parseLong(cmd[1]));
 						if (member != null) {
-							if (group.getBotPermission() != MemberPermission.MEMBER && member.getPermission() != MemberPermission.OWNER) {
+							try {
 								member.kick(cmd[2]);
 								LogUtil.log(ConfigUtil.getLanguage("kicked"));
-							} else {
+							} catch (Exception e) {
 								LogUtil.log(ConfigUtil.getLanguage("no.permission"));
 							}
 						} else {
@@ -485,9 +489,15 @@ public class PluginMain {
 			case "mute":
 				if (cmd.length > 2) {
 					try {
-						NormalMember member = group.get(Long.parseLong(cmd[1]));
+						long qq = Long.parseLong(cmd[1]);
+						NormalMember member = group.get(qq);
 						if (member != null) {
-							member.mute(Integer.parseInt(cmd[1]));
+							try {
+								member.mute(Integer.parseInt(cmd[2]));
+							} catch (NumberFormatException e) {
+								LogUtil.log(ConfigUtil.getLanguage("time.too.long")
+										.replaceAll("\\$1", cmd[2]));
+							}
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("not.user"));
 						}
@@ -766,6 +776,31 @@ public class PluginMain {
 							ConfigUtil.getLanguage("message.id") + ">");
 				}
 				return true;
+			case "group":
+				if (cmd.length > 1) {
+					int id = 0;
+					try {
+						id = Integer.parseInt(cmd[1]) - 1;
+					} catch (NumberFormatException e) {
+						LogUtil.log(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", String.valueOf(id)));
+					}
+					if (groups.length >= id) {
+						if (bot.getGroups().contains(Long.parseLong(groups[id]))) {
+							group = bot.getGroup(Long.parseLong(groups[id]));
+							LogUtil.log(ConfigUtil.getLanguage("now.group")
+									.replaceAll("\\$1", group.getName())
+									.replaceAll("\\$2", String.valueOf(group.getId())));
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groups[id]));
+						}
+					} else {
+						LogUtil.log(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", String.valueOf(id)));
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": group <" +
+							ConfigUtil.getLanguage("group") + ConfigUtil.getLanguage("id") + ">");
+				}
+				return true;
 			default:
 				return false;
 		}
@@ -856,7 +891,7 @@ public class PluginMain {
 	 * @return Is Not Allowed Group
 	 */
 	public static boolean isNotAllowedGroup(long id) {
-		return id != Long.parseLong(ConfigUtil.getConfig("group"));
+		return id != group.getId();
 	}
 	/**
 	 * Check config file
@@ -879,29 +914,29 @@ public class PluginMain {
 					
 					FileOutputStream fos = new FileOutputStream(file);
 					String config =
-							"# QQ Number\n" +
+							"# 输入你的 QQ\n" +
 									"qq=" + qq + "\n" +
-									"# QQ Password\n" +
+									"# 输入你的 QQ 密码\n" +
 									"password=" + password + "\n" +
-									"# The chat group you want to join. (Group Number)\n" +
+									"# 输入你要聊天的聊群, 用 “,” 分隔\n" +
 									"group=" + group + "\n" +
-									"# The owner's qq number of the robot. (use \",\" to split)\n" +
+									"# 机器人主人 QQ 号, 即拥有一切权力的 QQ 号. 用 \",\" 分隔\n" +
 									"owner=00000\n" +
-									"# To show sender's QQ number on every message?\n" +
+									"# 每一个新消息是否都显示发送者的 QQ 号\n" +
 									"showQQ=false\n" +
-									"# Which QQ friend's message do you want to receive?（“*” for all）\n" +
+									"# 输入你接收的好友信息（“*” 为 全部）\n" +
 									"friend=*\n" +
-									"# Do you want to check updates on every start-up?\n" +
+									"# 每次启动时都检测更新\n" +
 									"checkUpdate=" + checkUpdate + "\n" +
-									"# The font used by the command \"newImg\"\n" +
-									"font=\n" +
-									"# Login Protocol（PAD: 平板/Pads，WATCH: 手表/Watches，PHONE: 手机/Smartphones），the default is PHONE\n" +
+									"# 输入使用“newImg”指令生成的字体\n" +
+									"font=微软雅黑\n" +
+									"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
 									"protocol=PHONE\n" +
-									"# Enable Debug mode? (show mirai codes)\n" +
+									"# 是否启用 Debug 模式（即显示 MiraiCode）\n" +
 									"debug=false\n" +
 									"\n" +
 									"# ----=== MiraiBot ===----\n" +
-									"# Use \"help\" to get help.\n" +
+									"# 使用“help”获取帮助！\n" +
 									"# -----------------------------\n";
 					fos.write(config.getBytes());
 					fos.flush();
