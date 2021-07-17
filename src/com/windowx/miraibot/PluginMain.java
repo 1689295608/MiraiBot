@@ -152,17 +152,7 @@ public class PluginMain {
 								InputStream is = u.getResourceAsStream("plugin.ini");
 								if (is != null) {
 									try {
-										Properties plugin = new Properties();
-										plugin.load(is);
-										Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
-										p.setName(plugin.getProperty("name"));
-										p.setOwner(plugin.getProperty("owner"));
-										p.setClassName(plugin.getProperty("main"));
-										Properties config = new Properties();
-										File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
-										if (file.exists()) config.load(new FileReader(file));
-										p.setConfig(config);
-										plugins.add(p);
+										plugins.add(loadPlugin(is,u));
 									} catch (Exception e) {
 										System.out.println();
 										e.printStackTrace();
@@ -414,6 +404,9 @@ public class PluginMain {
 						"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.language") + "\n" +
 						
+						"load <" + ConfigUtil.getConfig("file.name") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.load") + "\n" +
+						
 						"mute <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("time") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.mute") + "\n" +
 						
@@ -435,6 +428,9 @@ public class PluginMain {
 						
 						"stop\n" +
 						" - " + ConfigUtil.getLanguage("command.stop") + "\n" +
+						
+						"unload <" + ConfigUtil.getConfig("plugin.name") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.unload") + "\n" +
 						
 						"upClipImg\n" +
 						" - " + ConfigUtil.getLanguage("command.up.clip.img") + "\n" +
@@ -805,6 +801,69 @@ public class PluginMain {
 							ConfigUtil.getLanguage("group") + ConfigUtil.getLanguage("id") + ">");
 				}
 				return true;
+			case "unload":
+				if (cmd.length > 1) {
+					Plugin plugin = null; int n = -1;
+					for(int i = 0; i < plugins.size(); i ++) {
+						if (plugins.get(i).getName().equals(cmd[1])) {
+							plugin = plugins.get(i); n = i; break;
+						}
+					}
+					if (plugin != null) {
+						LogUtil.log(ConfigUtil.getLanguage("unloading.plugin")
+								.replaceAll("\\$1", plugin.getName())
+						);
+						try {
+							plugin.onDisable();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						plugins.remove(n);
+						System.gc();
+						LogUtil.log(ConfigUtil.getLanguage("unloaded.plugin")
+							.replaceAll("\\$1", plugin.getName())
+						);
+					} else {
+						LogUtil.log(ConfigUtil.getLanguage("plugin.not.exits")
+								.replaceAll("\\$1", cmd[1])
+						);
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": unload <" +
+							ConfigUtil.getLanguage("plugin.name") + ">");
+				}
+				return true;
+			case "load":
+				if (cmd.length > 1) {
+					File f = new File("plugins/" + (cmd[1].endsWith(".jar") ? cmd[1] : cmd[1] + ".jar"));
+					if (f.exists()) {
+						URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
+						InputStream is = u.getResourceAsStream("plugin.ini");
+						if (is != null) {
+							LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
+									.replaceAll("\\$1", cmd[1])
+							);
+							Plugin plugin = loadPlugin(is,u);
+							plugins.add(plugin);
+							try {
+								plugin.onEnable();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							LogUtil.log(ConfigUtil.getLanguage("loaded.plugin")
+									.replaceAll("\\$1", plugin.getName())
+							);
+						}
+					} else {
+						LogUtil.log(ConfigUtil.getLanguage("plugin.file.not.exits")
+								.replaceAll("\\$1", cmd[1])
+						);
+					}
+				} else {
+					LogUtil.log(ConfigUtil.getLanguage("usage") + ": load <" +
+							ConfigUtil.getLanguage("file.name") + ">");
+				}
+				return true;
 			default:
 				return false;
 		}
@@ -873,6 +932,20 @@ public class PluginMain {
 			System.out.println();
 			e.printStackTrace();
 		}
+	}
+	
+	public static Plugin loadPlugin(InputStream is, URLClassLoader u) throws Exception {
+		Properties plugin = new Properties();
+		plugin.load(is);
+		Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
+		p.setName(plugin.getProperty("name"));
+		p.setOwner(plugin.getProperty("owner"));
+		p.setClassName(plugin.getProperty("main"));
+		Properties config = new Properties();
+		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
+		if (file.exists()) config.load(new FileReader(file));
+		p.setConfig(config);
+		return p;
 	}
 	
 	/**
