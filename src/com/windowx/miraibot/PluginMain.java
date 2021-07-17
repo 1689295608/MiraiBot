@@ -796,7 +796,7 @@ public class PluginMain {
 					} catch (NumberFormatException e) {
 						LogUtil.log(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", String.valueOf(id)));
 					}
-					if (groups.length >= id) {
+					if (id <= groups.length && id > 0) {
 						if (bot.getGroups().contains(Long.parseLong(groups[id]))) {
 							group = bot.getGroup(Long.parseLong(groups[id]));
 							LogUtil.log(ConfigUtil.getLanguage("now.group")
