@@ -3,7 +3,7 @@ package com.windowx.miraibot.plugin;
 import java.io.*;
 import java.util.Properties;
 
-public class PluginCore {
+public class ConfigCore {
 	static Properties properties = new Properties();
 	/**
 	 * Modify the value of key in the configuration file
@@ -91,6 +91,6 @@ public class PluginCore {
 	 * @param properties Properties
 	 */
 	public void setProperties(Properties properties) {
-		PluginCore.properties = properties;
+		ConfigCore.properties = properties;
 	}
 }
