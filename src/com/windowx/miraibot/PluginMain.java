@@ -430,7 +430,7 @@ public class PluginMain {
 						"language <" + ConfigUtil.getLanguage("language") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.language") + "\n" +
 						
-						"load <" + ConfigUtil.getConfig("file.name") + ">\n" +
+						"load <" + ConfigUtil.getLanguage("file.name") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.load") + "\n" +
 						
 						"mute <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("time") + ">\n" +
@@ -446,7 +446,7 @@ public class PluginMain {
 						"plugins\n" +
 						" - " + ConfigUtil.getLanguage("command.plugins") + "\n" +
 						
-						"reload <" + ConfigUtil.getConfig("plugin.name") + ">\n" +
+						"reload <" + ConfigUtil.getLanguage("plugin.name") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.reload") + "\n" +
 						
 						"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
@@ -461,7 +461,7 @@ public class PluginMain {
 						"stop\n" +
 						" - " + ConfigUtil.getLanguage("command.stop") + "\n" +
 						
-						"unload <" + ConfigUtil.getConfig("plugin.name") + ">\n" +
+						"unload <" + ConfigUtil.getLanguage("plugin.name") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.unload") + "\n" +
 						
 						"upClipImg\n" +
