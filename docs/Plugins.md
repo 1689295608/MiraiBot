@@ -10,4 +10,6 @@
 **package miraibot.helloworld;**<br>
 (miraibot.helloworld可以改为其他内容，本教程使用此package)
 <br>接下来，输入这些内容:<br>
-`public class main(){<br><br>}`
+`public class main(){
+
+}`
