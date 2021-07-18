@@ -7,7 +7,7 @@
  - jdk 11+ 
  - vi等文本编辑器
 <br>现在，输入你的编辑器命令，新建`main.java`，在文本框里输入这一串内容:<br>
-**package miraibot.helloworld;**<br>
+`package miraibot.helloworld;`<br>
 (miraibot.helloworld可以改为其他内容，本教程使用此package)
 <br>接下来，输入这些内容:<br>
 `public class main(){  }`
