@@ -272,7 +272,6 @@ public class EventListener implements ListenerHost {
 				try {
 					p.onGroupMessage(event);
 				} catch (Exception e) {
-					System.out.println();
 					e.printStackTrace();
 				}
 			}
