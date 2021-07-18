@@ -154,7 +154,6 @@ public class PluginMain {
 									try {
 										plugins.add(loadPlugin(is,u));
 									} catch (Exception e) {
-										System.out.println();
 										e.printStackTrace();
 									}
 								} else {
@@ -178,7 +177,6 @@ public class PluginMain {
 										.replaceAll("\\$1", p.getName())
 										.replaceAll("\\$2", e.toString())
 								);
-								System.out.println();
 								e.printStackTrace();
 							}
 						}
