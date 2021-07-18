@@ -152,7 +152,9 @@ public class PluginMain {
 								InputStream is = u.getResourceAsStream("plugin.ini");
 								if (is != null) {
 									try {
-										plugins.add(loadPlugin(is,u));
+										Plugin plugin = loadPlugin(is,u);
+										plugin.file = f;
+										plugins.add(plugin);
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
@@ -303,9 +305,25 @@ public class PluginMain {
 		String[] cmd = msg.split(" ");
 		switch (cmd[0]) {
 			case "reload":
-				ConfigUtil.init();
-				loadAutoRespond();
-				LogUtil.log(ConfigUtil.getLanguage("reloaded"));
+				if (cmd.length == 1) {
+					ConfigUtil.init();
+					loadAutoRespond();
+					LogUtil.log(ConfigUtil.getLanguage("reloaded"));
+				} else {
+					try {
+						Plugin plugin = getPlugin(cmd[1]);
+						if (plugin != null) {
+							unloadPlugin(cmd[1]);
+							loadPlugin(plugin.file, plugin.getName());
+						} else {
+							LogUtil.log(ConfigUtil.getLanguage("unloading.plugin")
+									.replaceAll("\\$1", cmd[1])
+							);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 				return true;
 			case "friendList": {
 				ContactList<Friend> friends = bot.getFriends();
@@ -427,6 +445,9 @@ public class PluginMain {
 						
 						"plugins\n" +
 						" - " + ConfigUtil.getLanguage("command.plugins") + "\n" +
+						
+						"reload <" + ConfigUtil.getConfig("plugin.name") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.reload") + "\n" +
 						
 						"reply <" + ConfigUtil.getLanguage("message.id") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.reply") + "\n" +
@@ -818,31 +839,7 @@ public class PluginMain {
 				return true;
 			case "unload":
 				if (cmd.length > 1) {
-					Plugin plugin = null; int n = -1;
-					for(int i = 0; i < plugins.size(); i ++) {
-						if (plugins.get(i).getName().equals(cmd[1])) {
-							plugin = plugins.get(i); n = i; break;
-						}
-					}
-					if (plugin != null) {
-						LogUtil.log(ConfigUtil.getLanguage("unloading.plugin")
-								.replaceAll("\\$1", plugin.getName())
-						);
-						try {
-							plugin.onDisable();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						plugins.remove(n);
-						System.gc();
-						LogUtil.log(ConfigUtil.getLanguage("unloaded.plugin")
-							.replaceAll("\\$1", plugin.getName())
-						);
-					} else {
-						LogUtil.log(ConfigUtil.getLanguage("plugin.not.exits")
-								.replaceAll("\\$1", cmd[1])
-						);
-					}
+					unloadPlugin(cmd[1]);
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": unload <" +
 							ConfigUtil.getLanguage("plugin.name") + ">");
@@ -851,29 +848,7 @@ public class PluginMain {
 			case "load":
 				if (cmd.length > 1) {
 					File f = new File("plugins/" + (cmd[1].endsWith(".jar") ? cmd[1] : cmd[1] + ".jar"));
-					if (f.exists()) {
-						URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
-						InputStream is = u.getResourceAsStream("plugin.ini");
-						if (is != null) {
-							LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
-									.replaceAll("\\$1", cmd[1])
-							);
-							Plugin plugin = loadPlugin(is,u);
-							plugins.add(plugin);
-							try {
-								plugin.onEnable();
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							LogUtil.log(ConfigUtil.getLanguage("loaded.plugin")
-									.replaceAll("\\$1", plugin.getName())
-							);
-						}
-					} else {
-						LogUtil.log(ConfigUtil.getLanguage("plugin.file.not.exits")
-								.replaceAll("\\$1", cmd[1])
-						);
-					}
+					loadPlugin(f, cmd[1]);
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("usage") + ": load <" +
 							ConfigUtil.getLanguage("file.name") + ">");
@@ -881,6 +856,73 @@ public class PluginMain {
 				return true;
 			default:
 				return false;
+		}
+	}
+	
+	public static Plugin getPlugin(String name) {
+		for (Plugin p : plugins) {
+			if (p.getName().equals(name)) return p;
+		}
+		return null;
+	}
+	
+	public static void unloadPlugin(String name) {
+		Plugin plugin = null; int n = -1;
+		for(int i = 0; i < plugins.size(); i ++) {
+			if (plugins.get(i).getName().equals(name)) {
+				plugin = plugins.get(i); n = i; break;
+			}
+		}
+		if (plugin != null) {
+			LogUtil.log(ConfigUtil.getLanguage("unloading.plugin")
+					.replaceAll("\\$1", plugin.getName())
+			);
+			try {
+				plugin.onDisable();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			plugins.remove(n);
+			System.gc();
+			LogUtil.log(ConfigUtil.getLanguage("unloaded.plugin")
+					.replaceAll("\\$1", plugin.getName())
+			);
+		} else {
+			LogUtil.log(ConfigUtil.getLanguage("plugin.not.exits")
+					.replaceAll("\\$1", name)
+			);
+		}
+	}
+	public static void loadPlugin(File file, String name) throws Exception {
+		if (file.exists()) {
+			URLClassLoader u = new URLClassLoader(new URL[]{ file.toURI().toURL() });
+			InputStream is = u.getResourceAsStream("plugin.ini");
+			if (is != null) {
+				LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
+						.replaceAll("\\$1", name)
+				);
+				Plugin plugin = loadPlugin(is,u);
+				plugin.file = file;
+				if (getPlugin(plugin.getName()) != null) {
+					LogUtil.log(ConfigUtil.getLanguage("plugin.already.loaded")
+							.replaceAll("\\$1", plugin.getName())
+					);
+					return;
+				}
+				plugins.add(plugin);
+				try {
+					plugin.onEnable();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				LogUtil.log(ConfigUtil.getLanguage("loaded.plugin")
+						.replaceAll("\\$1", plugin.getName())
+				);
+			}
+		} else {
+			LogUtil.log(ConfigUtil.getLanguage("plugin.file.not.exits")
+					.replaceAll("\\$1", name)
+			);
 		}
 	}
 	/**
