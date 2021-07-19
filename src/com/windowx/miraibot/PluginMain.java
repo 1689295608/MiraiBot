@@ -1002,9 +1002,12 @@ public class PluginMain {
 				version = new String(url.openStream().readAllBytes());
 			}
 			try {
-				int nowV = Integer.parseInt(version.replaceAll("[^0-9]", ""));
-				int newV = Integer.parseInt(LatestVersion.replaceAll("[^0-9]", ""));
-				if (nowV < newV) {
+				String[] nowV = version.replaceAll("[^0-9.]", "").split("\\.");
+				String[] newV = LatestVersion.replaceAll("[^0-9.]", "").split("\\.");
+				int now = 0, ne = 0;
+				for (String s : nowV) now += Integer.parseInt(s);
+				for (String s : newV) now += Integer.parseInt(s);
+				if (now < ne) {
 					LogUtil.log(ConfigUtil.getLanguage("found.new.update")
 							.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion));
 				} else if (nowV == newV) {
