@@ -156,6 +156,7 @@ public class PluginMain {
 										plugin.file = f;
 										plugins.add(plugin);
 									} catch (Exception e) {
+										System.out.println();
 										e.printStackTrace();
 									}
 								} else {
@@ -212,6 +213,15 @@ public class PluginMain {
 				System.exit(-1);
 			}
 			
+			if (!plugins.isEmpty()) {
+				for (Plugin p : plugins) {
+					try {
+						p.onDone();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 			Scanner scanner = new Scanner(System.in);
 			do {
 				if (!scanner.hasNextLine()) continue;
@@ -229,7 +239,6 @@ public class PluginMain {
 							try {
 								p.onDisable();
 							} catch (Exception e) {
-								System.out.println();
 								e.printStackTrace();
 							}
 						}
@@ -247,7 +256,6 @@ public class PluginMain {
 									boolean s = p.onCommand(msg);
 									if (!s) send = false;
 								} catch (Exception e) {
-									System.out.println();
 									e.printStackTrace();
 								}
 							}
