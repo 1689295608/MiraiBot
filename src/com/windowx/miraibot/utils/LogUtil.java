@@ -10,9 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LogUtil {
+	public static StringBuilder messages = new StringBuilder();
 	static byte[] all = new byte[0];
 	static File file;
-	public static StringBuilder messages = new StringBuilder();
+	
 	/**
 	 * Initialize the log system
 	 */
@@ -56,6 +57,7 @@ public class LogUtil {
 	
 	/**
 	 * Output a message and record it in the log file
+	 *
 	 * @param str What to output
 	 */
 	public static void log(@Nullable String str) {
@@ -85,6 +87,7 @@ public class LogUtil {
 	
 	/**
 	 * Combine two byte[] into one byte[]
+	 *
 	 * @param byte1 Byte[] to be merged at the beginning
 	 * @param byte2 Byte[] to be merged to the end
 	 * @return Merged result
@@ -108,6 +111,7 @@ public class LogUtil {
 			} else if (os.contains("linux")) {
 				new ProcessBuilder("clear").inheritIO().start().waitFor();
 			}
-		} catch (Exception ignored) { }
+		} catch (Exception ignored) {
+		}
 	}
 }
