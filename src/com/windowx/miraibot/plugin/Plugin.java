@@ -11,6 +11,7 @@ public class Plugin extends JavaPlugin {
 	private String className;
 	private String version;
 	private Properties config;
+	public File file;
 	public void setConfig(Properties properties) {
 		this.config = properties;
 	}
