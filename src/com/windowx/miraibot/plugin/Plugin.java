@@ -10,6 +10,7 @@ public class Plugin extends JavaPlugin {
 	private String owner;
 	private String className;
 	private String version;
+	private String description;
 	private Properties config;
 	public File file;
 	public void setConfig(Properties properties) {
@@ -52,9 +53,15 @@ public class Plugin extends JavaPlugin {
 		return this.owner;
 	}
 	public void setClassName(String className) {
-		this.className = name;
+		this.className = className;
 	}
 	public String getClassName() {
 		return this.className;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getDescription() {
+		return this.description;
 	}
 }
