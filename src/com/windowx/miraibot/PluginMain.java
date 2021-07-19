@@ -79,7 +79,8 @@ public class PluginMain {
 		}
 		if (ConfigUtil.getConfig("checkUpdate") != null && ConfigUtil.getConfig("checkUpdate").equals("true")) {
 			LogUtil.log(ConfigUtil.getLanguage("checking.update"));
-			checkUpdate(null);
+			Thread thread = new Thread(() -> checkUpdate(null));
+			thread.start();
 		}
 		
 		String qq = ConfigUtil.getConfig("qq");
@@ -966,6 +967,8 @@ public class PluginMain {
 		} catch (Exception e) {
 			LogUtil.log(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
 			if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
+			Thread thread = new Thread(() -> checkUpdate("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
+			thread.start();
 		}
 	}
 	
