@@ -3,6 +3,7 @@ package com.windowx.miraibot.utils;
 public class LanguageUtil {
 	/**
 	 * Get the language file by the value obtained by "Locale.getDefault().getLanguage()"
+	 *
 	 * @param language The result obtained by "Locale.getDefault().getLanguage()"
 	 * @return The byte[] of the language file
 	 */
@@ -98,6 +99,7 @@ public class LanguageUtil {
 					"command.load=加载某个插件\n" +
 					"command.plugins=列出目前已加载的所有插件\n" +
 					"command.reload=重载某个插件\n" +
+					"command.music=通过网易云音乐 ID 分享音乐\n" +
 					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
@@ -125,6 +127,9 @@ public class LanguageUtil {
 					"loading.plugin=正在加载插件 $1...\n" +
 					"loaded.plugin=插件 $1 已成功加载！\n" +
 					"plugin.already.loaded=插件 $1 已经被载入！\n" +
+					"music.id=网易云音乐 ID\n" +
+					"music.id.error=网易云音乐 ID 错误, 请检查后再试！\n" +
+					"music.code.error=获取音乐信息失败, 请检查后再试！\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -217,6 +222,7 @@ public class LanguageUtil {
 					"command.load=加載某個插件\n" +
 					"command.plugins=列出目前已加載的所有插件\n" +
 					"command.reload=重載某個插件\n" +
+					"command.music=通過網易云音樂 ID 分享音樂\n" +
 					"name.card.set=已将 $1 的群昵称设置为 $1\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
@@ -244,6 +250,9 @@ public class LanguageUtil {
 					"loading.plugin=正在加載插件 $1...\n" +
 					"loaded.plugin=插件 $1 已成功加載！\n" +
 					"plugin.already.loaded=插件 $1 已經被載入！\n" +
+					"music.id=網易雲音樂 ID\n" +
+					"music.id.error=網易雲音樂 ID 錯誤, 請檢查后再試！\n" +
+					"music.code.error=獲取音樂信息失敗, 請檢查后再試！\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -336,6 +345,7 @@ public class LanguageUtil {
 					"command.load=Load a plugin\n" +
 					"command.plugins=List all plugins currently loaded\n" +
 					"command.reload=Reload a plugin\n" +
+					"command.music=Share music through NetEase Cloud Music ID\n" +
 					"name.card.set=The group nickname of $1 has been set to $1\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"please.input=Please input \n" +
@@ -363,6 +373,9 @@ public class LanguageUtil {
 					"loading.plugin=Loading plugin $1...\n" +
 					"loaded.plugin=Plugin $1 has been successfully loaded!\n" +
 					"plugin.already.loaded=Plugin $1 has been already loaded!\n" +
+					"music.id=NetEase Cloud Music ID\n" +
+					"music.id.error=NetEase Cloud Music ID error, please check and try again！\n" +
+					"music.code.error=Failed to get music information, please check and try again！\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
