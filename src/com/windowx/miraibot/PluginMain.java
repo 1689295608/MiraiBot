@@ -12,18 +12,18 @@ import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageSource;
-import net.mamoe.mirai.message.data.MessageUtils;
-import net.mamoe.mirai.message.data.QuoteReply;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PluginMain {
@@ -437,6 +437,9 @@ public class PluginMain {
 						
 						"load <" + ConfigUtil.getLanguage("file.name") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.load") + "\n" +
+						
+						"music <" + ConfigUtil.getLanguage("music.id") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.music") + "\n" +
 						
 						"mute <" + ConfigUtil.getLanguage("qq") + "> <" + ConfigUtil.getLanguage("time") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.mute") + "\n" +
@@ -854,6 +857,34 @@ public class PluginMain {
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": load <" +
 							ConfigUtil.getLanguage("file.name") + ">");
+				}
+				return true;
+			case "music":
+				if (cmd.length > 1) {
+					try {
+						long id = Long.parseLong(cmd[1]);
+						URL url = new URL("http://music.163.com/api/song/detail/?id=" + id + "&ids=[" + id + "]");
+						InputStream is = url.openStream();
+						JSONObject json = new JSONObject(new String(is.readAllBytes(), StandardCharsets.UTF_8));
+						if (json.getInt("code") == 200) {
+							JSONArray songs = json.getJSONArray("songs");
+							MusicShare share = new MusicShare(MusicKind.NeteaseCloudMusic,
+									songs.getJSONObject(0).getString("name"),
+									songs.getJSONObject(0).getJSONObject("album").getString("name"),
+									"http://music.163.com/song/" + id,
+									songs.getJSONObject(0).getJSONObject("album").getString("blurPicUrl"),
+									"http://music.163.com/song/media/outer/url?id=" + id
+							);
+							group.sendMessage(share);
+						} else {
+							LogUtil.error(ConfigUtil.getLanguage("music.code.error"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.error(ConfigUtil.getLanguage("music.id.error"));
+					}
+				} else {
+					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": music <" +
+							ConfigUtil.getLanguage("music.id") + ">");
 				}
 				return true;
 			default:
