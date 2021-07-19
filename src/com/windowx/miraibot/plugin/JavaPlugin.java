@@ -12,4 +12,6 @@ public abstract class JavaPlugin {
 	public void onDisable() { }
 	
 	public void onGroupMessage(GroupMessageEvent event) { }
+	
+	public void onDone() { }
 }
