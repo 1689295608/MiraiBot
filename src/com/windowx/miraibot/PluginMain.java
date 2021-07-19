@@ -27,9 +27,9 @@ import java.net.URLClassLoader;
 import java.util.*;
 
 public class PluginMain {
+	public static final String language = Locale.getDefault().getLanguage();
 	public static Group group = null;
 	public static String[] groups = null;
-	public static final String language = Locale.getDefault().getLanguage();
 	public static Bot bot;
 	static ArrayList<Plugin> plugins;
 	
@@ -138,7 +138,8 @@ public class PluginMain {
 							FileOutputStream fos = new FileOutputStream(demo);
 							URL url = ClassLoader.getSystemResource("demo.jar");
 							if (url != null) fos.write(url.openStream().readAllBytes());
-							fos.flush(); fos.close();
+							fos.flush();
+							fos.close();
 						}
 					}
 				}
@@ -149,11 +150,11 @@ public class PluginMain {
 					if (pluginsFile != null) {
 						for (File f : pluginsFile) {
 							if (f.getName().endsWith(".jar")) {
-								URLClassLoader u = new URLClassLoader(new URL[]{ f.toURI().toURL() });
+								URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
 								InputStream is = u.getResourceAsStream("plugin.ini");
 								if (is != null) {
 									try {
-										Plugin plugin = loadPlugin(is,u);
+										Plugin plugin = loadPlugin(is, u);
 										plugin.file = f;
 										plugins.add(plugin);
 									} catch (Exception e) {
@@ -169,20 +170,20 @@ public class PluginMain {
 							}
 						}
 					}
-					if (!plugins.isEmpty()) {
-						for (Plugin p : plugins) {
-							try {
-								LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
-												.replaceAll("\\$1", p.getName())
-								);
-								p.onEnable();
-							} catch (Exception e) {
-								LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
-										.replaceAll("\\$1", p.getName())
-										.replaceAll("\\$2", e.toString())
-								);
-								e.printStackTrace();
-							}
+					ArrayList<Plugin> ps = plugins;
+					for (Plugin p : ps) {
+						try {
+							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
+									.replaceAll("\\$1", p.getName())
+							);
+							p.onEnable();
+						} catch (Exception e) {
+							LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
+									.replaceAll("\\$1", p.getName())
+									.replaceAll("\\$2", e.toString())
+							);
+							e.printStackTrace();
+							unloadPlugin(p.getName());
 						}
 					}
 				} catch (Exception e) {
@@ -203,7 +204,7 @@ public class PluginMain {
 			} else if (!bot.getGroups().contains(Long.parseLong(groups[0]))) {
 				LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groups[0]));
 			} else {
-				for (int i = 0; i < groups.length; i ++) groups[i] = groups[i].trim();
+				for (int i = 0; i < groups.length; i++) groups[i] = groups[i].trim();
 				group = bot.getGroupOrFail(Long.parseLong(groups[0]));
 				LogUtil.log(ConfigUtil.getLanguage("now.group")
 						.replaceAll("\\$1", group.getName())
@@ -214,13 +215,12 @@ public class PluginMain {
 				System.exit(-1);
 			}
 			
-			if (!plugins.isEmpty()) {
-				for (Plugin p : plugins) {
-					try {
-						p.onDone();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+			ArrayList<Plugin> ps = plugins;
+			for (Plugin p : ps) {
+				try {
+					p.onDone();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 			Scanner scanner = new Scanner(System.in);
@@ -235,13 +235,12 @@ public class PluginMain {
 					LogUtil.log(ConfigUtil.getLanguage("stopping.bot")
 							.replaceAll("\\$1", bot.getNick())
 							.replaceAll("\\$2", String.valueOf(bot.getId())));
-					if (!plugins.isEmpty()) {
-						for (Plugin p : plugins) {
-							try {
-								p.onDisable();
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+					ps = plugins;
+					for (Plugin p : ps) {
+						try {
+							p.onDisable();
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 					bot.close();
@@ -251,14 +250,13 @@ public class PluginMain {
 				if (!runCommand(msg)) {
 					try {
 						boolean send = true;
-						if (!plugins.isEmpty()) {
-							for (Plugin p : plugins) {
-								try {
-									boolean s = p.onCommand(msg);
-									if (!s) send = false;
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
+						ps = plugins;
+						for (Plugin p : ps) {
+							try {
+								boolean s = p.onCommand(msg);
+								if (!s) send = false;
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
 						}
 						String decode;
@@ -285,6 +283,7 @@ public class PluginMain {
 			System.exit(-1);
 		}
 	}
+	
 	public static String decodeUnicode(final String dataStr) {
 		int start = 0;
 		int end;
@@ -303,12 +302,13 @@ public class PluginMain {
 		}
 		return buffer.toString();
 	}
-
+	
 	/**
 	 * Execute an instruction.
+	 *
 	 * @param msg Message
-	 * @throws Exception Exception
 	 * @return Is it an instruction
+	 * @throws Exception Exception
 	 */
 	public static boolean runCommand(String msg) throws Exception {
 		String[] cmd = msg.split(" ");
@@ -594,8 +594,6 @@ public class PluginMain {
 						LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
 						Image img = group.uploadImage(externalResource);
 						group.sendMessage(img);
-						LogUtil.log(bot.getNick() + " : " +
-								(ConfigUtil.getConfig("debug").equals("true") ? img.serializeToMiraiCode() : img.contentToString()));
 						externalResource.close();
 						imageInfo(bot, img);
 					} catch (IOException e) {
@@ -624,8 +622,7 @@ public class PluginMain {
 				if (cmd.length > 1) {
 					File file = new File(msg.substring(6));
 					ExternalResource externalResource = ExternalResource.create(file);
-					Image img = group
-							.uploadImage(externalResource);
+					Image img = group.uploadImage(externalResource);
 					externalResource.close();
 					imageInfo(bot, img);
 				} else {
@@ -752,7 +749,7 @@ public class PluginMain {
 						NormalMember member = group.get(Long.parseLong(cmd[1]));
 						if (member != null) {
 							StringBuilder nameCard = new StringBuilder();
-							for (int i = 2 ; i < cmd.length ; i ++) {
+							for (int i = 2; i < cmd.length; i++) {
 								nameCard.append(cmd[i]);
 								if (i != cmd.length - 1) {
 									nameCard.append(" ");
@@ -868,6 +865,12 @@ public class PluginMain {
 		}
 	}
 	
+	/**
+	 * 通过插件名获取插件对象
+	 *
+	 * @param name 插件名
+	 * @return 插件
+	 */
 	public static Plugin getPlugin(String name) {
 		for (Plugin p : plugins) {
 			if (p.getName().equals(name)) return p;
@@ -875,11 +878,19 @@ public class PluginMain {
 		return null;
 	}
 	
+	/**
+	 * 卸载某个插件
+	 *
+	 * @param name 插件名
+	 */
 	public static void unloadPlugin(String name) {
-		Plugin plugin = null; int n = -1;
-		for(int i = 0; i < plugins.size(); i ++) {
+		Plugin plugin = null;
+		int n = -1;
+		for (int i = 0; i < plugins.size(); i++) {
 			if (plugins.get(i).getName().equals(name)) {
-				plugin = plugins.get(i); n = i; break;
+				plugin = plugins.get(i);
+				n = i;
+				break;
 			}
 		}
 		if (plugin != null) {
@@ -902,15 +913,23 @@ public class PluginMain {
 			);
 		}
 	}
+	
+	/**
+	 * 加载某个插件
+	 *
+	 * @param file 文件
+	 * @param name 名称
+	 * @throws Exception 日常报错
+	 */
 	public static void loadPlugin(File file, String name) throws Exception {
 		if (file.exists()) {
-			URLClassLoader u = new URLClassLoader(new URL[]{ file.toURI().toURL() });
+			URLClassLoader u = new URLClassLoader(new URL[]{file.toURI().toURL()});
 			InputStream is = u.getResourceAsStream("plugin.ini");
 			if (is != null) {
 				LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
 						.replaceAll("\\$1", name)
 				);
-				Plugin plugin = loadPlugin(is,u);
+				Plugin plugin = loadPlugin(is, u);
 				plugin.file = file;
 				if (getPlugin(plugin.getName()) != null) {
 					LogUtil.log(ConfigUtil.getLanguage("plugin.already.loaded")
@@ -927,6 +946,11 @@ public class PluginMain {
 				LogUtil.log(ConfigUtil.getLanguage("loaded.plugin")
 						.replaceAll("\\$1", plugin.getName())
 				);
+			} else {
+				LogUtil.log(ConfigUtil.getLanguage("failed.load.plugin")
+						.replaceAll("\\$1", file.getName())
+						.replaceAll("\\$2", "\"plugin.ini\" not found")
+				);
 			}
 		} else {
 			LogUtil.log(ConfigUtil.getLanguage("plugin.file.not.exits")
@@ -934,13 +958,14 @@ public class PluginMain {
 			);
 		}
 	}
+	
 	/**
 	 * Check if there is a new release
 	 */
 	public static void checkUpdate(String u) {
 		try {
 			URL update;
-			update = new URL(Objects.requireNonNullElse(u, "https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
+			update = new URL(Objects.requireNonNullElse(u, "https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
 			InputStream is = update.openStream();
 			BufferedInputStream bis = new BufferedInputStream(is);
 			String LatestVersion = new String(bis.readAllBytes()).replaceAll("\\n", "");
@@ -967,11 +992,17 @@ public class PluginMain {
 		} catch (Exception e) {
 			LogUtil.log(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
 			if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
-			Thread thread = new Thread(() -> checkUpdate("https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
+			Thread thread = new Thread(() -> checkUpdate("https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
 			thread.start();
 		}
 	}
 	
+	/**
+	 * Get MessageSource by Message ID
+	 *
+	 * @param id Message ID
+	 * @return MessageSource
+	 */
 	public static MessageSource getMessageById(int id) {
 		if (id > 0) {
 			return EventListener.messages.get(id - 1);
@@ -979,6 +1010,9 @@ public class PluginMain {
 		return null;
 	}
 	
+	/**
+	 * 加载自动回复
+	 */
 	public static void loadAutoRespond() {
 		EventListener.autoRespond = new File("AutoRespond.json");
 		if (!EventListener.autoRespond.exists()) {
@@ -1009,7 +1043,7 @@ public class PluginMain {
 		}
 	}
 	
-	public static Plugin loadPlugin(InputStream is, URLClassLoader u) throws Exception {
+	private static Plugin loadPlugin(InputStream is, URLClassLoader u) throws Exception {
 		Properties plugin = new Properties();
 		plugin.load(is);
 		Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
@@ -1017,6 +1051,8 @@ public class PluginMain {
 		p.setOwner(plugin.getProperty("owner", "Unnamed"));
 		p.setClassName(plugin.getProperty("main"));
 		p.setVersion(plugin.getProperty("version", "1.0.0"));
+		p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
+		p.setDescription(plugin.getProperty("dependencies", ""));
 		Properties config = new Properties();
 		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
 		if (file.exists()) config.load(new FileReader(file));
@@ -1026,7 +1062,8 @@ public class PluginMain {
 	
 	/**
 	 * Output image info
-	 * @param bot Bot
+	 *
+	 * @param bot   Bot
 	 * @param image Image
 	 */
 	public static void imageInfo(Bot bot, Image image) {
@@ -1040,14 +1077,17 @@ public class PluginMain {
 	
 	/**
 	 * Determine whether the group is allowed
+	 *
 	 * @param id GroupID
 	 * @return Is Not Allowed Group
 	 */
 	public static boolean isNotAllowedGroup(long id) {
 		return id != group.getId();
 	}
+	
 	/**
 	 * Check config file
+	 *
 	 * @return Whether the config file is exists
 	 */
 	public static boolean checkConfig() {
