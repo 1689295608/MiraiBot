@@ -1,5 +1,6 @@
 package com.windowx.miraibot.utils;
 
+import org.fusesource.jansi.AnsiConsole;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -9,10 +10,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 public class LogUtil {
 	public static StringBuilder messages = new StringBuilder();
 	static byte[] all = new byte[0];
 	static File file;
+	public static boolean ansiColor;
+	static String os = System.getProperty("os.name").toLowerCase();
 	
 	/**
 	 * Initialize the log system
@@ -50,9 +55,35 @@ public class LogUtil {
 			fos.close();
 		} catch (IOException e) {
 			System.out.println(ConfigUtil.getLanguage("unknown.error"));
+			e.printStackTrace();
+			System.exit(-1);
+		}
+	}
+	
+	public static String write(String str) {
+		if (str == null) return null;
+		String time = "";
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
+			Date date = new Date(System.currentTimeMillis());
+			time = formatter.format(date);
+			FileInputStream fis = new FileInputStream(file);
+			all = fis.readAllBytes();
+			FileOutputStream fos = new FileOutputStream(file);
+			String[] allLine = str.split("\n");
+			byte[] add = new byte[0];
+			for (String s : allLine) {
+				add = byteMerger(add, (time + s + "\n").getBytes());
+			}
+			fos.write(byteMerger(all, add));
+			fos.flush();
+			fos.close();
+		} catch (IOException e) {
+			System.out.println(ConfigUtil.getLanguage("unknown.error"));
 			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
 			System.exit(-1);
 		}
+		return time;
 	}
 	
 	/**
@@ -62,26 +93,34 @@ public class LogUtil {
 	 */
 	public static void log(@Nullable String str) {
 		if (str == null) return;
-		try {
-			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
-			Date date = new Date(System.currentTimeMillis());
-			String time = formatter.format(date);
-			FileInputStream fis = new FileInputStream(file);
-			all = fis.readAllBytes();
-			FileOutputStream fos = new FileOutputStream(file);
-			String[] allLine = str.split("\n");
-			byte[] add = new byte[0];
-			for (String s : allLine) {
-				add = byteMerger(add, (time + s + "\n").getBytes());
-			}
-			System.out.print("\r" + time + str + "\n> ");
-			fos.write(byteMerger(all, add));
-			fos.flush();
-			fos.close();
-		} catch (IOException e) {
-			System.out.println(ConfigUtil.getLanguage("unknown.error"));
-			System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
-			System.exit(-1);
+		AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
+	}
+	
+	/**
+	 * Output a error message and record it in the log file
+	 *
+	 * @param str What to output
+	 */
+	public static void error(@Nullable String str) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
+		} else if (os.contains("windows")) {
+			System.err.print("\r" + write(str) + str + "\n> ");
+		}
+	}
+	
+	/**
+	 * Output a error message and record it in the log file
+	 *
+	 * @param str What to output
+	 */
+	public static void warn(@Nullable String str) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
+		} else if (os.contains("windows")) {
+			System.out.print("\r" + write(str) + str + "\n> ");
 		}
 	}
 	
