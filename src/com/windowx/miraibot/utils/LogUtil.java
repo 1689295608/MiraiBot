@@ -106,7 +106,7 @@ public class LogUtil {
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
 		} else if (os.contains("windows")) {
-			System.err.print("\r" + write(str) + str + "\n> ");
+			AnsiConsole.err().print("\r" + write(str) + str + "\n> ");
 		}
 	}
 	
@@ -120,7 +120,7 @@ public class LogUtil {
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
 		} else if (os.contains("windows")) {
-			System.out.print("\r" + write(str) + str + "\n> ");
+			AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
 		}
 	}
 	
