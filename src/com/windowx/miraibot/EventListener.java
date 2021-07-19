@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class EventListener implements ListenerHost {
+	public static final ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
 	public static boolean showQQ;
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
-	public static final ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
 	public static JSONObject autoRespondConfig;
 	
 	@EventHandler
@@ -267,14 +267,13 @@ public class EventListener implements ListenerHost {
 				.replaceAll("\\$4", msg)
 		);
 		
-		if (!PluginMain.plugins.isEmpty()) {
-			for (Plugin p : PluginMain.plugins) {
-				try {
-					p.onGroupMessage(event);
-				} catch (Exception e) {
-					System.out.println();
-					e.printStackTrace();
-				}
+		ArrayList<Plugin> ps = PluginMain.plugins;
+		for (Plugin p : ps) {
+			try {
+				p.onGroupMessage(event);
+			} catch (Exception e) {
+				System.out.println();
+				e.printStackTrace();
 			}
 		}
 		
@@ -313,7 +312,7 @@ public class EventListener implements ListenerHost {
 							}
 							if (breakRespond) {
 								for (String s : owners) {
-									if (String.valueOf(event.getSender().getId()).equals(s)){
+									if (String.valueOf(event.getSender().getId()).equals(s)) {
 										breakRespond = false;
 									}
 								}
@@ -355,7 +354,8 @@ public class EventListener implements ListenerHost {
 								if (noPermissionRunCmd != null) {
 									try {
 										PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
-									} catch (Exception ignored) { }
+									} catch (Exception ignored) {
+									}
 								}
 							}
 							continue;
@@ -454,6 +454,7 @@ public class EventListener implements ListenerHost {
 	
 	/**
 	 * An useless function.
+	 *
 	 * @param qq qq
 	 * @return show qq
 	 */
@@ -463,8 +464,9 @@ public class EventListener implements ListenerHost {
 	
 	/**
 	 * Replace all placeholders with corresponding values
+	 *
 	 * @param event GroupMessageEvent
-	 * @param str Text to replace
+	 * @param str   Text to replace
 	 * @return Replaced text
 	 */
 	public String replaceGroupMsgPlaceholder(GroupMessageEvent event, String str) {
