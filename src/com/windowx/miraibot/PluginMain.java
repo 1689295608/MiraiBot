@@ -30,6 +30,7 @@ public class PluginMain {
 	public static final String language = Locale.getDefault().getLanguage();
 	public static Group group = null;
 	public static String[] groups = null;
+	public static String[] allowedGroups = null;
 	public static Bot bot;
 	static ArrayList<Plugin> plugins;
 	
@@ -87,6 +88,7 @@ public class PluginMain {
 		String qq = ConfigUtil.getConfig("qq");
 		String password = ConfigUtil.getConfig("password");
 		groups = ConfigUtil.getConfig("group").split(",");
+		allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
 		if (ConfigUtil.getConfig("showQQ") != null) {
 			EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ"));
 		} else {
@@ -873,7 +875,8 @@ public class PluginMain {
 									artists.toString(),
 									"http://music.163.com/song/" + id,
 									songs.getJSONObject(0).getJSONObject("album").getString("picUrl"),
-									"http://music.163.com/song/media/outer/url?id=" + id
+									"http://music.163.com/song/media/outer/url?id=" + id,
+									"[音乐] " + songs.getJSONObject(0).getString("name") + " - " + artists
 							);
 							group.sendMessage(share);
 						} else {
@@ -1112,7 +1115,12 @@ public class PluginMain {
 	 * @return Is Not Allowed Group
 	 */
 	public static boolean isNotAllowedGroup(long id) {
-		return id != group.getId();
+		for (String s : allowedGroups) {
+			if (Long.parseLong(s) == id) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -1143,8 +1151,10 @@ public class PluginMain {
 									"password=" + password + "\n" +
 									"# 输入你要聊天的聊群, 用 “,” 分隔\n" +
 									"group=" + group + "\n" +
+									"# 允许运行机器人的聊群, 用 “,” 分隔\n" +
+									"allowedGroups=" + group + "\n" +
 									"# 机器人主人 QQ 号, 即拥有一切权力的 QQ 号. 用 \",\" 分隔\n" +
-									"owner=00000\n" +
+									"owner=\n" +
 									"# 每一个新消息是否都显示发送者的 QQ 号\n" +
 									"showQQ=false\n" +
 									"# 输入你接收的好友信息（“*” 为 全部）\n" +
