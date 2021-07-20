@@ -5,7 +5,6 @@ import com.windowx.miraibot.utils.LogUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLClassLoader;
 import java.util.Properties;
 
 public class Plugin extends JavaPlugin {
@@ -16,7 +15,6 @@ public class Plugin extends JavaPlugin {
 	private String description;
 	private Properties config;
 	public File file;
-	public URLClassLoader ClassLoader;
 	public void setConfig(Properties properties) {
 		this.config = properties;
 	}
