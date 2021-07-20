@@ -273,8 +273,7 @@ public class EventListener implements ListenerHost {
 				.replaceAll("\\$4", msg)
 		);
 		
-		ArrayList<Plugin> ps = PluginMain.plugins;
-		for (Plugin p : ps) {
+		for (Plugin p : PluginMain.plugins) {
 			try {
 				p.onGroupMessage(event);
 			} catch (Exception e) {
