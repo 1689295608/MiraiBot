@@ -170,8 +170,7 @@ public class PluginMain {
 							}
 						}
 					}
-					ArrayList<Plugin> ps = plugins;
-					for (Plugin p : ps) {
+					for (Plugin p : plugins) {
 						try {
 							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
 									.replaceAll("\\$1", p.getName())
@@ -183,7 +182,6 @@ public class PluginMain {
 									.replaceAll("\\$2", e.toString())
 							);
 							e.printStackTrace();
-							unloadPlugin(p.getName());
 						}
 					}
 				} catch (Exception e) {
@@ -213,8 +211,7 @@ public class PluginMain {
 				System.exit(-1);
 			}
 			
-			ArrayList<Plugin> ps = plugins;
-			for (Plugin p : ps) {
+			for (Plugin p : plugins) {
 				try {
 					p.onDone();
 				} catch (Exception e) {
@@ -233,8 +230,7 @@ public class PluginMain {
 					LogUtil.warn(ConfigUtil.getLanguage("stopping.bot")
 							.replaceAll("\\$1", bot.getNick())
 							.replaceAll("\\$2", String.valueOf(bot.getId())));
-					ps = plugins;
-					for (Plugin p : ps) {
+					for (Plugin p : plugins) {
 						try {
 							p.onDisable();
 						} catch (Exception e) {
@@ -248,8 +244,7 @@ public class PluginMain {
 				if (!runCommand(msg)) {
 					try {
 						boolean send = true;
-						ps = plugins;
-						for (Plugin p : ps) {
+						for (Plugin p : plugins) {
 							try {
 								boolean s = p.onCommand(msg);
 								if (!s) send = false;
@@ -1088,6 +1083,7 @@ public class PluginMain {
 		p.setVersion(plugin.getProperty("version", "1.0.0"));
 		p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
 		p.setDescription(plugin.getProperty("dependencies", ""));
+		p.ClassLoader = u;
 		Properties config = new Properties();
 		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
 		if (file.exists()) config.load(new FileReader(file));
