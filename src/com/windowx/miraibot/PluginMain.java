@@ -866,13 +866,18 @@ public class PluginMain {
 						URL url = new URL("http://music.163.com/api/song/detail/?id=" + id + "&ids=[" + id + "]");
 						InputStream is = url.openStream();
 						JSONObject json = new JSONObject(new String(is.readAllBytes(), StandardCharsets.UTF_8));
+						JSONArray songs = json.getJSONArray("songs");
+						StringBuilder artists = new StringBuilder();
+						JSONArray artistsA = songs.getJSONObject(0).getJSONArray("artists");
+						for (int i = 0 ; i < artistsA.length() ; i ++) {
+							artists.append(artistsA.getJSONObject(i).getString("name")).append(i != artistsA.length() - 1 ? " / " : "");
+						}
 						if (json.getInt("code") == 200) {
-							JSONArray songs = json.getJSONArray("songs");
 							MusicShare share = new MusicShare(MusicKind.NeteaseCloudMusic,
 									songs.getJSONObject(0).getString("name"),
-									songs.getJSONObject(0).getJSONObject("album").getString("name"),
+									artists.toString(),
 									"http://music.163.com/song/" + id,
-									songs.getJSONObject(0).getJSONObject("album").getString("blurPicUrl"),
+									songs.getJSONObject(0).getJSONObject("album").getString("picUrl"),
 									"http://music.163.com/song/media/outer/url?id=" + id
 							);
 							group.sendMessage(share);
