@@ -1083,7 +1083,6 @@ public class PluginMain {
 		p.setVersion(plugin.getProperty("version", "1.0.0"));
 		p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
 		p.setDescription(plugin.getProperty("dependencies", ""));
-		p.ClassLoader = u;
 		Properties config = new Properties();
 		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
 		if (file.exists()) config.load(new FileReader(file));
