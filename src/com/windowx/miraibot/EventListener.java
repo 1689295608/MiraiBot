@@ -39,6 +39,9 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
+		if (PluginMain.group != event.getGroup()) {
+			return;
+		}
 		LogUtil.log(ConfigUtil.getLanguage("joined.group")
 				.replaceAll("\\$1", event.getMember().getNameCard())
 				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
@@ -53,6 +56,9 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
+		if (PluginMain.group != event.getGroup()) {
+			return;
+		}
 		LogUtil.log(ConfigUtil.getLanguage("left.group")
 				.replaceAll("\\$1", event.getMember().getNick())
 				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
@@ -65,6 +71,9 @@ public class EventListener implements ListenerHost {
 	public void onGroupKick(MemberLeaveEvent.Kick event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
+			return;
+		}
+		if (PluginMain.group != event.getGroup()) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -84,6 +93,9 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
+		if (PluginMain.group != event.getGroup()) {
+			return;
+		}
 		requests.add(event);
 		LogUtil.log(ConfigUtil.getLanguage("join.request.group")
 				.replaceAll("\\$1", String.valueOf(requests.size()))
@@ -98,6 +110,9 @@ public class EventListener implements ListenerHost {
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
 			event.cancel();
+			return;
+		}
+		if (PluginMain.group != event.getGroup()) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -167,6 +182,13 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getTarget().getId())) {
+			event.cancel();
+			return;
+		}
+		if (PluginMain.group != event.getTarget()) {
+			return;
+		}
 		MessageReceipt<Group> receipt = event.getReceipt();
 		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
 		if (receipt != null) {
@@ -233,6 +255,9 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
+		if (PluginMain.group != event.getGroup()) {
+			return;
+		}
 		logMute(event.getOperator(), event.getMember(), event.getGroup(), event.getDurationSeconds());
 	}
 	
@@ -242,6 +267,9 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
+		if (PluginMain.group != event.getGroup()) {
+			return;
+		}
 		logMute(event.getOperator(), null, event.getGroup(), event.getDurationSeconds());
 	}
 	
@@ -249,6 +277,9 @@ public class EventListener implements ListenerHost {
 	public void onMuteAll(GroupMuteAllEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
+			return;
+		}
+		if (PluginMain.group != event.getGroup()) {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("mute.all") +
@@ -264,14 +295,15 @@ public class EventListener implements ListenerHost {
 		String mCode = event.getMessage().serializeToMiraiCode();
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
-		
-		messages.add(event.getSource());
-		LogUtil.log(ConfigUtil.getLanguage("format.group.message")
-				.replaceAll("\\$1", String.valueOf(messages.size()))
-				.replaceAll("\\$2", event.getSenderName())
-				.replaceAll("\\$3", String.valueOf(event.getSender().getId()))
-				.replaceAll("\\$4", msg)
-		);
+		if (PluginMain.group == event.getGroup()) {
+			messages.add(event.getSource());
+			LogUtil.log(ConfigUtil.getLanguage("format.group.message")
+					.replaceAll("\\$1", String.valueOf(messages.size()))
+					.replaceAll("\\$2", event.getSenderName())
+					.replaceAll("\\$3", String.valueOf(event.getSender().getId()))
+					.replaceAll("\\$4", msg)
+			);
+		}
 		
 		for (Plugin p : PluginMain.plugins) {
 			try {
