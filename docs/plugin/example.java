@@ -1,10 +1,9 @@
 package xiaym.miraibot;
+
 import java.util.*;
 import com.windowx.miraibot.plugin.Plugin;
-import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.message.data.At;
-import net.mamoe.mirai.message.data.*;
+import net.mamoe.mirai.message.data.QuoteReply;
 
 public class GrassReply extends Plugin {
 	@Override
