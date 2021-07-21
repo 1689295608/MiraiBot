@@ -12,10 +12,13 @@ import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.impl.completer.StringsCompleter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -220,15 +223,24 @@ public class PluginMain {
 					e.printStackTrace();
 				}
 			}
-			Scanner scanner = new Scanner(System.in);
+			LineReaderBuilder builder = LineReaderBuilder.builder();
+			String[] commands = {
+					"accept", "avatar", "checkUpdate", "del", "friendList",
+					"help", "image", "imageInfo", "kick", "language", "load",
+					"music", "mute", "nameCard", "newImg", "plugins", "reload",
+					"reply", "recall", "send", "stop", "unload", "upClipImg", "upImg"
+			};
+			builder.completer(new StringsCompleter(commands));
+			LineReader reader = builder.build();
 			do {
-				if (!scanner.hasNextLine()) continue;
-				String msg = scanner.nextLine();
-				if (msg.length() <= 0) {
-					System.out.print("> ");
+				if (reader.isReading()) continue;
+				String msg = reader.readLine();
+				if (msg.isEmpty()) {
+					System.out.println("> ");
 					continue;
 				}
-				if (msg.equals("stop")) {
+				String[] cmd = msg.split(" ");
+				if (cmd[0].equals("stop")) {
 					LogUtil.warn(ConfigUtil.getLanguage("stopping.bot")
 							.replaceAll("\\$1", bot.getNick())
 							.replaceAll("\\$2", String.valueOf(bot.getId())));
