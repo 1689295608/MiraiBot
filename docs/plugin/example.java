@@ -9,12 +9,12 @@ import net.mamoe.mirai.message.data.*;
 public class GrassReply extends Plugin {
 	@Override
 	public void onEnable(){
-		log(this.getName() + " 已加载!");
+		this.info(this.getName() + " 已加载!");
         }
 
         @Override
 	public void onDisable(){
-		log(this.getName() + " 插件已卸载!");
+		this.info(this.getName() + " 插件已卸载!");
 	}
 
 	@Override
@@ -27,8 +27,4 @@ public class GrassReply extends Plugin {
 			 );
 		}
         }
-
-	public void log(String log){
-		LogUtil.log("[" + this.getName() + "] " + log);
-	}
 }
