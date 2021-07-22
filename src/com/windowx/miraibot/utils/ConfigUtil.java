@@ -29,17 +29,30 @@ public class ConfigUtil {
 			System.exit(-1);
 		}
 	}
+	
 	/**
 	 * Get the value of key in the configuration file
+	 *
 	 * @param key Key
 	 * @return Config value
 	 */
 	public static String getConfig(String key) {
+		if (key.equals("password")) {
+			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+			for (StackTraceElement ste : stack) {
+				if (!ste.getClassName().equals("java.lang.Thread") &&
+						!ste.getClassName().equals("com.windowx.miraibot.utils.ConfigUtil") &&
+						!ste.getClassName().equals("com.windowx.miraibot.PluginMain")) {
+					return null;
+				}
+			}
+		}
 		return config.getProperty(key);
 	}
 	
 	/**
 	 * Get the value of key in the language file
+	 *
 	 * @param key Key
 	 * @return Language value
 	 */
