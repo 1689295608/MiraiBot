@@ -236,7 +236,7 @@ public class PluginMain {
 				if (reader.isReading()) continue;
 				String msg = reader.readLine();
 				if (msg.isEmpty()) {
-					System.out.println("> ");
+					System.out.print("> ");
 					continue;
 				}
 				String[] cmd = msg.split(" ");
