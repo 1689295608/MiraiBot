@@ -35,7 +35,11 @@ public class PluginMain {
 	public static String[] groups = null;
 	public static String[] allowedGroups = null;
 	public static Bot bot;
-	static ArrayList<Plugin> plugins;
+	public static ArrayList<String> commands = new ArrayList<>(Arrays.asList(
+			"accept", "avatar", "checkUpdate", "del", "friendList", "help", "image", "imageInfo", "kick", "language", "load",
+			"music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
+	);
+	public static ArrayList<Plugin> plugins;
 	
 	public static void main(String[] args) {
 		String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
@@ -224,12 +228,6 @@ public class PluginMain {
 				}
 			}
 			LineReaderBuilder builder = LineReaderBuilder.builder();
-			String[] commands = {
-					"accept", "avatar", "checkUpdate", "del", "friendList",
-					"help", "image", "imageInfo", "kick", "language", "load",
-					"music", "mute", "nameCard", "newImg", "plugins", "reload",
-					"reply", "recall", "send", "stop", "unload", "upClipImg", "upImg"
-			};
 			builder.completer(new StringsCompleter(commands));
 			LineReader reader = builder.build();
 			do {
@@ -878,7 +876,7 @@ public class PluginMain {
 						JSONArray songs = json.getJSONArray("songs");
 						StringBuilder artists = new StringBuilder();
 						JSONArray artistsA = songs.getJSONObject(0).getJSONArray("artists");
-						for (int i = 0 ; i < artistsA.length() ; i ++) {
+						for (int i = 0; i < artistsA.length(); i++) {
 							artists.append(artistsA.getJSONObject(i).getString("name")).append(i != artistsA.length() - 1 ? " / " : "");
 						}
 						if (json.getInt("code") == 200) {
