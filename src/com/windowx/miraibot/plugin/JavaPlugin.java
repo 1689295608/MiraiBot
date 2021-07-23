@@ -7,11 +7,15 @@ public abstract class JavaPlugin {
 		return true;
 	}
 	
-	public void onEnable() { }
+	public void onEnable() {
+	}
 	
-	public void onDisable() { }
+	public void onDisable() {
+	}
 	
-	public void onGroupMessage(GroupMessageEvent event) { }
+	public void onGroupMessage(GroupMessageEvent event) {
+	}
 	
-	public void onDone() { }
+	public void onFinished() {
+	}
 }
