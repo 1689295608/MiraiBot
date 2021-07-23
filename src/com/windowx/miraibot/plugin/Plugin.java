@@ -8,19 +8,22 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Plugin extends JavaPlugin {
+	private File file;
 	private String name;
 	private String owner;
 	private String className;
 	private String version;
 	private String description;
 	private Properties config;
-	public File file;
-	public void setConfig(Properties properties) {
-		this.config = properties;
-	}
+	
 	public Properties getConfig() {
 		return this.config;
 	}
+	
+	public void setConfig(Properties properties) {
+		this.config = properties;
+	}
+	
 	public void saveConfig() throws IOException {
 		File file = new File("plugins/" + name + "/");
 		if (!file.exists()) {
@@ -36,37 +39,64 @@ public class Plugin extends JavaPlugin {
 		}
 		config.store(new FileOutputStream(file), null);
 	}
-	public void setVersion(String version) {
-		this.version = version;
+	
+	public File getFile() {
+		return file;
 	}
+	
+	public void setFile(File file) {
+		this.file = file;
+	}
+	
 	public String getVersion() {
 		return this.version;
 	}
-	public void setName(String name) {
-		this.name = name;
+	
+	public void setVersion(String version) {
+		this.version = version;
 	}
+	
 	public String getName() {
 		return this.name;
 	}
-	public void setOwner(String owner) {
-		this.owner = owner;
+	
+	public void setName(String name) {
+		this.name = name;
 	}
+	
 	public String getOwner() {
 		return this.owner;
 	}
-	public void setClassName(String className) {
-		this.className = className;
+	
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
+	
 	public String getClassName() {
 		return this.className;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+	
+	public void setClassName(String className) {
+		this.className = className;
 	}
+	
 	public String getDescription() {
 		return this.description;
 	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	public void info(String info) {
 		LogUtil.log("[" + name + "] " + info);
+	}
+	
+	public void error(String error) {
+		LogUtil.error("[" + name + "] " + error);
+	}
+	
+	public void warn(String warn) {
+		LogUtil.warn("[" + name + "] " + warn);
 	}
 }
