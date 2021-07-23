@@ -16,6 +16,7 @@ import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
+import org.jetbrains.annotations.Nullable;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.StringsCompleter;
@@ -224,7 +225,8 @@ public class PluginMain {
 			
 			for (Plugin p : plugins) {
 				try {
-					p.onDone();
+					p.onFinished();
+					p.finished = true;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -913,7 +915,7 @@ public class PluginMain {
 	 * @param name 插件名
 	 * @return 插件
 	 */
-	public static Plugin getPlugin(String name) {
+	@Nullable public static Plugin getPlugin(String name) {
 		for (Plugin p : plugins) {
 			if (p.getName().equals(name)) return p;
 		}
