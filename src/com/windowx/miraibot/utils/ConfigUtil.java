@@ -1,5 +1,7 @@
 package com.windowx.miraibot.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -36,18 +38,18 @@ public class ConfigUtil {
 	 * @param key Key
 	 * @return Config value
 	 */
-	public static String getConfig(String key) {
+	@NotNull public static String getConfig(String key) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 			for (StackTraceElement ste : stack) {
 				if (!ste.getClassName().equals("java.lang.Thread") &&
 						!ste.getClassName().equals("com.windowx.miraibot.utils.ConfigUtil") &&
 						!ste.getClassName().equals("com.windowx.miraibot.PluginMain")) {
-					return null;
+					return "";
 				}
 			}
 		}
-		return config.getProperty(key);
+		return config.getProperty(key) != null ? config.getProperty(key) : "";
 	}
 	
 	/**
