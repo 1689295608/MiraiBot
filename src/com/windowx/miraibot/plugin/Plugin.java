@@ -15,6 +15,7 @@ public class Plugin extends JavaPlugin {
 	private String version;
 	private String description;
 	private Properties config;
+	public boolean finished = false;
 	
 	public Properties getConfig() {
 		return this.config;
