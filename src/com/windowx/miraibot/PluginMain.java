@@ -226,7 +226,6 @@ public class PluginMain {
 			for (Plugin p : plugins) {
 				try {
 					p.onFinished();
-					p.finished = true;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
