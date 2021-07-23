@@ -77,7 +77,8 @@ public class PluginMain {
 			System.exit(-1);
 		}
 		ConfigUtil.init();
-		LogUtil.ansiColor = ConfigUtil.getConfig("ansiColor") != null && Boolean.parseBoolean(ConfigUtil.getConfig("ansiColor"));
+		ConfigUtil.getConfig("ansiColor");
+		LogUtil.ansiColor = Boolean.parseBoolean(ConfigUtil.getConfig("ansiColor"));
 		
 		loadAutoRespond();
 		
@@ -86,7 +87,8 @@ public class PluginMain {
 			System.exit(-1);
 			return;
 		}
-		if (ConfigUtil.getConfig("checkUpdate") != null && ConfigUtil.getConfig("checkUpdate").equals("true")) {
+		ConfigUtil.getConfig("checkUpdate");
+		if (ConfigUtil.getConfig("checkUpdate").equals("true")) {
 			LogUtil.log(ConfigUtil.getLanguage("checking.update"));
 			Thread thread = new Thread(() -> checkUpdate(null));
 			thread.start();
@@ -96,18 +98,18 @@ public class PluginMain {
 		String password = ConfigUtil.getConfig("password");
 		groups = ConfigUtil.getConfig("group").split(",");
 		allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
-		if (ConfigUtil.getConfig("showQQ") != null) {
+		if (!ConfigUtil.getConfig("showQQ").isEmpty()) {
 			EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ"));
 		} else {
 			EventListener.showQQ = false;
 		}
-		if ((qq == null || password == null) || (qq.isEmpty() || password.isEmpty())) {
+		if (qq.isEmpty() || password.isEmpty()) {
 			LogUtil.error(ConfigUtil.getLanguage("qq.password.not.exits"));
 			System.exit(-1);
 			return;
 		}
 		
-		String protocol = ConfigUtil.getConfig("protocol") != null ? ConfigUtil.getConfig("protocol") : "";
+		String protocol = !ConfigUtil.getConfig("protocol").isEmpty() ? ConfigUtil.getConfig("protocol") : "";
 		LogUtil.log(ConfigUtil.getLanguage("trying.login").replaceAll("\\$1", protocol));
 		try {
 			BotConfiguration.MiraiProtocol miraiProtocol;
@@ -164,7 +166,7 @@ public class PluginMain {
 								if (is != null) {
 									try {
 										Plugin plugin = loadPlugin(is, u);
-										plugin.file = f;
+										plugin.setFile(f);
 										plugins.add(plugin);
 									} catch (Exception e) {
 										System.out.println();
@@ -326,7 +328,7 @@ public class PluginMain {
 						Plugin plugin = getPlugin(cmd[1]);
 						if (plugin != null) {
 							unloadPlugin(cmd[1]);
-							loadPlugin(plugin.file, plugin.getName());
+							loadPlugin(plugin.getFile(), plugin.getName());
 						} else {
 							LogUtil.log(ConfigUtil.getLanguage("unloading.plugin")
 									.replaceAll("\\$1", cmd[1])
@@ -970,7 +972,7 @@ public class PluginMain {
 						.replaceAll("\\$1", name)
 				);
 				Plugin plugin = loadPlugin(is, u);
-				plugin.file = file;
+				plugin.setFile(file);
 				if (getPlugin(plugin.getName()) != null) {
 					LogUtil.warn(ConfigUtil.getLanguage("plugin.already.loaded")
 							.replaceAll("\\$1", plugin.getName())
@@ -1035,8 +1037,6 @@ public class PluginMain {
 		} catch (Exception e) {
 			LogUtil.error(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
 			if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
-			Thread thread = new Thread(() -> checkUpdate("https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
-			thread.start();
 		}
 	}
 	
