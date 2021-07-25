@@ -1,12 +1,11 @@
-package miraibot.example;
-
+package miraibot;
 import java.util.*;
 import com.windowx.miraibot.plugin.Plugin;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.QuoteReply;
 
 public class example extends Plugin {
-        //编译后会存在于 /miraibot/example/example.class 主类为miraibot.example.example
+        //编译后会存在于 /miraibot/example.class 主类为miraibot.example
 
 	@Override
 	public void onEnable(){
