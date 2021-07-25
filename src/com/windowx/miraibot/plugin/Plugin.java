@@ -16,6 +16,16 @@ public class Plugin extends JavaPlugin {
 	private String description;
 	private Properties config;
 	
+	public Properties getPlugin() {
+		return plugin;
+	}
+	
+	public void setPlugin(Properties plugin) {
+		this.plugin = plugin;
+	}
+	
+	private Properties plugin;
+	
 	public Properties getConfig() {
 		return this.config;
 	}
