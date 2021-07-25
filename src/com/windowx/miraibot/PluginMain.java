@@ -957,6 +957,24 @@ public class PluginMain {
 		}
 	}
 	
+	private static Plugin loadPlugin(InputStream is, URLClassLoader u) throws Exception {
+		Properties plugin = new Properties();
+		plugin.load(is);
+		Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
+		p.setName(plugin.getProperty("name", "Untitled"));
+		p.setOwner(plugin.getProperty("owner", "Unnamed"));
+		p.setClassName(plugin.getProperty("main"));
+		p.setVersion(plugin.getProperty("version", "1.0.0"));
+		p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
+		p.setDescription(plugin.getProperty("dependencies", ""));
+		p.setPlugin(plugin);
+		Properties config = new Properties();
+		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
+		if (file.exists()) config.load(new FileReader(file));
+		p.setConfig(config);
+		return p;
+	}
+	
 	/**
 	 * 加载某个插件
 	 *
@@ -1085,23 +1103,6 @@ public class PluginMain {
 			System.out.println();
 			e.printStackTrace();
 		}
-	}
-	
-	private static Plugin loadPlugin(InputStream is, URLClassLoader u) throws Exception {
-		Properties plugin = new Properties();
-		plugin.load(is);
-		Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
-		p.setName(plugin.getProperty("name", "Untitled"));
-		p.setOwner(plugin.getProperty("owner", "Unnamed"));
-		p.setClassName(plugin.getProperty("main"));
-		p.setVersion(plugin.getProperty("version", "1.0.0"));
-		p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
-		p.setDescription(plugin.getProperty("dependencies", ""));
-		Properties config = new Properties();
-		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
-		if (file.exists()) config.load(new FileReader(file));
-		p.setConfig(config);
-		return p;
 	}
 	
 	/**
