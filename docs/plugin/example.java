@@ -1,11 +1,12 @@
-package xiaym.miraibot;
+package miraibot.example;
 
 import java.util.*;
 import com.windowx.miraibot.plugin.Plugin;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.QuoteReply;
 
-public class GrassReply extends Plugin {
+public class example extends Plugin {
+        //编译后会存在于 /miraibot/example/example.java 主类为miraibot.example.example
 	@Override
 	public void onEnable(){
 		this.info(this.getName() + " 已加载!");
