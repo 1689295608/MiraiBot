@@ -6,7 +6,8 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.QuoteReply;
 
 public class example extends Plugin {
-        //编译后会存在于 /miraibot/example/example.java 主类为miraibot.example.example
+        //编译后会存在于 /miraibot/example/example.class 主类为miraibot.example.example
+
 	@Override
 	public void onEnable(){
 		this.info(this.getName() + " 已加载!");
