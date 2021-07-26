@@ -166,7 +166,8 @@ public class PluginMain {
 								InputStream is = u.getResourceAsStream("plugin.ini");
 								if (is != null) {
 									try {
-										Plugin plugin = loadPlugin(is, u);
+										Plugin plugin = initPlugin(is, u);
+										plugin.setClassLoader(u);
 										plugin.setFile(f);
 										plugins.add(plugin);
 									} catch (Exception e) {
@@ -957,10 +958,11 @@ public class PluginMain {
 		}
 	}
 	
-	private static Plugin loadPlugin(InputStream is, URLClassLoader u) throws Exception {
+	private static Plugin initPlugin(InputStream is, URLClassLoader u) throws Exception {
 		Properties plugin = new Properties();
 		plugin.load(is);
-		Plugin p = (Plugin) u.loadClass(plugin.getProperty("main")).getDeclaredConstructor().newInstance();
+		Class<?> clazz = u.loadClass(plugin.getProperty("main"));
+		Plugin p = (Plugin) clazz.getDeclaredConstructor().newInstance();
 		p.setName(plugin.getProperty("name", "Untitled"));
 		p.setOwner(plugin.getProperty("owner", "Unnamed"));
 		p.setClassName(plugin.getProperty("main"));
@@ -980,7 +982,7 @@ public class PluginMain {
 	 *
 	 * @param file 文件
 	 * @param name 名称
-	 * @throws Exception 日常报错
+	 * @throws Exception 报错
 	 */
 	public static void loadPlugin(File file, String name) throws Exception {
 		if (file.exists()) {
@@ -990,7 +992,7 @@ public class PluginMain {
 				LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
 						.replaceAll("\\$1", name)
 				);
-				Plugin plugin = loadPlugin(is, u);
+				Plugin plugin = initPlugin(is, u);
 				plugin.setFile(file);
 				if (getPlugin(plugin.getName()) != null) {
 					LogUtil.warn(ConfigUtil.getLanguage("plugin.already.loaded")
