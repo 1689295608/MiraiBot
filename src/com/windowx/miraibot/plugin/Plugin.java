@@ -5,6 +5,7 @@ import com.windowx.miraibot.utils.LogUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.util.Properties;
 
 public class Plugin extends JavaPlugin {
@@ -15,6 +16,24 @@ public class Plugin extends JavaPlugin {
 	private String version;
 	private String description;
 	private Properties config;
+	private URLClassLoader classLoader;
+	private boolean isEnabled;
+	private Properties plugin;
+	
+	public URLClassLoader getClassLoader() {
+		return classLoader;
+	}
+	
+	public void setClassLoader(URLClassLoader classLoader) {
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		for (StackTraceElement ste : stack) {
+			if (!ste.getClassName().equals("java.lang.Thread") && !ste.getClassName().equals("com.windowx.miraibot.PluginMain") &&
+					!ste.getClassName().equals("com.windowx.miraibot.plugin.Plugin")) {
+				return;
+			}
+		}
+		this.classLoader = classLoader;
+	}
 	
 	public Properties getPlugin() {
 		return plugin;
@@ -23,8 +42,6 @@ public class Plugin extends JavaPlugin {
 	public void setPlugin(Properties plugin) {
 		this.plugin = plugin;
 	}
-	
-	private Properties plugin;
 	
 	public Properties getConfig() {
 		return this.config;
@@ -84,6 +101,14 @@ public class Plugin extends JavaPlugin {
 	
 	public String getClassName() {
 		return this.className;
+	}
+	
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		isEnabled = enabled;
 	}
 	
 	public void setClassName(String className) {
