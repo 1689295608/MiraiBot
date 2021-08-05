@@ -41,6 +41,7 @@ public class PluginMain {
 			"music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
 	);
 	public static ArrayList<Plugin> plugins;
+	public static boolean running;
 	
 	public static void main(String[] args) {
 		String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
@@ -233,6 +234,7 @@ public class PluginMain {
 					e.printStackTrace();
 				}
 			}
+			running = true;
 			LineReaderBuilder builder = LineReaderBuilder.builder();
 			builder.completer(new StringsCompleter(commands));
 			LineReader reader = builder.build();
@@ -243,46 +245,20 @@ public class PluginMain {
 					System.out.print("> ");
 					continue;
 				}
-				String[] cmd = msg.split(" ");
-				if (cmd[0].equals("stop")) {
-					LogUtil.warn(ConfigUtil.getLanguage("stopping.bot")
-							.replaceAll("\\$1", bot.getNick())
-							.replaceAll("\\$2", String.valueOf(bot.getId())));
-					for (Plugin p : plugins) {
-						try {
-							p.onDisable();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					bot.close();
-					System.out.print("\n");
-					System.exit(0);
-				}
 				if (!runCommand(msg)) {
 					try {
-						boolean send = true;
-						for (Plugin p : plugins) {
-							if (!p.isEnabled()) continue;
-							try {
-								boolean s = p.onCommand(msg);
-								if (!s) send = false;
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
 						String decode;
 						try {
 							decode = decodeUnicode(msg);
 						} catch (Exception e) {
 							decode = msg;
 						}
-						if (send) group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
+						group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
 					} catch (BotIsBeingMutedException e) {
 						LogUtil.error(ConfigUtil.getLanguage("bot.is.being.muted"));
 					}
 				}
-			} while (true);
+			} while (running);
 		} catch (NumberFormatException e) {
 			LogUtil.error(ConfigUtil.getLanguage("qq.password.error"));
 			e.printStackTrace();
@@ -343,6 +319,22 @@ public class PluginMain {
 						e.printStackTrace();
 					}
 				}
+				return true;
+			case "stop":
+				LogUtil.warn(ConfigUtil.getLanguage("stopping.bot")
+						.replaceAll("\\$1", bot.getNick())
+						.replaceAll("\\$2", String.valueOf(bot.getId())));
+				running = false;
+				for (Plugin p : plugins) {
+					try {
+						p.onDisable();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				bot.close();
+				System.out.print("\n");
+				System.exit(0);
 				return true;
 			case "friendList": {
 				ContactList<Friend> friends = bot.getFriends();
@@ -909,7 +901,17 @@ public class PluginMain {
 				}
 				return true;
 			default:
-				return false;
+				boolean send = true;
+				for (Plugin p : plugins) {
+					if (!p.isEnabled()) continue;
+					try {
+						boolean s = p.onCommand(msg);
+						if (!s) send = false;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				return send;
 		}
 	}
 	
