@@ -225,6 +225,7 @@ public class PluginMain {
 			}
 			
 			for (Plugin p : plugins) {
+				if (!p.isEnabled()) continue;
 				try {
 					p.onFinished();
 				} catch (Exception e) {
@@ -929,11 +930,9 @@ public class PluginMain {
 	 */
 	public static void unloadPlugin(String name) {
 		Plugin plugin = null;
-		int n = -1;
-		for (int i = 0; i < plugins.size(); i++) {
-			if (plugins.get(i).getName().equals(name)) {
-				plugin = plugins.get(i);
-				n = i;
+		for (Plugin value : plugins) {
+			if (value.getName().equals(name)) {
+				plugin = value;
 				break;
 			}
 		}
@@ -946,7 +945,7 @@ public class PluginMain {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			plugins.remove(n);
+			plugin.setEnabled(false);
 			System.gc();
 			LogUtil.log(ConfigUtil.getLanguage("unloaded.plugin")
 					.replaceAll("\\$1", plugin.getName())
@@ -1000,6 +999,7 @@ public class PluginMain {
 					);
 					return;
 				}
+				plugin.setEnabled(true);
 				plugins.add(plugin);
 				try {
 					plugin.onEnable();
