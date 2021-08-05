@@ -239,7 +239,7 @@ public class PluginMain {
 			LineReaderBuilder builder = LineReaderBuilder.builder();
 			builder.completer(new StringsCompleter(commands));
 			LineReader reader = builder.build();
-			do {
+			while (running) {
 				if (reader.isReading()) continue;
 				String msg = reader.readLine();
 				if (msg.isEmpty()) {
@@ -259,7 +259,7 @@ public class PluginMain {
 						LogUtil.error(ConfigUtil.getLanguage("bot.is.being.muted"));
 					}
 				}
-			} while (running);
+			}
 		} catch (NumberFormatException e) {
 			LogUtil.error(ConfigUtil.getLanguage("qq.password.error"));
 			e.printStackTrace();
@@ -912,7 +912,7 @@ public class PluginMain {
 						e.printStackTrace();
 					}
 				}
-				return send;
+				return !send;
 		}
 	}
 	
