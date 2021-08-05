@@ -3,10 +3,7 @@ package com.windowx.miraibot.utils;
 import org.fusesource.jansi.AnsiConsole;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,6 +15,7 @@ public class LogUtil {
 	static File file;
 	public static boolean ansiColor;
 	static String os = System.getProperty("os.name").toLowerCase();
+	public static String lastOpt;
 	
 	/**
 	 * Initialize the log system
@@ -62,6 +60,7 @@ public class LogUtil {
 	
 	public static String write(String str) {
 		if (str == null) return null;
+		lastOpt = str;
 		String time = "";
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
