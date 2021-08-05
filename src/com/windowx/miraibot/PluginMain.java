@@ -262,6 +262,7 @@ public class PluginMain {
 					try {
 						boolean send = true;
 						for (Plugin p : plugins) {
+							if (!p.isEnabled()) continue;
 							try {
 								boolean s = p.onCommand(msg);
 								if (!s) send = false;
