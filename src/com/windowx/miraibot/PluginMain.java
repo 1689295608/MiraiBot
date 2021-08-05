@@ -192,6 +192,7 @@ public class PluginMain {
 							);
 							p.onEnable();
 						} catch (Exception e) {
+							p.setEnabled(false);
 							LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
 									.replaceAll("\\$1", p.getName())
 									.replaceAll("\\$2", e.toString())
