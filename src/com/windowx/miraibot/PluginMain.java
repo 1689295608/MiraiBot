@@ -169,6 +169,7 @@ public class PluginMain {
 										Plugin plugin = initPlugin(is, u);
 										plugin.setClassLoader(u);
 										plugin.setFile(f);
+										plugin.setEnabled(true);
 										plugins.add(plugin);
 									} catch (Exception e) {
 										System.out.println();
