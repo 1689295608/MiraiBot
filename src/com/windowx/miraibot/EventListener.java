@@ -306,6 +306,7 @@ public class EventListener implements ListenerHost {
 		}
 		
 		for (Plugin p : PluginMain.plugins) {
+			if (!p.isEnabled()) continue;
 			try {
 				p.onGroupMessage(event);
 			} catch (Exception e) {
@@ -384,14 +385,15 @@ public class EventListener implements ListenerHost {
 									}
 								}
 								if (!noPermissionReply) {
-									event.getGroup().sendMessage(noPermissionMsg);
+									event.getGroup().sendMessage(MiraiCode.deserializeMiraiCode(noPermissionMsg));
 								} else {
-									event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(noPermissionMsg));
+									event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(MiraiCode.deserializeMiraiCode(noPermissionMsg)));
 								}
 								if (noPermissionRunCmd != null) {
 									try {
 										PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
 									} catch (Exception ignored) {
+									
 									}
 								}
 							}
