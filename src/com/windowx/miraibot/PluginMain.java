@@ -372,6 +372,7 @@ public class PluginMain {
 				StringBuilder out = new StringBuilder();
 				int c = 1;
 				for (Plugin p : plugins) {
+					if (!p.isEnabled()) continue;
 					out.append(c).append(". ").append(p.getName()).append(" v").append(p.getVersion()).append(" by ").append(p.getOwner()).append("\n");
 					c++;
 				}
