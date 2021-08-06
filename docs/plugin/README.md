@@ -34,6 +34,10 @@
 > [第四步：监听事件](#第四步监听事件)
 > 
 > [第五步：配置文件](#第五步配置文件)
+> 
+> [第六步：插件配置](#第六步插件配置)
+> 
+> [第七步：编译插件](#第七步编译插件)
 
 ## 第一步：创建项目
 ### 梦开始的地方
@@ -151,3 +155,47 @@ public void onEnable() {
 - `...getConfig().setProperty()` 通过调用 `Properties` 类，设置其 `Property` 项
 - `this.saveConfig()` 保存本插件配置文件，会抛出 `IOException`，所以需要使用 `try` 来抓取该错误
 - `this.info(/* ... */ + name)` 因为在前面获取配置项时，将其内容赋值在字符串变量 `name` 上，所以可以在这里调用
+
+## 第六步：插件配置
+
+一个标准 MiraiBot 插件必须要有一个 `plugin.ini` 才能加载
+
+接下来让我们创建一个 `plugin.ini` 吧！
+
+首先，在项目根目录创建一个 `资源根目录`，也就是先创建一个 `Directory`，然后右键它，选择 `Mark Directory as` 然后选择 `Resource Root` 即可
+
+然后右键这个目录，选择 `New` 然后选择 `File`，再在新出现的窗口里输入 `plugin.ini` 后按下回车键即可
+
+再打开新建的文件 `plugin.ini`，开始配置你的插件：
+
+|配置项     |描述    |示例                   |
+|--         |--     |--                     |
+|**name**   |插件名称|Demo                   |
+|**main**       |插件主类|miraibot.example       |
+|owner      |插件作者|WindowX                |
+|version    |插件版本|1.0.0                  |
+|description|插件描述|一个标准 MiraiBot 插件。|
+
+其中粗体的为必填项，若为空即无法加载该插件！
+
+## 第七步：编译插件
+
+看来你已经编写好了一个完整的插件，接下来让我们来编译它吧！
+
+首先在 IDEA 中按下组合键 `Ctrl + Alt + Shift + S` 或点击 `File` -> `Project Structure`
+
+在新打开的窗口左侧选择 `Artifacts`，在右侧点击 `+` -> `JAR` -> `Empty`。
+
+然后你就新建了一个 `Artifacts` 了，接下来把 `Name` 和 `Output Directory` 改成你想要的内容
+
+再在右侧的 `Avail Elements` 中展开你的项目，双击 `'xxx' compile output` （其中 `xxx` 表示你的项目名） 或者右键 -> `Put into Output Root`
+
+这样这个 `Artifacts` 就配置完成了！点击 `Apply` 或 `OK` 即可保存配置。
+
+接下来，我们开始编译这个项目！
+
+在 IDEA 中选择 `Build` -> `Build Artifacts...`
+
+在新出现的 `Build Artifacts` 窗口中选择你刚才创建好的 `Artifacts`，点击 `Build` 即可！
+
+然后 IDEA 就会开始编译插件，编译完成后 在你输入的 `Output Directory` 中就可以找到刚编译好的插件！
