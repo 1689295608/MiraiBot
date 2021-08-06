@@ -193,6 +193,20 @@ public void onEnable() {
 
 其中粗体的为必填项，若为空即无法加载该插件！
 
+以下为示例
+```Properties
+# 插件名
+name=Demo
+# 插件主类，必须正确 否则无法加载
+main=miraibot.example
+# 插件作者名，默认为 Unnamed
+owner=WindowX
+# 插件版本，默认为 1.0.0
+version=1.0.0
+# 插件描述，默认为 A Plugin For MiraiBot.
+description=一个标准 MiraiBot 插件。
+```
+
 ## 第七步：编译插件
 
 看来你已经编写好了一个完整的插件，接下来让我们来编译它吧！
