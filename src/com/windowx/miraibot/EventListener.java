@@ -48,10 +48,10 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("joined.group")
-				.replaceAll("\\$1", event.getMember().getNameCard())
-				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
-				.replaceAll("\\$3", event.getGroup().getName())
-				.replaceAll("\\$4", String.valueOf(event.getGroupId()))
+				, event.getMember().getNameCard()
+				, String.valueOf(event.getMember().getId())
+				, event.getGroup().getName()
+				, String.valueOf(event.getGroupId())
 		);
 	}
 	
@@ -65,10 +65,10 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("left.group")
-				.replaceAll("\\$1", event.getMember().getNick())
-				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
-				.replaceAll("\\$3", event.getGroup().getName())
-				.replaceAll("\\$4", String.valueOf(event.getGroupId()))
+				, event.getMember().getNick()
+				, String.valueOf(event.getMember().getId())
+				, event.getGroup().getName()
+				, String.valueOf(event.getGroupId())
 		);
 	}
 	
@@ -83,12 +83,11 @@ public class EventListener implements ListenerHost {
 		}
 		Member operator = event.getOperator();
 		LogUtil.log(ConfigUtil.getLanguage("kick.group")
-				.replaceAll("\\$1", event.getMember().getNick())
-				.replaceAll("\\$2", String.valueOf(event.getMember().getId()))
-				.replaceAll("\\$3", operator != null ? operator.getNameCard() : event.getBot().getNick())
-				.replaceAll("\\$4", String.valueOf(operator != null ? operator.getId() : event.getBot().getId()))
-				.replaceAll("\\$5", event.getGroup().getName())
-				.replaceAll("\\$6", String.valueOf(event.getGroupId()))
+				, event.getMember().getNick()
+				, String.valueOf(event.getMember().getId())
+				, operator != null ? operator.getNameCard() : event.getBot().getNick()
+				, String.valueOf(operator != null ? operator.getId() : event.getBot().getId())
+				, event.getGroup().getName(), String.valueOf(event.getGroupId())
 		);
 	}
 	
@@ -103,11 +102,11 @@ public class EventListener implements ListenerHost {
 		}
 		requests.add(event);
 		LogUtil.log(ConfigUtil.getLanguage("join.request.group")
-				.replaceAll("\\$1", String.valueOf(requests.size()))
-				.replaceAll("\\$2", event.getFromNick())
-				.replaceAll("\\$3", String.valueOf(event.getFromId()))
-				.replaceAll("\\$4", event.getGroup().getName())
-				.replaceAll("\\$5", String.valueOf(event.getGroupId()))
+				, String.valueOf(requests.size())
+				, event.getFromNick()
+				, String.valueOf(event.getFromId())
+				, event.getGroup().getName()
+				, String.valueOf(event.getGroupId())
 		);
 	}
 	
@@ -131,33 +130,32 @@ public class EventListener implements ListenerHost {
 		if (operator != null) {
 			if (operator.getId() == sender.getId()) {
 				if (id != -1) {
-					LogUtil.log(ConfigUtil.getLanguage("recall.message")
-							.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId()))
-							.replaceAll("\\$2", String.valueOf(id)));
+					LogUtil.log(ConfigUtil.getLanguage("recall.message"), operator.getNameCard() + showQQ(operator.getId()), String.valueOf(id));
 				} else {
-					LogUtil.log(ConfigUtil.getLanguage("recall.unknown.message")
-							.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId())));
+					LogUtil.log(ConfigUtil.getLanguage("recall.unknown.message"), operator.getNameCard() + showQQ(operator.getId()));
 				}
 			} else {
 				if (id != -1) {
 					LogUtil.log(ConfigUtil.getLanguage("recall.others.message")
-							.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId()))
-							.replaceAll("\\$2", sender.getNameCard() + showQQ(sender.getId()))
-							.replaceAll("\\$3", String.valueOf(id)));
+							, operator.getNameCard() + showQQ(operator.getId())
+							, sender.getNameCard() + showQQ(sender.getId())
+							, String.valueOf(id)
+					);
 				} else {
 					LogUtil.log(ConfigUtil.getLanguage("recall.others.unknown.message")
-							.replaceAll("\\$1", operator.getNameCard() + showQQ(operator.getId()))
-							.replaceAll("\\$2", String.valueOf(id)));
+							, operator.getNameCard() + showQQ(operator.getId())
+							, String.valueOf(id)
+					);
 				}
 			}
 		} else {
 			if (id != -1) {
 				LogUtil.log(ConfigUtil.getLanguage("recall.message")
-						.replaceAll("\\$1", event.getBot().getNick() + showQQ(event.getBot().getId()))
-						.replaceAll("\\$2", String.valueOf(id)));
+						, event.getBot().getNick() + showQQ(event.getBot().getId())
+						, String.valueOf(id)
+				);
 			} else {
-				LogUtil.log(ConfigUtil.getLanguage("recall.unknown.message")
-						.replaceAll("\\$1", event.getBot().getNick() + showQQ(event.getBot().getId())));
+				LogUtil.log(ConfigUtil.getLanguage("recall.unknown.message"), event.getBot().getNick() + showQQ(event.getBot().getId()));
 			}
 		}
 	}
@@ -176,12 +174,9 @@ public class EventListener implements ListenerHost {
 		}
 		Friend operator = event.getOperator();
 		if (id != -1) {
-			LogUtil.log(ConfigUtil.getLanguage("recall.message")
-					.replaceAll("\\$1", operator.getNick() + showQQ(operator.getId()))
-					.replaceAll("\\$2", String.valueOf(id)));
+			LogUtil.log(ConfigUtil.getLanguage("recall.message"), operator.getNick() + showQQ(operator.getId()), String.valueOf(id));
 		} else {
-			LogUtil.log(ConfigUtil.getLanguage("recall.unknown.message")
-					.replaceAll("\\$1", operator.getNick() + showQQ(operator.getId())));
+			LogUtil.log(ConfigUtil.getLanguage("recall.unknown.message"), operator.getNick() + showQQ(operator.getId()));
 		}
 	}
 	
@@ -199,16 +194,16 @@ public class EventListener implements ListenerHost {
 		if (receipt != null) {
 			messages.add(receipt.getSource());
 			LogUtil.log(ConfigUtil.getLanguage("format.group.recallable.message")
-					.replaceAll("\\$1", String.valueOf(messages.size()))
-					.replaceAll("\\$2", event.getBot().getNick())
-					.replaceAll("\\$3", String.valueOf(event.getBot().getId()))
-					.replaceAll("\\$4", msg)
+					, String.valueOf(messages.size())
+					, event.getBot().getNick()
+					, String.valueOf(event.getBot().getId())
+					, msg
 			);
 		} else {
 			LogUtil.log(ConfigUtil.getLanguage("format.group.message")
-					.replaceAll("\\$1", event.getBot().getNick())
-					.replaceAll("\\$2", String.valueOf(event.getBot().getId()))
-					.replaceAll("\\$3", msg)
+					, event.getBot().getNick()
+					, String.valueOf(event.getBot().getId())
+					, msg
 			);
 		}
 	}
@@ -220,20 +215,20 @@ public class EventListener implements ListenerHost {
 		if (receipt != null) {
 			messages.add(receipt.getSource());
 			LogUtil.log(ConfigUtil.getLanguage("format.user.recallable.message")
-					.replaceAll("\\$1", String.valueOf(messages.size()))
-					.replaceAll("\\$2", event.getBot().getNick())
-					.replaceAll("\\$3", String.valueOf(event.getBot().getId()))
-					.replaceAll("\\$4", event.getTarget().getNick())
-					.replaceAll("\\$5", String.valueOf(event.getTarget().getId()))
-					.replaceAll("\\$6", msg)
+					, String.valueOf(messages.size())
+					, event.getBot().getNick()
+					, String.valueOf(event.getBot().getId())
+					, event.getTarget().getNick()
+					, String.valueOf(event.getTarget().getId())
+					, msg
 			);
 		} else {
 			LogUtil.log(ConfigUtil.getLanguage("format.user.recallable.message")
-					.replaceAll("\\$1", event.getBot().getNick())
-					.replaceAll("\\$2", String.valueOf(event.getBot().getId()))
-					.replaceAll("\\$3", event.getTarget().getNick())
-					.replaceAll("\\$4", String.valueOf(event.getTarget().getId()))
-					.replaceAll("\\$5", msg)
+					, event.getBot().getNick()
+					, String.valueOf(event.getBot().getId())
+					, event.getTarget().getNick()
+					, String.valueOf(event.getTarget().getId())
+					, msg
 			);
 		}
 	}
@@ -246,11 +241,11 @@ public class EventListener implements ListenerHost {
 			member = group.getBotAsMember();
 		}
 		LogUtil.log(ConfigUtil.getLanguage("member.mute")
-				.replaceAll("\\$1", member.getNameCard())
-				.replaceAll("\\$2", String.valueOf(member.getId()))
-				.replaceAll("\\$3", op.getNameCard())
-				.replaceAll("\\$4", String.valueOf(op.getId()))
-				.replaceAll("\\$5", String.valueOf(time))
+				, member.getNameCard()
+				, String.valueOf(member.getId())
+				, op.getNameCard()
+				, String.valueOf(op.getId())
+				, String.valueOf(time)
 		);
 	}
 	
@@ -303,10 +298,10 @@ public class EventListener implements ListenerHost {
 		if (PluginMain.group == event.getGroup()) {
 			messages.add(event.getSource());
 			LogUtil.log(ConfigUtil.getLanguage("format.group.message")
-					.replaceAll("\\$1", String.valueOf(messages.size()))
-					.replaceAll("\\$2", event.getSenderName())
-					.replaceAll("\\$3", String.valueOf(event.getSender().getId()))
-					.replaceAll("\\$4", msg)
+					, String.valueOf(messages.size())
+					, event.getSenderName()
+					, String.valueOf(event.getSender().getId())
+					, msg
 			);
 		}
 		
