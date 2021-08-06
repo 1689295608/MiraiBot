@@ -1040,11 +1040,15 @@ public class PluginMain {
 			}
 			if (plugin != null) {
 				plugin.setFile(file);
-				if (getPlugin(plugin.getName()) != null) {
-					LogUtil.warn(ConfigUtil.getLanguage("plugin.already.loaded")
-							.replaceAll("\\$1", plugin.getName())
-					);
-					return;
+				Plugin p = getPlugin(plugin.getName());
+				if (p != null) {
+					if (p.isEnabled()) {
+						LogUtil.warn(ConfigUtil.getLanguage("plugin.already.loaded")
+								.replaceAll("\\$1", plugin.getName())
+						);
+						plugins.remove(p);
+						return;
+					}
 				}
 				plugin.setEnabled(true);
 				plugins.add(plugin);
