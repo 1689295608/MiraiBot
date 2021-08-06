@@ -64,6 +64,21 @@
 
 最后，点击 `Finish` 按钮，开始新建项目！
 
+
+### 引用依赖库
+
+首先你需要下载 MiraiBot 以及 Mirai-Core-All，你需要在 [Release](https://github.com/1689295608/MiraiBot/releases) 下载它们
+
+进入 Release 页面后，找到最新版本，下载 `Assets` 中的 `.zip` 或 `.7z` 文件并解压它。
+
+将其放在一个你喜欢的目录，然后进入 IDEA，按下组合键 `Ctrl + Alt + Shift + S` 或点击 `File` -> `Project Structure`
+
+在新出现的窗口左侧中选择 `Libraries`，点击 `+` -> `Java`。
+
+在新出现的窗口中选择你解压到的目录中的 `Mirai-Core-All.jar`，点击 `OK`，之后会有一个询问窗口，点击 `OK` 即可
+
+然后再添加 `MiraiBot` 的依赖，点击 `+` -> `Java` 后选择 `MiraiBot.jar` 点击 `OK` 后同上，点击 `OK` 即可。
+
 ## 第二步：创建主类
 
 一般情况下，新建一个项目后，会有一个 `src` 目录 用于储存源代码
