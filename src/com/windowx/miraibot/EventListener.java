@@ -18,6 +18,10 @@ import net.mamoe.mirai.utils.ExternalResource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.SimpleScriptContext;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +36,7 @@ public class EventListener implements ListenerHost {
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
 	public static JSONObject autoRespondConfig;
+	public static ScriptContext context = new SimpleScriptContext();
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onGroupJoin(MemberJoinEvent event) {
@@ -374,7 +379,7 @@ public class EventListener implements ListenerHost {
 									try {
 										PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
 									} catch (Exception ignored) {
-										
+									
 									}
 								}
 								if (noPermissionRecall) {
@@ -389,6 +394,16 @@ public class EventListener implements ListenerHost {
 										event.getSender().mute(mute);
 									} catch (Exception e) {
 										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+									}
+								}
+								if (noPermissionMsg.startsWith("!SCRIPT")) {
+									try {
+										ScriptEngineManager manager = new ScriptEngineManager();
+										ScriptEngine engine = manager.getEngineByName("JavaScript");
+										noPermissionMsg = engine.eval(noPermissionMsg.substring(7), context).toString();
+										context = engine.getContext();
+									} catch (Exception e) {
+										noPermissionMsg = e.toString();
 									}
 								}
 								if (!noPermissionReply) {
@@ -424,6 +439,16 @@ public class EventListener implements ListenerHost {
 						}
 						try {
 							if (!respond.isEmpty()) {
+								if (respond.startsWith("!SCRIPT")) {
+									try {
+										ScriptEngineManager manager = new ScriptEngineManager();
+										ScriptEngine engine = manager.getEngineByName("JavaScript");
+										respond = engine.eval(respond.substring(7), context).toString();
+										context = engine.getContext();
+									} catch (Exception e) {
+										respond = e.toString();
+									}
+								}
 								if (reply) {
 									event.getGroup().sendMessage(new QuoteReply(event.getSource()).plus(
 											MiraiCode.deserializeMiraiCode(respond)));
@@ -492,7 +517,7 @@ public class EventListener implements ListenerHost {
 	}
 	
 	/**
-	 * An useless function.
+	 * A useless function.
 	 *
 	 * @param qq qq
 	 * @return show qq
