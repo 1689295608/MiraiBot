@@ -90,9 +90,9 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void log(@Nullable String str) {
+	public static void log(@Nullable String str, String... args) {
 		if (str == null) return;
-		AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
+		AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 	}
 	
 	/**
@@ -100,12 +100,12 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void error(@Nullable String str) {
+	public static void error(@Nullable String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.err().print("\r" + write(str) + str + "\n> ");
+			AnsiConsole.err().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 		}
 	}
 	
@@ -114,12 +114,12 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void warn(@Nullable String str) {
+	public static void warn(@Nullable String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
+			AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 		}
 	}
 	
