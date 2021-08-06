@@ -897,22 +897,21 @@ public class PluginMain {
 						LogUtil.error(ConfigUtil.getLanguage("music.id.error"));
 					}
 				} else {
-					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": music <" +
-							ConfigUtil.getLanguage("music.id") + ">");
+					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": music <" + ConfigUtil.getLanguage("music.id") + ">");
 				}
 				return true;
 			default:
-				boolean send = true;
+				boolean send = false;
 				for (Plugin p : plugins) {
 					if (!p.isEnabled()) continue;
 					try {
 						boolean s = p.onCommand(msg);
-						if (!s) send = false;
+						if (s) send = true;
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-				return !send;
+				return send;
 		}
 	}
 	
@@ -1177,17 +1176,17 @@ public class PluginMain {
 									"owner=\n" +
 									"# 每一个新消息是否都显示发送者的 QQ 号\n" +
 									"showQQ=false\n" +
-									"# 输入你接收的好友信息（“*” 为 全部）\n" +
+									"# 输入你接收的好友信息（“*” 为 全部\n" +
 									"friend=*\n" +
-									"# 每次启动时都检测更新\n" +
+									"# 每次启动时都检测更新 (true / false)\n" +
 									"checkUpdate=" + checkUpdate + "\n" +
-									"# 输入使用“newImg”指令生成的字体\n" +
+									"# 输入使用 “newImg” 指令生成的字体\n" +
 									"font=微软雅黑\n" +
 									"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
 									"protocol=PHONE\n" +
-									"# 是否启用 Debug 模式（即显示 MiraiCode）\n" +
+									"# 是否启用 Debug 模式（即显示 MiraiCode）(true / false)\n" +
 									"debug=false\n" +
-									"# 是否强制使用 AnsiConsole 渲染颜色\n" +
+									"# 是否强制使用 AnsiConsole 渲染颜色 (true / false)\n" +
 									"ansiColor=false\n" +
 									"\n" +
 									"# ----=== MiraiBot ===----\n" +
