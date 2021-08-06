@@ -178,10 +178,7 @@ public class PluginMain {
 										e.printStackTrace();
 									}
 								} else {
-									LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
-											.replaceAll("\\$1", f.getName())
-											.replaceAll("\\$2", "\"plugin.ini\" not found")
-									);
+									LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
 								}
 							} else if (f.getName().endsWith(".class")) {
 								try {
@@ -193,10 +190,7 @@ public class PluginMain {
 									plugin.setClassLoader(myClassLoader);
 								} catch (Exception e) {
 									e.printStackTrace();
-									LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
-											.replaceAll("\\$1", f.getName())
-											.replaceAll("\\$2", e.toString())
-									);
+									LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), e.toString());
 								}
 							}
 							if (plugin != null) {
@@ -204,25 +198,17 @@ public class PluginMain {
 								plugin.setEnabled(true);
 								plugins.add(plugin);
 							} else {
-								LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
-										.replaceAll("\\$1", f.getName())
-										.replaceAll("\\$2", "unknown error")
-								);
+								LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), "unknown error");
 							}
 						}
 					}
 					for (Plugin p : plugins) {
 						try {
-							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin")
-									.replaceAll("\\$1", p.getName())
-							);
+							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin"), p.getName());
 							p.onEnable();
 						} catch (Exception e) {
 							p.setEnabled(false);
-							LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
-									.replaceAll("\\$1", p.getName())
-									.replaceAll("\\$2", e.toString())
-							);
+							LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), p.getName(), e.toString());
 							e.printStackTrace();
 						}
 					}
@@ -244,9 +230,7 @@ public class PluginMain {
 			} else {
 				for (int i = 0; i < groups.length; i++) groups[i] = groups[i].trim();
 				group = bot.getGroupOrFail(Long.parseLong(groups[0]));
-				LogUtil.log(ConfigUtil.getLanguage("now.group")
-						.replaceAll("\\$1", group.getName())
-						.replaceAll("\\$2", String.valueOf(group.getId())));
+				LogUtil.log(ConfigUtil.getLanguage("now.group"), group.getName(), String.valueOf(group.getId()));
 			}
 			if (group == null) {
 				LogUtil.error(ConfigUtil.getLanguage("unknown.error"));
@@ -338,9 +322,7 @@ public class PluginMain {
 							unloadPlugin(cmd[1]);
 							loadPlugin(plugin.getFile(), plugin.getName());
 						} else {
-							LogUtil.log(ConfigUtil.getLanguage("unloading.plugin")
-									.replaceAll("\\$1", cmd[1])
-							);
+							LogUtil.log(ConfigUtil.getLanguage("unloading.plugin"), cmd[1]);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -348,9 +330,7 @@ public class PluginMain {
 				}
 				return true;
 			case "stop":
-				LogUtil.warn(ConfigUtil.getLanguage("stopping.bot")
-						.replaceAll("\\$1", bot.getNick())
-						.replaceAll("\\$2", String.valueOf(bot.getId())));
+				LogUtil.warn(ConfigUtil.getLanguage("stopping.bot"), bot.getNick(), String.valueOf(bot.getId()));
 				running = false;
 				for (Plugin p : plugins) {
 					try {
@@ -528,8 +508,7 @@ public class PluginMain {
 							LogUtil.log(ConfigUtil.getLanguage("not.friend"));
 						}
 					} catch (NumberFormatException e) {
-						LogUtil.log(ConfigUtil.getLanguage("not.qq")
-								.replaceAll("\\$1", cmd[1]));
+						LogUtil.log(ConfigUtil.getLanguage("not.qq"), cmd[1]);
 					}
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": send <" +
@@ -552,8 +531,7 @@ public class PluginMain {
 							LogUtil.error(ConfigUtil.getLanguage("not.user"));
 						}
 					} catch (NumberFormatException e) {
-						LogUtil.error(ConfigUtil.getLanguage("not.qq")
-								.replaceAll("\\$1", cmd[1]));
+						LogUtil.error(ConfigUtil.getLanguage("not.qq"), cmd[1]);
 					}
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": kick <" + ConfigUtil.getLanguage("qq") + "> <" +
@@ -569,15 +547,13 @@ public class PluginMain {
 							try {
 								member.mute(Integer.parseInt(cmd[2]));
 							} catch (NumberFormatException e) {
-								LogUtil.warn(ConfigUtil.getLanguage("time.too.long")
-										.replaceAll("\\$1", cmd[2]));
+								LogUtil.warn(ConfigUtil.getLanguage("time.too.long"), cmd[2]);
 							}
 						} else {
 							LogUtil.error(ConfigUtil.getLanguage("not.user"));
 						}
 					} catch (NumberFormatException e) {
-						LogUtil.error(ConfigUtil.getLanguage("not.qq")
-								.replaceAll("\\$1", cmd[1]));
+						LogUtil.error(ConfigUtil.getLanguage("not.qq"), cmd[1]);
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
 					} catch (PermissionDeniedException e) {
 						LogUtil.error(ConfigUtil.getLanguage("no.permission"));
@@ -611,8 +587,7 @@ public class PluginMain {
 							LogUtil.error(ConfigUtil.getLanguage("not.user"));
 						}
 					} catch (NumberFormatException e) {
-						LogUtil.error(ConfigUtil.getLanguage("not.qq")
-								.replaceAll("\\$1", cmd[1]));
+						LogUtil.error(ConfigUtil.getLanguage("not.qq"), cmd[1]);
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
 					}
 				} else {
@@ -710,15 +685,12 @@ public class PluginMain {
 						Friend friend = bot.getFriend(Long.parseLong(cmd[1]));
 						if (friend != null) {
 							friend.delete();
-							LogUtil.log(ConfigUtil.getLanguage("deleted.friend")
-									.replaceAll("\\$1", friend.getNick())
-									.replaceAll("\\$2", String.valueOf(friend.getId())));
+							LogUtil.log(ConfigUtil.getLanguage("deleted.friend"), friend.getNick(), String.valueOf(friend.getId()));
 						} else {
 							LogUtil.error(ConfigUtil.getLanguage("not.friend"));
 						}
 					} catch (NumberFormatException e) {
-						LogUtil.error(ConfigUtil.getLanguage("not.qq")
-								.replaceAll("\\$1", cmd[1]));
+						LogUtil.error(ConfigUtil.getLanguage("not.qq"), cmd[1]);
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
 					}
 				} else {
@@ -789,10 +761,7 @@ public class PluginMain {
 								}
 							}
 							member.setNameCard(nameCard.toString());
-							LogUtil.log(ConfigUtil.getLanguage("name.card.set")
-									.replaceAll("\\$1", member.getNick())
-									.replaceAll("\\$2", nameCard.toString())
-							);
+							LogUtil.log(ConfigUtil.getLanguage("name.card.set"), member.getNick(), nameCard.toString());
 						} else {
 							LogUtil.error(ConfigUtil.getLanguage("not.user"));
 						}
@@ -853,22 +822,20 @@ public class PluginMain {
 					try {
 						id = Integer.parseInt(cmd[1]) - 1;
 					} catch (NumberFormatException e) {
-						LogUtil.error(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", String.valueOf(id)));
+						LogUtil.error(ConfigUtil.getLanguage("group.id.not.found"), String.valueOf(id));
 					}
 					String g = "";
 					try {
 						g = groups[id];
 					} catch (Exception e) {
-						LogUtil.error(ConfigUtil.getLanguage("group.id.not.found").replaceAll("\\$1", cmd[1]));
+						LogUtil.error(ConfigUtil.getLanguage("group.id.not.found"), cmd[1]);
 					}
 					if (!g.isEmpty()) {
 						if (bot.getGroups().contains(Long.parseLong(g))) {
 							group = bot.getGroup(Long.parseLong(groups[id]));
-							LogUtil.log(ConfigUtil.getLanguage("now.group")
-									.replaceAll("\\$1", group.getName())
-									.replaceAll("\\$2", String.valueOf(group.getId())));
+							LogUtil.log(ConfigUtil.getLanguage("now.group"), group.getName(), String.valueOf(group.getId()));
 						} else {
-							LogUtil.error(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", g));
+							LogUtil.error(ConfigUtil.getLanguage("not.entered.group"), g);
 						}
 					}
 				} else {
@@ -968,9 +935,7 @@ public class PluginMain {
 			}
 		}
 		if (plugin != null) {
-			LogUtil.log(ConfigUtil.getLanguage("unloading.plugin")
-					.replaceAll("\\$1", plugin.getName())
-			);
+			LogUtil.log(ConfigUtil.getLanguage("unloading.plugin"), plugin.getName());
 			try {
 				plugin.onDisable();
 			} catch (Exception e) {
@@ -978,13 +943,9 @@ public class PluginMain {
 			}
 			plugin.setEnabled(false);
 			System.gc();
-			LogUtil.log(ConfigUtil.getLanguage("unloaded.plugin")
-					.replaceAll("\\$1", plugin.getName())
-			);
+			LogUtil.log(ConfigUtil.getLanguage("unloaded.plugin"), plugin.getName());
 		} else {
-			LogUtil.error(ConfigUtil.getLanguage("plugin.not.exits")
-					.replaceAll("\\$1", name)
-			);
+			LogUtil.error(ConfigUtil.getLanguage("plugin.not.exits"), name);
 		}
 	}
 	
@@ -1027,15 +988,10 @@ public class PluginMain {
 				URLClassLoader u = new URLClassLoader(new URL[]{file.toURI().toURL()});
 				InputStream is = u.getResourceAsStream("plugin.ini");
 				if (is != null) {
-					LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
-							.replaceAll("\\$1", name)
-					);
+					LogUtil.log(ConfigUtil.getLanguage("loading.plugin"), name);
 					plugin = initPlugin(is, u);
 				} else {
-					LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
-							.replaceAll("\\$1", file.getName())
-							.replaceAll("\\$2", "\"plugin.ini\" not found")
-					);
+					LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), file.getName(), "\"plugin.ini\" not found");
 				}
 			}
 			if (plugin != null) {
@@ -1043,9 +999,7 @@ public class PluginMain {
 				Plugin p = getPlugin(plugin.getName());
 				if (p != null) {
 					if (p.isEnabled()) {
-						LogUtil.warn(ConfigUtil.getLanguage("plugin.already.loaded")
-								.replaceAll("\\$1", plugin.getName())
-						);
+						LogUtil.warn(ConfigUtil.getLanguage("plugin.already.loaded"), plugin.getName());
 						plugins.remove(p);
 						return;
 					}
@@ -1057,14 +1011,9 @@ public class PluginMain {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				LogUtil.log(ConfigUtil.getLanguage("loaded.plugin")
-						.replaceAll("\\$1", plugin.getName())
-				);
+				LogUtil.log(ConfigUtil.getLanguage("loaded.plugin"), plugin.getName());
 			} else {
-				LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
-						.replaceAll("\\$1", file.getName())
-						.replaceAll("\\$2", "unknown error")
-				);
+				LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), file.getName(), "unknown error");
 			}
 		} else {
 			LogUtil.error(ConfigUtil.getLanguage("plugin.file.not.exits")
