@@ -11,7 +11,7 @@
   },
   "**Prompt": {
     "自动回复支持操作": {
-      "Reply": "Boolean, 是否回复该消息",
+      "Reply": "Boolean, 是否回复该消息, 增加 \"!SCRIPT\" 前缀即可运行 JavaScript 脚本",
       "Recall": "Boolean, 是否撤回该消息",
       "Mute": "Integer, 禁言该消息的发送者",
       "Permission": "String, 允许运行该自动回复的 QQ 号, 用 ',' 分隔, 为 '*' 时所有人都可以运行",
@@ -19,7 +19,7 @@
       "NoPermissionReply": "String, 无权消息是否回复",
       "NoPermissionRecall": "Boolean, 无权消息否撤回",
       "NoPermissionMute": "Integer, 无权时是否禁言",
-      "NoPermissionMsg": "String, 没有权限时回复的消息",
+      "NoPermissionMsg": "String, 没有权限时回复的消息, 增加 \"!SCRIPT\" 前缀即可运行 JavaScript 脚本",
       "RunCommand": "String, 运行指令",
       "ChangeNameCard": "String, 修改群昵称",
       "Respond": "String, 正常执行后发送的内容"
