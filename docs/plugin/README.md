@@ -23,6 +23,18 @@
 
 #### 目前需要注意的就这些，接下来 开始你的插件之旅吧！
 
+## 目录
+
+> [第一步：创建项目](#第一步：创建项目)
+> 
+> [第二步：创建主类](#第二步：创建主类)
+> 
+> [第三步：编写插件](#第三步：编写插件)
+> 
+> [第四步：监听事件](#第四步：监听事件)
+> 
+> [第五步：配置文件](#第五步：配置文件)
+
 ## 第一步：创建项目
 ### 梦开始的地方
 
@@ -48,7 +60,7 @@
 
 最后，点击 `Finish` 按钮，开始新建项目！
 
-## 第二部：创建主类
+## 第二步：创建主类
 
 一般情况下，新建一个项目后，会有一个 `src` 目录 用于储存源代码
 
@@ -63,3 +75,79 @@
 - 选择 `New`
 - 选择 `Java Class`
 - 输入的你类名，不推荐包含中文字符
+
+## 第三步：编写插件
+
+**开始这一步，你需要一定的 Java 基础！**
+
+可以参考 [`example.java`](example.java) 进行编写。
+
+一个插件类，必须 `extends` MiraiBot 的 `Plugin` 类，
+
+使用 `import com.windowx.miraibot.plugin.Plugin;` 来导入 MiraiBot 的 `Plugin` 类
+
+你需要将其插入 `package xxx;` 的后面。（`xxx` 表示你的包名）
+
+然后将 `public class xxx {` 改为 `public class xxx extends Plugin {`。（其中 `xxx` 表示你的类名）
+
+到了现在，你的代码应该是如下所示：
+```Java
+package demo;
+
+import com.windowx.miraibot.plugin.Plugin; /* 导入 Plugin 类 */
+
+public class MyDemo extends Plugin {
+  // ......
+}
+```
+
+## 第四步：监听事件
+
+一般情况下，你无需使用 Mirai 内置的事件监听器，因为 MiraiBot 内置部分事件方法（详见 [`JavaPlugin.java`](/src/com/windowx/miraibot/plugin/JavaPlugin.java)）
+
+接下来你需要简单的监听一个事件：`onEnable` （插件启动事件）
+
+在每一个插件加载的时候就会触发这个事件（注意，是加载时而不是加载完成）
+
+在这个阶段时，机器人已经登录成功了，也就代表你可以对机器人进行操作
+
+我们来简单的输出一个 `info` ，其内容为 `Hello world!`。
+```Java
+@Override
+public void onEnable() {
+  this.info("Hello world!");
+}
+```
+让我们来逐行解析一下吧：
+- `@Override` 表示重写某个方法
+- `public void onEnable() {` 表示重写的方法是 `onEnable()` 方法
+- `this.info()` 表示调用 `this` 对象（因为 `extends` 了 `Plugin`，所以可以调用 `Plugin` 的方法）的 `info()` 方法进行输出
+
+另外，MiraiBot 的 `Plugin` 的方法还是蛮多的，可以借助 IDEA 的代码提示功能来进一步了解
+
+也可以翻阅 MiraiBot 的源代码来进行了解：[`Plugin.java`](/src/com/windowx/miraibot/plugin/Plugin.java)
+
+## 第五步：配置文件
+
+一个应用程序，最少不了的就是配置文件了吧，接下来我们将要了解，MiraiBot 插件的配置文件系统
+
+接下来我来演示一段代码，它将简单的表达插件系统的调用方法：
+```Java
+@Override
+public void onEnable() {
+  String name = this.getConfig().getProperty("name", "WindowX");
+  this.getConfig().setProperty("time", String.valueOf(System.currentTimeMillis()));
+  try {
+    this.saveConfig();
+  } catch (IOException e) {
+    e.printStackTrace();
+  }
+  this.info("Your name:" + name);
+}
+```
+一如既往，我们来分析一下每一行都干了些什么：
+- `this.getConfig()` 获取本插件的配置文件 `Properties`，该文件的具体位置在 `/plugins/[插件名]/config.ini`
+- `...getConfig().getProperty()` 通过调用 `Properties` 类，获取其 `Property` 项，返回值为其内容
+- `...getConfig().setProperty()` 通过调用 `Properties` 类，设置其 `Property` 项
+- `this.saveConfig()` 保存本插件配置文件，会抛出 `IOException`，所以需要使用 `try` 来抓取该错误
+- `this.info(/* ... */ + name)` 因为在前面获取配置项时，将其内容赋值在字符串变量 `name` 上，所以可以在这里调用
