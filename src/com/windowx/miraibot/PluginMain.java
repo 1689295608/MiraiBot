@@ -886,7 +886,7 @@ public class PluginMain {
 				return true;
 			case "load":
 				if (cmd.length > 1) {
-					File f = new File("plugins/" + (cmd[1].endsWith(".jar") ? cmd[1] : cmd[1] + ".jar"));
+					File f = new File("plugins/" + (cmd[1].endsWith(".jar") || cmd[1].endsWith(".class") ? cmd[1] : cmd[1] + ".jar"));
 					loadPlugin(f, cmd[1]);
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": load <" +
@@ -1022,6 +1022,7 @@ public class PluginMain {
 				plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
 				plugin.setName(file.getName().substring(0, file.getName().length() - 6));
 				plugin.setClassName(file.getName().substring(6));
+				plugin.setClassLoader(myClassLoader);
 			} else {
 				URLClassLoader u = new URLClassLoader(new URL[]{file.toURI().toURL()});
 				InputStream is = u.getResourceAsStream("plugin.ini");
