@@ -28,6 +28,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class PluginMain {
@@ -162,16 +164,15 @@ public class PluginMain {
 					File[] pluginsFile = pluginsDir.listFiles();
 					if (pluginsFile != null) {
 						for (File f : pluginsFile) {
+							if (!f.getName().endsWith(".jar") && !f.getName().endsWith(".class")) continue;
+							Plugin plugin = null;
 							if (f.getName().endsWith(".jar")) {
-								URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
+								URLClassLoader u = new URLClassLoader(new URL[]{ f.toURI().toURL() });
 								InputStream is = u.getResourceAsStream("plugin.ini");
 								if (is != null) {
 									try {
-										Plugin plugin = initPlugin(is, u);
+										plugin = initPlugin(is, u);
 										plugin.setClassLoader(u);
-										plugin.setFile(f);
-										plugin.setEnabled(true);
-										plugins.add(plugin);
 									} catch (Exception e) {
 										System.out.println();
 										e.printStackTrace();
@@ -182,6 +183,31 @@ public class PluginMain {
 											.replaceAll("\\$2", "\"plugin.ini\" not found")
 									);
 								}
+							} else if (f.getName().endsWith(".class")) {
+								try {
+									MyClassLoader myClassLoader = new MyClassLoader();
+									Class<?> clazz = myClassLoader.findClass(f);
+									plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
+									plugin.setName(f.getName().substring(0, f.getName().length() - 6));
+									plugin.setClassName(f.getName().substring(0, f.getName().length() - 6));
+									plugin.setClassLoader(myClassLoader);
+								} catch (Exception e) {
+									e.printStackTrace();
+									LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
+											.replaceAll("\\$1", f.getName())
+											.replaceAll("\\$2", e.toString())
+									);
+								}
+							}
+							if (plugin != null) {
+								plugin.setFile(f);
+								plugin.setEnabled(true);
+								plugins.add(plugin);
+							} else {
+								LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
+										.replaceAll("\\$1", f.getName())
+										.replaceAll("\\$2", "unknown error")
+								);
 							}
 						}
 					}
@@ -989,13 +1015,29 @@ public class PluginMain {
 	 */
 	public static void loadPlugin(File file, String name) throws Exception {
 		if (file.exists()) {
-			URLClassLoader u = new URLClassLoader(new URL[]{file.toURI().toURL()});
-			InputStream is = u.getResourceAsStream("plugin.ini");
-			if (is != null) {
-				LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
-						.replaceAll("\\$1", name)
-				);
-				Plugin plugin = initPlugin(is, u);
+			Plugin plugin = null;
+			if (file.getName().endsWith(".class")) {
+				MyClassLoader myClassLoader = new MyClassLoader();
+				Class<?> clazz = myClassLoader.findClass(file);
+				plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
+				plugin.setName(file.getName().substring(0, file.getName().length() - 6));
+				plugin.setClassName(file.getName().substring(6));
+			} else {
+				URLClassLoader u = new URLClassLoader(new URL[]{file.toURI().toURL()});
+				InputStream is = u.getResourceAsStream("plugin.ini");
+				if (is != null) {
+					LogUtil.log(ConfigUtil.getLanguage("loading.plugin")
+							.replaceAll("\\$1", name)
+					);
+					plugin = initPlugin(is, u);
+				} else {
+					LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
+							.replaceAll("\\$1", file.getName())
+							.replaceAll("\\$2", "\"plugin.ini\" not found")
+					);
+				}
+			}
+			if (plugin != null) {
 				plugin.setFile(file);
 				if (getPlugin(plugin.getName()) != null) {
 					LogUtil.warn(ConfigUtil.getLanguage("plugin.already.loaded")
@@ -1016,7 +1058,7 @@ public class PluginMain {
 			} else {
 				LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin")
 						.replaceAll("\\$1", file.getName())
-						.replaceAll("\\$2", "\"plugin.ini\" not found")
+						.replaceAll("\\$2", "unknown error")
 				);
 			}
 		} else {
@@ -1204,5 +1246,13 @@ public class PluginMain {
 			return false;
 		}
 		return true;
+	}
+}
+
+class MyClassLoader extends ClassLoader {
+	public Class<?> findClass(File file) throws IOException {
+		Path path = file.toPath();
+		byte[] bytes = Files.readAllBytes(path);
+		return defineClass(null, bytes, 0, bytes.length, null);
 	}
 }
