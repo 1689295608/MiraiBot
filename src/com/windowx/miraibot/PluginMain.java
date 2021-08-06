@@ -901,17 +901,17 @@ public class PluginMain {
 				}
 				return true;
 			default:
-				boolean send = false;
+				boolean isCmd = false;
 				for (Plugin p : plugins) {
 					if (!p.isEnabled()) continue;
 					try {
 						boolean s = p.onCommand(msg);
-						if (s) send = true;
+						if (!s) isCmd = true;
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-				return send;
+				return isCmd;
 		}
 	}
 	
