@@ -15,7 +15,7 @@
 你需要了解并储备一定的编程基础和 Java 基础，推荐使用 [Practie-It](https://practiceit.cs.washington.edu/) 学习 Java。
 
 ### 安装相关编译环境
-请前往 [Open JDK](https://jdk.java.net/) 下载**高于或等于 JDK 11**的 `Open JDK`
+请前往 [Open JDK](https://jdk.java.net/) 下载**不低于 JDK 11**的 `Open JDK`
 
 > 本项目基于 JDK 11 开发, 所以请使用 JDK 11 及以上的 Java 运行本程序!
 
@@ -48,7 +48,7 @@
 
 在新弹出的 `New Project` 窗口选择 Java,
 
-在右侧的 `Project JDK` 选择你下载的 JDK (再次强调，JDK 版本**必须**大于 11！）
+在右侧的 `Project JDK` 选择你下载的 JDK (再次强调，JDK 版本**必须**不低于 11！）
 
 下面的不用管，点击 `Next` 进入下一步。
 
