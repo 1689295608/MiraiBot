@@ -95,6 +95,11 @@ public class LogUtil {
 		AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 	}
 	
+	public static void log(@Nullable String str) {
+		if (str == null) return;
+		AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
+	}
+	
 	/**
 	 * Output an error message and record it in the log file
 	 *
@@ -106,6 +111,14 @@ public class LogUtil {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
 			AnsiConsole.err().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
+		}
+	}
+	public static void error(@Nullable String str) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
+		} else if (os.contains("windows")) {
+			AnsiConsole.err().print("\r" + write(str) + str + "\n> ");
 		}
 	}
 	
@@ -120,6 +133,14 @@ public class LogUtil {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
 			AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
+		}
+	}
+	public static void warn(@Nullable String str) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
+		} else if (os.contains("windows")) {
+			AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
 		}
 	}
 	
