@@ -9,7 +9,7 @@ MiraiBot 的文档，暂未编写完全。
 
 ### 目前尚未编写完全的文档：
 
-[构建最新的 MiraiBot](Compile/Linux.md)
+[构建最新的 MiraiBot](Compile/README.md)
 
 [MiraiBot 插件开发教程](Plugin/README.md)
 
