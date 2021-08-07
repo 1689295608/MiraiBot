@@ -133,4 +133,16 @@ public class Plugin extends JavaPlugin {
 	public void warn(String warn, String... args) {
 		LogUtil.warn("[" + name + "] " + warn, args);
 	}
+	
+	public void info(String info) {
+		LogUtil.log("[" + name + "] " + info);
+	}
+	
+	public void error(String error) {
+		LogUtil.error("[" + name + "] " + error);
+	}
+	
+	public void warn(String warn) {
+		LogUtil.warn("[" + name + "] " + warn);
+	}
 }
