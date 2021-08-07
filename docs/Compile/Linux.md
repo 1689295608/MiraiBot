@@ -2,8 +2,8 @@
 在使用之前，您需要以下Package:<br>
 `unzip wget openjdk 11+`<br>
 在确保安装了这些Package之后，下载这个压缩包:<br>
-https://ghproxy.comhttps://github.com/XIAYM-gh/miraibot-plugins/releases/download/0.1/MiraiBotBuilder.zip
-接下来，运行这些命令:
+https://ghproxy.com/https://github.com/XIAYM-gh/miraibot-plugins/releases/download/0.1/MiraiBotBuilder.zip
+<br>接下来，运行这些命令:
 ```shell
 unzip MiraiBotBuilder.zip
 cd mbb
