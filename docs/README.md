@@ -7,7 +7,7 @@ MiraiBot 的文档，暂未编写完全。
 
 详情联系 QQ: `1689295608`。
 
-详情请看：
+### 详情请看：
 
 [构建最新的 MiraiBot](Compile/Linux.md)
 
