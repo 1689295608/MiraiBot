@@ -114,7 +114,7 @@ public class PluginMain {
 		}
 		
 		String protocol = !ConfigUtil.getConfig("protocol").isEmpty() ? ConfigUtil.getConfig("protocol") : "";
-		LogUtil.log(ConfigUtil.getLanguage("trying.login").replaceAll("\\$1", protocol));
+		LogUtil.log(ConfigUtil.getLanguage("trying.login"), protocol);
 		try {
 			BotConfiguration.MiraiProtocol miraiProtocol;
 			switch (protocol) {
@@ -137,7 +137,7 @@ public class PluginMain {
 			bot.login();
 			LogUtil.log(ConfigUtil.getLanguage("registering.event"));
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
-			LogUtil.log(ConfigUtil.getLanguage("login.success").replaceAll("\\$1", bot.getNick()));
+			LogUtil.log(ConfigUtil.getLanguage("login.success"), bot.getNick());
 			String os = System.getProperty("os.name").toLowerCase();
 			if (os.contains("windows")) {
 				new ProcessBuilder("cmd", "/c", "title " + bot.getNick() + " (" + bot.getId() + ")").inheritIO().start().waitFor();
@@ -226,7 +226,7 @@ public class PluginMain {
 			if (groups.length < 1) {
 				LogUtil.log(ConfigUtil.getLanguage("not.group.set"));
 			} else if (!bot.getGroups().contains(Long.parseLong(groups[0]))) {
-				LogUtil.log(ConfigUtil.getLanguage("not.entered.group").replaceAll("\\$1", groups[0]));
+				LogUtil.log(ConfigUtil.getLanguage("not.entered.group"), groups[0]);
 			} else {
 				for (int i = 0; i < groups.length; i++) groups[i] = groups[i].trim();
 				group = bot.getGroupOrFail(Long.parseLong(groups[0]));
@@ -766,7 +766,7 @@ public class PluginMain {
 							LogUtil.error(ConfigUtil.getLanguage("not.user"));
 						}
 					} catch (NumberFormatException e) {
-						LogUtil.error(ConfigUtil.getLanguage("not.qq").replaceAll("\\$1", cmd[1]));
+						LogUtil.error(ConfigUtil.getLanguage("not.qq"), cmd[1]);
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
 					} catch (PermissionDeniedException e) {
 						LogUtil.error(ConfigUtil.getLanguage("no.permission"));
@@ -1044,19 +1044,18 @@ public class PluginMain {
 				for (String s : nowV) now += Integer.parseInt(s);
 				for (String s : newV) now += Integer.parseInt(s);
 				if (now < ne) {
-					LogUtil.log(ConfigUtil.getLanguage("found.new.update")
-							.replaceAll("\\$1", "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion));
+					LogUtil.log(ConfigUtil.getLanguage("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion);
 				} else if (nowV == newV) {
-					LogUtil.log(ConfigUtil.getLanguage("already.latest.version").replaceAll("\\$1", LatestVersion));
+					LogUtil.log(ConfigUtil.getLanguage("already.latest.version"), LatestVersion);
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("too.new.version"));
 				}
 			} catch (Exception e) {
-				LogUtil.error(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
+				LogUtil.error(ConfigUtil.getLanguage("failed.check.update"), e.toString());
 				if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 			}
 		} catch (Exception e) {
-			LogUtil.error(ConfigUtil.getLanguage("failed.check.update").replaceAll("\\$1", e.toString()));
+			LogUtil.error(ConfigUtil.getLanguage("failed.check.update"), e.toString());
 			if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
 		}
 	}
