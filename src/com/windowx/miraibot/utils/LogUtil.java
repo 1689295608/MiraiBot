@@ -96,7 +96,7 @@ public class LogUtil {
 	}
 	
 	/**
-	 * Output a error message and record it in the log file
+	 * Output an error message and record it in the log file
 	 *
 	 * @param str What to output
 	 */
@@ -110,7 +110,7 @@ public class LogUtil {
 	}
 	
 	/**
-	 * Output a error message and record it in the log file
+	 * Output an error message and record it in the log file
 	 *
 	 * @param str What to output
 	 */
