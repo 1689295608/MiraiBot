@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 
 public class PluginMain {
 	public static final String language = Locale.getDefault().getLanguage();
@@ -206,6 +207,7 @@ public class PluginMain {
 						try {
 							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin"), p.getName());
 							p.onEnable();
+							commands.addAll(List.of(p.getCommands()));
 						} catch (Exception e) {
 							p.setEnabled(false);
 							LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), p.getName(), e.toString());
@@ -959,6 +961,7 @@ public class PluginMain {
 		p.setClassName(plugin.getProperty("main"));
 		p.setVersion(plugin.getProperty("version", "1.0.0"));
 		p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
+		p.setCommands(plugin.getProperty("commands", "").split(","));
 		p.setPlugin(plugin);
 		Properties config = new Properties();
 		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
@@ -1008,6 +1011,7 @@ public class PluginMain {
 				plugins.add(plugin);
 				try {
 					plugin.onEnable();
+					commands.addAll(List.of(plugin.getCommands()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
