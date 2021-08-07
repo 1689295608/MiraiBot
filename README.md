@@ -1,5 +1,5 @@
 # MiraiBot
-一个基于 [Mirai](https://github.com/mamoe/mirai) 的控制台机器人.
+一个基于 [Mirai](https://github.com/mamoe/mirai) 的控制台机器人。
 
 **使用前请注意：**
 ```
