@@ -186,9 +186,10 @@ public void onEnable() {
 |配置项     |描述    |示例                   |
 |--         |--     |--                     |
 |**name**   |插件名称|Demo                   |
-|**main**       |插件主类|miraibot.example       |
+|**main**   |插件主类|miraibot.example       |
 |owner      |插件作者|WindowX                |
 |version    |插件版本|1.0.0                  |
+|commands   |插件指令|demo                   |
 |description|插件描述|一个标准 MiraiBot 插件。|
 
 其中粗体的为必填项，若为空即无法加载该插件！
@@ -203,6 +204,8 @@ main=miraibot.example
 owner=WindowX
 # 插件版本，默认为 1.0.0
 version=1.0.0
+# 插件指令，在按下 Tab 键后会出现的命令提示，用 “,” 分隔
+commands=demo
 # 插件描述，默认为 A Plugin For MiraiBot.
 description=一个标准 MiraiBot 插件。
 ```
