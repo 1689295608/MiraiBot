@@ -18,6 +18,15 @@ public class Plugin extends JavaPlugin {
 	private ClassLoader classLoader;
 	private boolean isEnabled;
 	private Properties plugin;
+	private String[] commands;
+	
+	public String[] getCommands() {
+		return commands;
+	}
+	
+	public void setCommands(String[] commands) {
+		this.commands = commands;
+	}
 	
 	public ClassLoader getClassLoader() {
 		return classLoader;
