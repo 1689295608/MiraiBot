@@ -583,8 +583,16 @@ public class EventListener implements ListenerHost {
 		Matcher matcher = pattern.matcher(str);
 		while (matcher.find()) {
 			String con;
+			URL url;
 			try {
-				URL url = new URL(matcher.group(1));
+				String u = matcher.group(1);
+				if (u.toLowerCase().startsWith("https://") || u.toLowerCase().startsWith("http://")) {
+					url = new URL(u);
+				} else {
+					String file = u.substring(u.indexOf("/"));
+					String host = u.substring(0, u.indexOf("/"));
+					url = new URL("HTTPS", host, file);
+				}
 				InputStream is = url.openStream();
 				BufferedInputStream bis = new BufferedInputStream(is);
 				con = new String(bis.readAllBytes(), StandardCharsets.UTF_8);
