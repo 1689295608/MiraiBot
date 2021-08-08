@@ -1,7 +1,6 @@
 package com.windowx.miraibot;
 
 import com.windowx.miraibot.utils.ConfigUtil;
-import sun.font.FontDesignMetrics;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,7 +17,7 @@ public class WordToImage {
 		g.fillRect(0, 0, width, height);
 		g.setColor(new Color(Integer.parseInt(ConfigUtil.getConfig("font-color", "#ffffff").substring(1))));
 		g.setFont(font);
-		FontMetrics fm = FontDesignMetrics.getMetrics(font);
+		FontMetrics fm = g.getFontMetrics(font);
 		int stringWidth = fm.stringWidth(content);
 		int stringHeight = fm.getHeight();
 		int ascent = fm.getAscent();
