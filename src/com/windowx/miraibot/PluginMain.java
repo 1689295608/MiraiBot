@@ -103,11 +103,7 @@ public class PluginMain {
 		String password = ConfigUtil.getConfig("password");
 		groups = ConfigUtil.getConfig("group").split(",");
 		allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
-		if (!ConfigUtil.getConfig("showQQ").isEmpty()) {
-			EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ"));
-		} else {
-			EventListener.showQQ = false;
-		}
+		EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ", "false"));
 		if (qq.isEmpty() || password.isEmpty()) {
 			LogUtil.error(ConfigUtil.getLanguage("qq.password.not.exits"));
 			System.exit(-1);
@@ -1180,6 +1176,10 @@ public class PluginMain {
 									"checkUpdate=" + checkUpdate + "\n" +
 									"# 输入使用 “newImg” 指令生成的字体\n" +
 									"font=微软雅黑\n" +
+									"# 输入使用 “newImg” 指令生成的字体颜色\n" +
+									"font-color=#ffffff\n" +
+									"# 输入使用 “newImg” 指令生成的背景颜色\n" +
+									"background-color=#000000\n" +
 									"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
 									"protocol=PHONE\n" +
 									"# 是否启用 Debug 模式（即显示 MiraiCode）(true / false)\n" +
