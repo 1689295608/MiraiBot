@@ -60,9 +60,9 @@ public class LogUtil {
 		}
 	}
 	
-	public static <T extends Comparable<T>> String write(T str) {
+	public static String write(String str) {
 		if (str == null) return null;
-		lastOpt = (String) str;
+		lastOpt = str;
 		String time = "";
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
@@ -71,7 +71,7 @@ public class LogUtil {
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
-			String[] allLine = str.toString().split("\n");
+			String[] allLine = str.split("\n");
 			byte[] add = new byte[0];
 			for (String s : allLine) {
 				add = byteMerger(add, (time + s + "\n").getBytes());
@@ -92,12 +92,12 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static <T extends Comparable<T>> void log(T str, String... args) {
+	public static void log(String str, String... args) {
 		if (str == null) return;
 		AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 	}
 	
-	public static <T extends Comparable<T>> void log(T str) {
+	public static void log(String str) {
 		if (str == null) return;
 		AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
 	}
@@ -107,7 +107,7 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static <T extends Comparable<T>> void error(T str, String... args) {
+	public static void error(String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
@@ -115,7 +115,7 @@ public class LogUtil {
 			AnsiConsole.err().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 		}
 	}
-	public static <T extends Comparable<T>> void error(T str) {
+	public static void error(String str) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
@@ -129,7 +129,7 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static <T extends Comparable<T>> void warn(T str, String... args) {
+	public static void warn(String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
@@ -137,7 +137,7 @@ public class LogUtil {
 			AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 		}
 	}
-	public static <T extends Comparable<T>> void warn(T str) {
+	public static void warn(String str) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
