@@ -20,8 +20,9 @@ public class WordToImage {
 		FontMetrics fm = FontDesignMetrics.getMetrics(font);
 		int stringWidth = fm.stringWidth(content);
 		int stringHeight = fm.getHeight();
-		int y = (width / 2) - (stringWidth / 2);
-		int x = (height / 2) - (stringHeight / 2);
+		int ascent = fm.getAscent();
+		int y = (width - stringWidth) / 2;
+		int x = (height - stringHeight) / 2 + ascent;
 		g.drawString(content, x, y);
 		g.dispose();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
