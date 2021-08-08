@@ -1032,8 +1032,7 @@ public class PluginMain {
 	 */
 	public static void checkUpdate(String u) {
 		try {
-			URL update;
-			update = new URL(Objects.requireNonNullElse(u, "https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
+			URL update = new URL(Objects.requireNonNullElse(u, "https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
 			InputStream is = update.openStream();
 			BufferedInputStream bis = new BufferedInputStream(is);
 			String LatestVersion = new String(bis.readAllBytes()).replaceAll("\\n", "");
