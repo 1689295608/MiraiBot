@@ -41,14 +41,14 @@ public class ConfigUtil {
 	@NotNull public static String getConfig(String key) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-			if (isPrivate(stack)) return "";
+			if (!isPrivate(stack)) return "";
 		}
 		return config.getProperty(key) != null ? config.getProperty(key) : "";
 	}
 	@NotNull public static String getConfig(String key, String defaultValue) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-			if (isPrivate(stack)) return "";
+			if (!isPrivate(stack)) return "";
 		}
 		return config.getProperty(key) != null ? config.getProperty(key) : defaultValue;
 	}
