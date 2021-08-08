@@ -531,7 +531,7 @@ public class EventListener implements ListenerHost {
 	 * @param str   Text to replace
 	 * @return Replaced text
 	 */
-	public String replaceGroupMsgPlaceholder(GroupMessageEvent event, String str) throws IOException {
+	public String replaceGroupMsgPlaceholder(GroupMessageEvent event, String str) {
 		if (str == null) return "";
 		String[] spl = event.getMessage().serializeToMiraiCode().split(":");
 		str = str.replaceAll("%sender_nick%", event.getSender().getNick());
@@ -586,7 +586,8 @@ public class EventListener implements ListenerHost {
 			try {
 				URL url = new URL(matcher.group(1));
 				InputStream is = url.openStream();
-				con = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+				BufferedInputStream bis = new BufferedInputStream(is);
+				con = new String(bis.readAllBytes(), StandardCharsets.UTF_8);
 			} catch (IOException e) {
 				con = e.toString();
 			}
