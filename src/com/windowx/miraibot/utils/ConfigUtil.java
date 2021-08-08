@@ -41,15 +41,27 @@ public class ConfigUtil {
 	@NotNull public static String getConfig(String key) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-			for (StackTraceElement ste : stack) {
-				if (!ste.getClassName().equals("java.lang.Thread") &&
-						!ste.getClassName().equals("com.windowx.miraibot.utils.ConfigUtil") &&
-						!ste.getClassName().equals("com.windowx.miraibot.PluginMain")) {
-					return "";
-				}
-			}
+			if (isPrivate(stack)) return "";
 		}
 		return config.getProperty(key) != null ? config.getProperty(key) : "";
+	}
+	@NotNull public static String getConfig(String key, String defaultValue) {
+		if (key.equals("password")) {
+			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+			if (isPrivate(stack)) return "";
+		}
+		return config.getProperty(key) != null ? config.getProperty(key) : defaultValue;
+	}
+	
+	private static boolean isPrivate(StackTraceElement[] stack) {
+		for (StackTraceElement ste : stack) {
+			if (!ste.getClassName().equals("java.lang.Thread") &&
+					!ste.getClassName().equals("com.windowx.miraibot.utils.ConfigUtil") &&
+					!ste.getClassName().equals("com.windowx.miraibot.PluginMain")) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
