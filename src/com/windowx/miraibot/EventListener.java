@@ -18,10 +18,8 @@ import net.mamoe.mirai.utils.ExternalResource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.SimpleScriptContext;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +37,6 @@ public class EventListener implements ListenerHost {
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
 	public static JSONObject autoRespondConfig;
-	public static ScriptContext context = new SimpleScriptContext();
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onGroupJoin(MemberJoinEvent event) {
@@ -103,14 +100,16 @@ public class EventListener implements ListenerHost {
 		if (PluginMain.group != event.getGroup()) {
 			return;
 		}
-		requests.add(event);
-		LogUtil.log(ConfigUtil.getLanguage("join.request.group")
-				, String.valueOf(requests.size())
-				, event.getFromNick()
-				, String.valueOf(event.getFromId())
-				, event.getGroup().getName()
-				, String.valueOf(event.getGroupId())
-		);
+		if (event.getGroup() != null) {
+			requests.add(event);
+			LogUtil.log(ConfigUtil.getLanguage("join.request.group")
+					, String.valueOf(requests.size())
+					, event.getFromNick()
+					, String.valueOf(event.getFromId())
+					, event.getGroup().getName()
+					, String.valueOf(event.getGroupId())
+			);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
@@ -398,8 +397,7 @@ public class EventListener implements ListenerHost {
 									try {
 										ScriptEngineManager manager = new ScriptEngineManager();
 										ScriptEngine engine = manager.getEngineByName("JavaScript");
-										noPermissionMsg = engine.eval(noPermissionMsg.substring(7), context).toString();
-										context = engine.getContext();
+										noPermissionMsg = engine.eval(noPermissionMsg.substring(7)).toString();
 									} catch (Exception e) {
 										noPermissionMsg = e.toString();
 									}
@@ -441,8 +439,7 @@ public class EventListener implements ListenerHost {
 									try {
 										ScriptEngineManager manager = new ScriptEngineManager();
 										ScriptEngine engine = manager.getEngineByName("JavaScript");
-										respond = engine.eval(respond.substring(7), context).toString();
-										context = engine.getContext();
+										respond = engine.eval(respond.substring(7)).toString();
 									} catch (Exception e) {
 										respond = e.toString();
 									}
@@ -586,17 +583,8 @@ public class EventListener implements ListenerHost {
 			URL url;
 			try {
 				String u = matcher.group(1);
-				if (u.toLowerCase().startsWith("https://") || u.toLowerCase().startsWith("http://")) {
-					url = new URL(u);
-				} else {
-					String file = "/";
-					String host = u;
-					if (u.contains("/")) {
-						file = u.substring(u.indexOf("/"));
-						host = u.substring(0, u.indexOf("/"));
-					}
-					url = new URL("HTTPS", host, file);
-				}
+				boolean hasP = u.toLowerCase().startsWith("https://") || u.toLowerCase().startsWith("http://");
+				url = new URL(hasP ? u : "https://" + u);
 				InputStream is = url.openStream();
 				BufferedInputStream bis = new BufferedInputStream(is);
 				con = new String(bis.readAllBytes(), StandardCharsets.UTF_8);
