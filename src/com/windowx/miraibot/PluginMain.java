@@ -79,6 +79,7 @@ public class PluginMain {
 				LogUtil.log(language.equals("zh") ? "使用本软件，您必须遵守我们的协议，请修改 eula.txt 来同意协议！" :
 						(language.equals("tw") ? "使用本軟件，您必須遵守我們的協議，請修改 eula.txt 來同意協議！" :
 								"To use this software, you must abide by our agreement, please modify eula.txt to agree to the agreement!"));
+				System.exit(0);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
