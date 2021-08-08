@@ -64,17 +64,21 @@ public class PluginMain {
 		}
 		try {
 			File eula = new File("eula.txt");
+			if (!eula.exists()) {
+				if (eula.createNewFile()) {
+					FileOutputStream fos = new FileOutputStream(eula);
+					fos.write((
+							"# 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须使用 AGPL-3.0 License 协议开源\n" +
+									"# To use this software, you must abide by our agreement. All plug-ins developed based on this software must be open sourced under the AGPL-3.0 License agreement.\n" +
+									"# 详情请查看：https://github.com/1689295608/MiraiBot/blob/main/LICENSE\n" +
+									"# Details: https://github.com/1689295608/MiraiBot/blob/main/LICENSE\n" +
+									"eula=false"
+					).getBytes());
+				}
+			}
 			Properties prop = new Properties();
 			prop.load(new FileInputStream(eula));
 			boolean e = Boolean.parseBoolean(prop.getProperty("eula", "false"));
-			FileOutputStream fos = new FileOutputStream(eula);
-			fos.write((
-					"# 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须使用 AGPL-3.0 License 协议开源\n" +
-					"# To use this software, you must abide by our agreement. All plug-ins developed based on this software must be open sourced under the AGPL-3.0 License agreement.\n" +
-					"# 详情请查看：https://github.com/1689295608/MiraiBot/blob/main/LICENSE\n" +
-					"# Details: https://github.com/1689295608/MiraiBot/blob/main/LICENSE\n" +
-					"eula=false"
-			).getBytes());
 			if (!e) {
 				LogUtil.log(language.equals("zh") ? "使用本软件，您必须遵守我们的协议，请修改 eula.txt 来同意协议！" :
 						(language.equals("tw") ? "使用本軟件，您必須遵守我們的協議，請修改 eula.txt 來同意協議！" :
