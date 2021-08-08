@@ -27,8 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EventListener implements ListenerHost {
 	public static final ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
@@ -528,7 +531,7 @@ public class EventListener implements ListenerHost {
 	 * @param str   Text to replace
 	 * @return Replaced text
 	 */
-	public String replaceGroupMsgPlaceholder(GroupMessageEvent event, String str) {
+	public String replaceGroupMsgPlaceholder(GroupMessageEvent event, String str) throws IOException {
 		if (str == null) return "";
 		String[] spl = event.getMessage().serializeToMiraiCode().split(":");
 		str = str.replaceAll("%sender_nick%", event.getSender().getNick());
@@ -575,6 +578,19 @@ public class EventListener implements ListenerHost {
 			} catch (IOException e) {
 				LogUtil.log(e.toString());
 			}
+		}
+		Pattern pattern = Pattern.compile("%url_([^%]+)%");
+		Matcher matcher = pattern.matcher(str);
+		while (matcher.find()) {
+			String con;
+			try {
+				URL url = new URL(matcher.group(1));
+				InputStream is = url.openStream();
+				con = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+			} catch (IOException e) {
+				con = e.toString();
+			}
+			str = str.replace("%url_" + matcher.group(1) + "%", con);
 		}
 		return str;
 	}
