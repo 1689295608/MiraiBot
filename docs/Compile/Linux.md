@@ -13,8 +13,9 @@
 
 你可以使用以下命令安装 `unzip` 和 `wget`：
 ```shell
-yum -y install wget
-yum -y install unzip
+yum -y install wget unzip
+或
+apt install -y wget unzip
 ```
 要安装 `Open JDK`，请前往 [AdoptOpenJDK](https://adoptopenjdk.net/releases.html) 查看适合你的系统的 `Open JDK`，
 
@@ -57,8 +58,8 @@ wget https://ghproxy.com/https://github.com/XIAYM-gh/miraibot-plugins/releases/d
 接下来，运行这些命令:
 ```shell
 unzip MiraiBotBuilder.zip
-cd Miraibot-Builder
+cd MiraiBotBuilder
 bash build.sh
 ```
 
-运行完成之后，将会在 `Miraibot-Builder` 文件夹里生成一个 `MiraiBot.jar`，你可以把它覆盖到你的 `MiraiBot` 工作目录
+运行完成之后，将会在 `MiraiBotBuilder` 文件夹里生成一个 `MiraiBot.jar`，你可以把它覆盖到你的 `MiraiBot` 工作目录
