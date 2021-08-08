@@ -21,9 +21,9 @@ public class WordToImage {
 		int stringWidth = fm.stringWidth(content);
 		int stringHeight = fm.getHeight();
 		int ascent = fm.getAscent();
-		int y = (width - stringWidth) / 2;
-		int x = (height - stringHeight) / 2 + ascent;
-		g.drawString(content, x, y);
+		int left = (width - stringWidth) / 2;
+		int top = (height - stringHeight) / 2 + ascent;
+		g.drawString(content, left, top);
 		g.dispose();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
