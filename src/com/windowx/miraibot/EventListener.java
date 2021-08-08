@@ -333,7 +333,7 @@ public class EventListener implements ListenerHost {
 						String changeNameCard = sectionObject.has("ChangeNameCard") ? sectionObject.getString("ChangeNameCard") : null;
 						String permission = sectionObject.has("Permission") ? sectionObject.getString("Permission") : "*";
 						String noPermission = (sectionObject.has("NoPermission") ? sectionObject.getString("NoPermission") : "");
-						String noPermissionMsg = sectionObject.has("NoPermissionMsg") ? sectionObject.getString("NoPermissionMsg") : null;
+						String noPermissionMsg = sectionObject.has("NoPermissionMsg") ? sectionObject.getString("NoPermissionMsg") : "";
 						String[] owners = ConfigUtil.getConfig("owner").split(",");
 						runCmd = mCode.replaceAll(regex, runCmd);
 						
@@ -366,34 +366,44 @@ public class EventListener implements ListenerHost {
 							}
 						}
 						if (breakRespond) {
-							if (noPermissionMsg != null) {
-								boolean noPermissionReply = sectionObject.has("NoPermissionReply") && sectionObject.getBoolean("NoPermissionReply");
-								boolean noPermissionRecall = sectionObject.has("NoPermissionRecall") && sectionObject.getBoolean("NoPermissionRecall");
-								int noPermissionMute = sectionObject.has("NoPermissionMute") ? sectionObject.getInt("NoPermissionMute") : 0;
-								String noPermissionRunCmd = sectionObject.has("NoPermissionRunCmd") ? sectionObject.getString("NoPermissionRunCmd") : null;
-								noPermissionMsg = replaceGroupMsgPlaceholder(event, mCode.replaceAll(regex, noPermissionMsg));
-								if (noPermissionRunCmd != null) {
+							boolean noPermissionReply = sectionObject.has("NoPermissionReply") && sectionObject.getBoolean("NoPermissionReply");
+							boolean noPermissionRecall = sectionObject.has("NoPermissionRecall") && sectionObject.getBoolean("NoPermissionRecall");
+							int noPermissionMute = sectionObject.has("NoPermissionMute") ? sectionObject.getInt("NoPermissionMute") : 0;
+							String noPermissionRunCmd = sectionObject.has("NoPermissionRunCmd") ? sectionObject.getString("NoPermissionRunCmd") : "";
+							noPermissionMsg = replaceGroupMsgPlaceholder(event, mCode.replaceAll(regex, noPermissionMsg));
+							if (!noPermissionRunCmd.isEmpty()) {
+								if (runCmd.startsWith("!SCRIPT")) {
 									try {
-										PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
-									} catch (Exception ignored) {
-									
-									}
-									noPermissionMsg = noPermissionMsg.replaceAll("%last_console_output%", LogUtil.lastOpt);
-								}
-								if (noPermissionRecall) {
-									try {
-										Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+										ScriptEngineManager manager = new ScriptEngineManager();
+										ScriptEngine engine = manager.getEngineByName("JavaScript");
+										noPermissionRunCmd = engine.eval(noPermissionRunCmd.substring(7)).toString();
 									} catch (Exception e) {
-										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+										noPermissionRunCmd = e.toString();
 									}
 								}
-								if (noPermissionMute != 0) {
-									try {
-										event.getSender().mute(mute);
-									} catch (Exception e) {
-										LogUtil.log(ConfigUtil.getLanguage("no.permission"));
-									}
+								try {
+									PluginMain.runCommand(replaceGroupMsgPlaceholder(event, noPermissionRunCmd));
+								} catch (Exception e) {
+									System.out.println();
+									e.printStackTrace();
 								}
+								noPermissionMsg = noPermissionMsg.replaceAll("%last_console_output%", LogUtil.lastOpt);
+							}
+							if (noPermissionRecall) {
+								try {
+									Mirai.getInstance().recallMessage(event.getBot(), event.getSource());
+								} catch (Exception e) {
+									LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+								}
+							}
+							if (noPermissionMute != 0) {
+								try {
+									event.getSender().mute(mute);
+								} catch (Exception e) {
+									LogUtil.log(ConfigUtil.getLanguage("no.permission"));
+								}
+							}
+							if (!noPermissionMsg.isEmpty()) {
 								if (noPermissionMsg.startsWith("!SCRIPT")) {
 									try {
 										ScriptEngineManager manager = new ScriptEngineManager();
@@ -413,6 +423,15 @@ public class EventListener implements ListenerHost {
 						}
 						
 						if (!runCmd.isEmpty()) {
+							if (runCmd.startsWith("!SCRIPT")) {
+								try {
+									ScriptEngineManager manager = new ScriptEngineManager();
+									ScriptEngine engine = manager.getEngineByName("JavaScript");
+									runCmd = engine.eval(runCmd.substring(7)).toString();
+								} catch (Exception e) {
+									runCmd = e.toString();
+								}
+							}
 							try {
 								PluginMain.runCommand(replaceGroupMsgPlaceholder(event, runCmd));
 							} catch (Exception e) {
