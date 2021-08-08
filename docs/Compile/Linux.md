@@ -14,7 +14,9 @@
 你可以使用以下命令安装 `unzip` 和 `wget`：
 ```shell
 yum -y install wget unzip
+```
 或
+```shell
 apt install -y wget unzip
 ```
 要安装 `Open JDK`，请前往 [AdoptOpenJDK](https://adoptopenjdk.net/releases.html) 查看适合你的系统的 `Open JDK`，
