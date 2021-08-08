@@ -589,8 +589,12 @@ public class EventListener implements ListenerHost {
 				if (u.toLowerCase().startsWith("https://") || u.toLowerCase().startsWith("http://")) {
 					url = new URL(u);
 				} else {
-					String file = u.substring(u.indexOf("/"));
-					String host = u.substring(0, u.indexOf("/"));
+					String file = "/";
+					String host = u;
+					if (u.contains("/")) {
+						file = u.substring(u.indexOf("/"));
+						host = u.substring(0, u.indexOf("/"));
+					}
 					url = new URL("HTTPS", host, file);
 				}
 				InputStream is = url.openStream();
