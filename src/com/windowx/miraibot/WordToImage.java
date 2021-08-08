@@ -1,5 +1,7 @@
 package com.windowx.miraibot;
 
+import sun.font.FontDesignMetrics;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -7,23 +9,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class WordToImage {
-	public static byte[] createImage(String content, Font font, Integer width, Integer height) {
-		// 创建图片
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR); //先创建图片
+	public static byte[] createImage(String content, Font font, int width, int height) {
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
 		Graphics g = image.getGraphics();
 		g.setClip(0, 0, width, height);
 		g.setColor(Color.white);
-		g.fillRect(0, 0, width, height);// 先用黑色填充整张图片,也就是背景
-		g.setColor(Color.black);// 再换成黑色
-		g.setFont(font);// 设置画笔字体
-		Rectangle clip = g.getClipBounds();
-		FontMetrics fm = g.getFontMetrics(font);
-		int ascent = fm.getAscent();
-		int descent = fm.getDescent();
-		int y = (clip.height - (ascent + descent)) / 2 + ascent;
-		for (int i = 0; i < 6; i++) {// 256 340 0 680
-			g.drawString(content, i * 680, y);// 画出字符串
-		}
+		g.fillRect(0, 0, width, height);
+		g.setColor(Color.black);
+		g.setFont(font);
+		FontMetrics fm = FontDesignMetrics.getMetrics(font);
+		int stringWidth = fm.stringWidth(content);
+		int stringHeight = fm.getHeight();
+		int y = (width / 2) - (stringWidth / 2);
+		int x = (height / 2) - (stringHeight / 2);
+		g.drawString(content, x, y);
 		g.dispose();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
