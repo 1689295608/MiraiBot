@@ -1072,10 +1072,10 @@ public class PluginMain {
 				for (String s : newV) now += Integer.parseInt(s);
 				if (now < ne) {
 					LogUtil.log(ConfigUtil.getLanguage("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion);
-				} else if (nowV == newV) {
+				} else if (now == ne) {
 					LogUtil.log(ConfigUtil.getLanguage("already.latest.version"), LatestVersion);
 				} else {
-					LogUtil.warn(ConfigUtil.getLanguage("too.new.version"));
+					LogUtil.warn(ConfigUtil.getLanguage("too.new.version"), String.valueOf(now));
 				}
 			} catch (Exception e) {
 				LogUtil.error(ConfigUtil.getLanguage("failed.check.update"), e.toString());
