@@ -1,9 +1,11 @@
 package com.windowx.miraibot.utils;
 
 import org.fusesource.jansi.AnsiConsole;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -58,9 +60,9 @@ public class LogUtil {
 		}
 	}
 	
-	public static String write(String str) {
+	public static <T extends Comparable<T>> String write(T str) {
 		if (str == null) return null;
-		lastOpt = str;
+		lastOpt = (String) str;
 		String time = "";
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
@@ -69,7 +71,7 @@ public class LogUtil {
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
-			String[] allLine = str.split("\n");
+			String[] allLine = str.toString().split("\n");
 			byte[] add = new byte[0];
 			for (String s : allLine) {
 				add = byteMerger(add, (time + s + "\n").getBytes());
@@ -90,36 +92,14 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static <T extends Comparable<T>> void log(@Nullable T str, String... args) {
+	public static <T extends Comparable<T>> void log(T str, String... args) {
 		if (str == null) return;
-		AnsiConsole.out().printf("\r" + write(str.toString()) + str + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 	}
 	
-	public static <T extends Comparable<T>> void log(@Nullable T str) {
+	public static <T extends Comparable<T>> void log(T str) {
 		if (str == null) return;
-		AnsiConsole.out().print("\r" + write(str.toString()) + str + "\n> ");
-	}
-	
-	/**
-	 * Output an error message and record it in the log file
-	 *
-	 * @param str What to output
-	 */
-	public static <T extends Comparable<T>> void error(@Nullable T str, String... args) {
-		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str.toString()) + str + "|@") + "\n> ", (Object[]) args);
-		} else if (os.contains("windows")) {
-			AnsiConsole.err().printf("\r" + write(str.toString()) + str + "\n> ", (Object[]) args);
-		}
-	}
-	public static <T extends Comparable<T>> void error(@Nullable T str) {
-		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str.toString()) + str + "|@") + "\n> ");
-		} else if (os.contains("windows")) {
-			AnsiConsole.err().print("\r" + write(str.toString()) + str + "\n> ");
-		}
+		AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
 	}
 	
 	/**
@@ -127,20 +107,42 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static <T extends Comparable<T>> void warn(@Nullable T str, String... args) {
+	public static <T extends Comparable<T>> void error(T str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str.toString()) + str + "|@") + "\n> ", (Object[]) args);
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.out().printf("\r" + write(str.toString()) + str + "\n> ", (Object[]) args);
+			AnsiConsole.err().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
 		}
 	}
-	public static <T extends Comparable<T>> void warn(@Nullable T str) {
+	public static <T extends Comparable<T>> void error(T str) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str.toString()) + str + "|@") + "\n> ");
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
 		} else if (os.contains("windows")) {
-			AnsiConsole.out().print("\r" + write(str.toString()) + str + "\n> ");
+			AnsiConsole.err().print("\r" + write(str) + str + "\n> ");
+		}
+	}
+	
+	/**
+	 * Output an error message and record it in the log file
+	 *
+	 * @param str What to output
+	 */
+	public static <T extends Comparable<T>> void warn(T str, String... args) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
+		} else if (os.contains("windows")) {
+			AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
+		}
+	}
+	public static <T extends Comparable<T>> void warn(T str) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
+		} else if (os.contains("windows")) {
+			AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
 		}
 	}
 	
