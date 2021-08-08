@@ -90,12 +90,12 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void log(@Nullable Object str, String... args) {
+	public static <T extends Comparable<T>> void log(@Nullable T str, String... args) {
 		if (str == null) return;
 		AnsiConsole.out().printf("\r" + write(str.toString()) + str + "\n> ", (Object[]) args);
 	}
 	
-	public static void log(@Nullable Object str) {
+	public static <T extends Comparable<T>> void log(@Nullable T str) {
 		if (str == null) return;
 		AnsiConsole.out().print("\r" + write(str.toString()) + str + "\n> ");
 	}
@@ -105,7 +105,7 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void error(@Nullable Object str, String... args) {
+	public static <T extends Comparable<T>> void error(@Nullable T str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str.toString()) + str + "|@") + "\n> ", (Object[]) args);
@@ -113,7 +113,7 @@ public class LogUtil {
 			AnsiConsole.err().printf("\r" + write(str.toString()) + str + "\n> ", (Object[]) args);
 		}
 	}
-	public static void error(@Nullable Object str) {
+	public static <T extends Comparable<T>> void error(@Nullable T str) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str.toString()) + str + "|@") + "\n> ");
@@ -127,7 +127,7 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void warn(@Nullable Object str, String... args) {
+	public static <T extends Comparable<T>> void warn(@Nullable T str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str.toString()) + str + "|@") + "\n> ", (Object[]) args);
@@ -135,7 +135,7 @@ public class LogUtil {
 			AnsiConsole.out().printf("\r" + write(str.toString()) + str + "\n> ", (Object[]) args);
 		}
 	}
-	public static void warn(@Nullable Object str) {
+	public static <T extends Comparable<T>> void warn(@Nullable T str) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str.toString()) + str + "|@") + "\n> ");
