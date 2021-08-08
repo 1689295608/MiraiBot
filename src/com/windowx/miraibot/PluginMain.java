@@ -668,6 +668,7 @@ public class PluginMain {
 						Image img = group.uploadImage(externalResource);
 						externalResource.close();
 						imageInfo(bot, img);
+						group.sendMessage(img);
 					} catch (NumberFormatException e) {
 						LogUtil.warn(ConfigUtil.getLanguage("width.height.error"));
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.warn(e.toString());
