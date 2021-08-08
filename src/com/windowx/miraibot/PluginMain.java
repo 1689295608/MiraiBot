@@ -1185,19 +1185,19 @@ public class PluginMain {
 					
 					FileOutputStream fos = new FileOutputStream(file);
 					String config =
-							"# 输入你的 QQ\n" +
+							"# 输入你的 QQ号\n" +
 									"qq=" + qq + "\n" +
 									"# 输入你的 QQ 密码\n" +
 									"password=" + password + "\n" +
-									"# 输入你要聊天的聊群, 用 “,” 分隔\n" +
+									"# 输入你要聊天的聊群, 用 “,” 分隔，可使用group命令切换\n" +
 									"group=" + group + "\n" +
-									"# 允许运行机器人的聊群, 用 “,” 分隔\n" +
+									"# 机器人插件能够接收消息的聊群, 用 “,” 分隔\n" +
 									"allowedGroups=" + group + "\n" +
 									"# 机器人主人 QQ 号, 即拥有一切权力的 QQ 号. 用 \",\" 分隔\n" +
 									"owner=\n" +
 									"# 每一个新消息是否都显示发送者的 QQ 号\n" +
 									"showQQ=false\n" +
-									"# 输入你接收的好友信息（“*” 为 全部\n" +
+									"# 输入你想要接收哪些好友的消息（“*” 为 全部，使用qq号)\n" +
 									"friend=*\n" +
 									"# 每次启动时都检测更新 (true / false)\n" +
 									"checkUpdate=" + checkUpdate + "\n" +
