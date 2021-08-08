@@ -13,9 +13,9 @@ public class WordToImage {
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
 		Graphics g = image.getGraphics();
 		g.setClip(0, 0, width, height);
-		g.setColor(new Color(parseHex(ConfigUtil.getConfig("background-color", "#000000"))));
+		g.setColor(Color.decode(ConfigUtil.getConfig("background-color", "#000000")));
 		g.fillRect(0, 0, width, height);
-		g.setColor(new Color(parseHex(ConfigUtil.getConfig("font-color", "#ffffff"))));
+		g.setColor(Color.decode(ConfigUtil.getConfig("font-color", "#ffffff")));
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics(font);
 		int stringWidth = fm.stringWidth(content);
@@ -32,10 +32,5 @@ public class WordToImage {
 			e.printStackTrace();
 		}
 		return out.toByteArray();
-	}
-	
-	private static int parseHex(String hex) {
-		String i = "0xFF" + hex.substring(1);
-		return Integer.parseInt(i);
 	}
 }
