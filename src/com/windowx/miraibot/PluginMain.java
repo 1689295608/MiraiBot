@@ -43,7 +43,7 @@ public class PluginMain {
 			"accept", "avatar", "checkUpdate", "del", "friendList", "help", "image", "imageInfo", "kick", "language", "load",
 			"music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
 	);
-	public static ArrayList<Plugin> plugins;
+	protected static ArrayList<Plugin> plugins;
 	public static boolean running;
 	
 	public static void main(String[] args) {
