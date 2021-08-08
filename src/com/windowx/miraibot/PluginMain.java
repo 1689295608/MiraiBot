@@ -1069,13 +1069,13 @@ public class PluginMain {
 				String[] newV = LatestVersion.replaceAll("[^0-9.]", "").split("\\.");
 				int now = 0, ne = 0;
 				for (String s : nowV) now += Integer.parseInt(s);
-				for (String s : newV) now += Integer.parseInt(s);
+				for (String s : newV) ne += Integer.parseInt(s);
 				if (now < ne) {
 					LogUtil.log(ConfigUtil.getLanguage("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion);
 				} else if (now == ne) {
 					LogUtil.log(ConfigUtil.getLanguage("already.latest.version"), LatestVersion);
 				} else {
-					LogUtil.warn(ConfigUtil.getLanguage("too.new.version"), String.valueOf(now));
+					LogUtil.warn(ConfigUtil.getLanguage("too.new.version"), String.valueOf(now), String.valueOf(ne));
 				}
 			} catch (Exception e) {
 				LogUtil.error(ConfigUtil.getLanguage("failed.check.update"), e.toString());
