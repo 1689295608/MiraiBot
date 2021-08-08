@@ -378,6 +378,7 @@ public class EventListener implements ListenerHost {
 									} catch (Exception ignored) {
 									
 									}
+									noPermissionMsg = noPermissionMsg.replaceAll("%last_console_output%", LogUtil.lastOpt);
 								}
 								if (noPermissionRecall) {
 									try {
@@ -418,6 +419,7 @@ public class EventListener implements ListenerHost {
 								System.out.println();
 								e.printStackTrace();
 							}
+							respond = respond.replaceAll("%last_console_output%", LogUtil.lastOpt);
 						}
 						if (mute != 0) {
 							try {
@@ -544,7 +546,6 @@ public class EventListener implements ListenerHost {
 		str = str.replaceAll("%message_id%", String.valueOf(messages.size()));
 		str = str.replaceAll("%bot_nick%", event.getBot().getNick());
 		str = str.replaceAll("%bot_id%", String.valueOf(event.getBot().getId()));
-		str = str.replaceAll("%last_console_output%", LogUtil.lastOpt);
 		String flashId = "", imageId = "", fileId = "";
 		if (spl.length >= 3) {
 			switch (spl[1]) {
