@@ -52,7 +52,7 @@ java -version
 如果正确的显示了类似于 `AdoptOpenJDK 11` 的字样，就代表安装成功了！
 
 ## 下一步
-在确保安装了这些 Package 之后，使用 `wget` 下载这个自动构建脚本：
+在确保安装了这些 Package 之后，使用 `wget` 下载这个自动构建脚本以及资源文件的压缩包：
 ```
 wget https://ghproxy.com/https://github.com/XIAYM-gh/miraibot-plugins/releases/download/0.1/MiraiBotBuilder.zip
 ```
