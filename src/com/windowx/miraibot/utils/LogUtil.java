@@ -60,9 +60,9 @@ public class LogUtil {
 		}
 	}
 	
-	public static String write(String str) {
+	public static String write(String str, String... args) {
 		if (str == null) return null;
-		lastOpt = str;
+		lastOpt = String.format(str, (Object[]) args);
 		String time = "";
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
@@ -94,7 +94,7 @@ public class LogUtil {
 	 */
 	public static void log(String str, String... args) {
 		if (str == null) return;
-		AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + str + "\n> ", (Object[]) args);
 	}
 	
 	public static void log(String str) {
@@ -110,9 +110,9 @@ public class LogUtil {
 	public static void error(String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str, args) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.err().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
+			AnsiConsole.err().printf("\r" + write(str, args) + str + "\n> ", (Object[]) args);
 		}
 	}
 	public static void error(String str) {
@@ -132,9 +132,9 @@ public class LogUtil {
 	public static void warn(String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str, args) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.out().printf("\r" + write(str) + str + "\n> ", (Object[]) args);
+			AnsiConsole.out().printf("\r" + write(str, args) + str + "\n> ", (Object[]) args);
 		}
 	}
 	public static void warn(String str) {
