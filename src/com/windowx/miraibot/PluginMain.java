@@ -572,7 +572,7 @@ public class PluginMain {
 						NormalMember member = group.get(Long.parseLong(cmd[1]));
 						if (member != null) {
 							try {
-								member.nudge();
+								member.nudge().sendTo(group);
 								LogUtil.log(ConfigUtil.getLanguage("nudged"));
 							} catch (Exception e) {
 								LogUtil.error(ConfigUtil.getLanguage("no.permission"));
