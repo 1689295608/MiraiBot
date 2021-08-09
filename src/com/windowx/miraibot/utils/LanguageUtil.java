@@ -136,7 +136,7 @@ public class LanguageUtil {
 					"you=你\n" +
 					"itself=TA自己\n" +
 					"yourself=你自己\n" +
-					"nudge.message=%s%s%s%s" +
+					"nudge.message=%s%s%s%s\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -266,7 +266,7 @@ public class LanguageUtil {
 					"you=你\n" +
 					"itself=TA自己\n" +
 					"yourself=你自己\n" +
-					"nudge.message=%s%s%s%s" +
+					"nudge.message=%s%s%s%s\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -396,7 +396,7 @@ public class LanguageUtil {
 					"you=You\n" +
 					"itself=itself\n" +
 					"yourself=yourself\n" +
-					"nudge.message=%s %s %s %s" +
+					"nudge.message=%s %s %s %s\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
