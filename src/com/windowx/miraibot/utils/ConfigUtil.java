@@ -83,7 +83,7 @@ public class ConfigUtil {
 					FileInputStream fis = new FileInputStream(langFile);
 					FileOutputStream fos = new FileOutputStream(langFile);
 					String content = new String(fis.readAllBytes());
-					content += (content.endsWith("\n") ? "" : "\n") + key + "=" + tmpLanguage.getProperty(key);
+					content += (content.endsWith("\n") ? "" : "\n") + key + "=" + tmpLanguage.getProperty(key) + "\n";
 					fos.write(content.getBytes());
 					fos.close();
 					language.load(new BufferedReader(new FileReader(langFile)));
