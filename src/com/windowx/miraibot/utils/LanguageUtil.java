@@ -50,6 +50,7 @@ public class LanguageUtil {
 					"failed.accept=无法同意该入群请求！\n" +
 					"recalled=已撤回该消息！\n" +
 					"kicked=已踢出该成员！\n" +
+					"nudged=成功戳一戳该成员！\n" +
 					"time=时长\n" +
 					"failed.recall=无法撤回该消息！\n" +
 					"no.permission=你没有足够的权限进行该操作！\n" +
@@ -175,6 +176,7 @@ public class LanguageUtil {
 					"failed.accept=無法同意該入群請求！\n" +
 					"recalled=已撤回該消息！\n" +
 					"kicked=已踢出該成員！\n" +
+					"nudged=成功戳一戳該成員！\n" +
 					"time=時長\n" +
 					"failed.recall=無法撤回該消息！\n" +
 					"no.permission=你沒有足夠的權限進行該操作！\n" +
@@ -300,6 +302,7 @@ public class LanguageUtil {
 					"failed.accept=Unable to agree to the join group request!\n" +
 					"recalled=The message has been recalled!\n" +
 					"kicked=This member has been kicked out!\n" +
+					"nudged=Nudge the member successfully!\n" +
 					"time=Time\n" +
 					"failed.recall=Recall Failed!\n" +
 					"no.permission=You do not have permissions to perform this operation!\n" +
