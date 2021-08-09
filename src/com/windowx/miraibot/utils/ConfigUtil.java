@@ -1,11 +1,9 @@
 package com.windowx.miraibot.utils;
 
+import com.windowx.miraibot.PluginMain;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 public class ConfigUtil {
@@ -41,14 +39,14 @@ public class ConfigUtil {
 	@NotNull public static String getConfig(String key) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-			if (!isPrivate(stack)) return "";
+			if (isPrivate(stack)) return "";
 		}
 		return config.getProperty(key) != null ? config.getProperty(key) : "";
 	}
 	@NotNull public static String getConfig(String key, String defaultValue) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-			if (!isPrivate(stack)) return "";
+			if (isPrivate(stack)) return "";
 		}
 		return config.getProperty(key) != null ? config.getProperty(key) : defaultValue;
 	}
@@ -58,10 +56,10 @@ public class ConfigUtil {
 			if (!ste.getClassName().equals("java.lang.Thread") &&
 					!ste.getClassName().equals("com.windowx.miraibot.utils.ConfigUtil") &&
 					!ste.getClassName().equals("com.windowx.miraibot.PluginMain")) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -70,7 +68,32 @@ public class ConfigUtil {
 	 * @param key Key
 	 * @return Language value
 	 */
-	public static String getLanguage(String key) {
+	@NotNull public static String getLanguage(String key) {
+		String lang = language.getProperty(key);
+		if (lang == null) {
+			Properties tmpLanguage = new Properties();
+			try {
+				tmpLanguage.load(new StringReader(new String(LanguageUtil.languageFile(PluginMain.language))));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (tmpLanguage.containsKey(key)) {
+				try {
+					File langFile = new File("language.properties");
+					FileInputStream fis = new FileInputStream(langFile);
+					FileOutputStream fos = new FileOutputStream(langFile);
+					String content = new String(fis.readAllBytes());
+					content += (content.endsWith("\n") ? "" : "\n") + key + "=" + tmpLanguage.getProperty(key);
+					fos.write(content.getBytes());
+					fos.close();
+					language.load(new BufferedReader(new FileReader(langFile)));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				return "";
+			}
+		}
 		return language.getProperty(key);
 	}
 }
