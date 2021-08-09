@@ -101,6 +101,7 @@ public class LanguageUtil {
 					"command.plugins=列出目前已加载的所有插件\n" +
 					"command.reload=重载某个插件\n" +
 					"command.music=通过网易云音乐 ID 分享音乐\n" +
+					"command.nudge=戳一戳某人\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
@@ -225,6 +226,7 @@ public class LanguageUtil {
 					"command.plugins=列出目前已加載的所有插件\n" +
 					"command.reload=重載某個插件\n" +
 					"command.music=通過網易云音樂 ID 分享音樂\n" +
+					"command.nudge=戳一戳某人\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
@@ -349,6 +351,7 @@ public class LanguageUtil {
 					"command.plugins=List all plugins currently loaded\n" +
 					"command.reload=Reload a plugin\n" +
 					"command.music=Share music through NetEase Cloud Music ID\n" +
+					"command.nudge=Nudge a member\n" +
 					"name.card.set=The group nickname of %s has been set to %s\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"please.input=Please input \n" +
