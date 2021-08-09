@@ -241,7 +241,7 @@ public class EventListener implements ListenerHost {
 			Member from = PluginMain.group.get(event.getFrom().getId());
 			Member target = PluginMain.group.get(event.getTarget().getId());
 			if (from != null && target != null) {
-				LogUtil.log(ConfigUtil.getLanguage("group.nudge.message")
+				LogUtil.log(ConfigUtil.getLanguage("nudge.message")
 						, from != PluginMain.group.getBotAsMember() ? from.getNameCard() + showQQ(from.getId()) : ConfigUtil.getLanguage("you")
 						, event.getAction()
 						, target != from ? target.getNameCard() + showQQ(target.getId()) :
@@ -257,7 +257,7 @@ public class EventListener implements ListenerHost {
 			Friend from = event.getBot().getFriend(event.getFrom().getId());
 			Friend target = event.getBot().getFriend(event.getTarget().getId());
 			if (from != null && target != null) {
-				LogUtil.log(ConfigUtil.getLanguage("friend.nudge.message")
+				LogUtil.log(ConfigUtil.getLanguage("nudge.message")
 						, from != event.getBot().getAsFriend() ? from.getNick() + showQQ(from.getId()) : ConfigUtil.getLanguage("you")
 						, event.getAction()
 						, target != from ? target.getNick() + showQQ(target.getId()) :
