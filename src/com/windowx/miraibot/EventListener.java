@@ -376,7 +376,7 @@ public class EventListener implements ListenerHost {
 									try {
 										ScriptEngineManager manager = new ScriptEngineManager();
 										ScriptEngine engine = manager.getEngineByName("JavaScript");
-										noPermissionRunCmd = engine.eval(noPermissionRunCmd.substring(7)).toString();
+										noPermissionRunCmd = engine.eval(replaceGroupMsgPlaceholder(event, noPermissionRunCmd.substring(7))).toString();
 									} catch (Exception e) {
 										noPermissionRunCmd = e.toString();
 									}
@@ -427,7 +427,7 @@ public class EventListener implements ListenerHost {
 								try {
 									ScriptEngineManager manager = new ScriptEngineManager();
 									ScriptEngine engine = manager.getEngineByName("JavaScript");
-									runCmd = engine.eval(runCmd.substring(7)).toString();
+									runCmd = engine.eval(replaceGroupMsgPlaceholder(event, runCmd.substring(7))).toString();
 								} catch (Exception e) {
 									runCmd = e.toString();
 								}
