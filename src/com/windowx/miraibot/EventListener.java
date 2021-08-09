@@ -38,7 +38,7 @@ public class EventListener implements ListenerHost {
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
 	public static JSONObject autoRespondConfig;
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupJoin(MemberJoinEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
@@ -55,7 +55,7 @@ public class EventListener implements ListenerHost {
 		);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupLeave(MemberLeaveEvent.Quit event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
@@ -72,7 +72,7 @@ public class EventListener implements ListenerHost {
 		);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupKick(MemberLeaveEvent.Kick event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
@@ -91,7 +91,7 @@ public class EventListener implements ListenerHost {
 		);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onJoinRequest(MemberJoinRequestEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId()) || event.getGroup() == null) {
 			event.cancel();
@@ -112,7 +112,7 @@ public class EventListener implements ListenerHost {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
 			event.cancel();
@@ -162,7 +162,7 @@ public class EventListener implements ListenerHost {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendRecall(MessageRecallEvent.FriendRecall event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getOperator().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			event.cancel();
@@ -182,7 +182,7 @@ public class EventListener implements ListenerHost {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getTarget().getId())) {
 			event.cancel();
@@ -210,7 +210,7 @@ public class EventListener implements ListenerHost {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
 		MessageReceipt<Friend> receipt = event.getReceipt();
 		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
@@ -251,7 +251,45 @@ public class EventListener implements ListenerHost {
 		);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	private void logUnmute(Member op, Member member, Group group) {
+		if (op == null) {
+			op = group.getBotAsMember();
+		}
+		if (member == null) {
+			member = group.getBotAsMember();
+		}
+		LogUtil.log(ConfigUtil.getLanguage("member.unmute")
+				, member.getNameCard()
+				, String.valueOf(member.getId())
+				, op.getNameCard()
+				, String.valueOf(op.getId())
+		);
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onMemberUnmute(MemberUnmuteEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		if (PluginMain.group != event.getGroup()) {
+			return;
+		}
+		logUnmute(event.getOperator(), event.getMember(), event.getGroup());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBotUnmute(BotUnmuteEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		if (PluginMain.group != event.getGroup()) {
+			return;
+		}
+		logUnmute(event.getOperator(), null, event.getGroup());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMemberMute(MemberMuteEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
@@ -263,7 +301,7 @@ public class EventListener implements ListenerHost {
 		logMute(event.getOperator(), event.getMember(), event.getGroup(), event.getDurationSeconds());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBotMute(BotMuteEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
@@ -275,7 +313,7 @@ public class EventListener implements ListenerHost {
 		logMute(event.getOperator(), null, event.getGroup(), event.getDurationSeconds());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMuteAll(GroupMuteAllEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
@@ -288,7 +326,7 @@ public class EventListener implements ListenerHost {
 				(event.getNew() ? ConfigUtil.getConfig("on") : ConfigUtil.getConfig("off")));
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupMessage(GroupMessageEvent event) {
 		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
 			event.cancel();
@@ -499,7 +537,7 @@ public class EventListener implements ListenerHost {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendMessage(FriendMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			event.cancel();
@@ -510,7 +548,7 @@ public class EventListener implements ListenerHost {
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onTempMessage(GroupTempMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			event.cancel();
@@ -521,7 +559,7 @@ public class EventListener implements ListenerHost {
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onStrangerMessage(StrangerMessageEvent event) {
 		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			event.cancel();
