@@ -55,6 +55,7 @@ public class LanguageUtil {
 					"no.permission=你没有足够的权限进行该操作！\n" +
 					"bot.is.being.muted=机器人已被禁言！无法发送消息！\n" +
 					"member.mute=%s (%s) 被 %s (%s) 禁言 %s 秒！\n" +
+					"member.unmute=%s (%s) 已被 %s (%s) 解除禁言！\n" +
 					"open=已开启\n" +
 					"off=已关闭\n" +
 					"mute.all=全员禁言\n" +
@@ -178,6 +179,7 @@ public class LanguageUtil {
 					"no.permission=你沒有足夠的權限進行該操作！\n" +
 					"bot.is.being.muted=機器人已被禁言！無發發送消息！\n" +
 					"member.mute=%s (%s) 被 %s (%s) 禁言 %s 秒！\n" +
+					"member.unmute=%s (%s) 已被 %s (%s) 解除禁言！\n" +
 					"open=已開啟！\n" +
 					"off=已關閉\n" +
 					"mute.all=全員禁言\n" +
@@ -301,6 +303,7 @@ public class LanguageUtil {
 					"no.permission=You do not have permissions to perform this operation!\n" +
 					"bot.is.being.muted=The bot has been muted! Unable to send message!\n" +
 					"member.mute=%s (%s) was muted by %s (%s) for %s seconds!\n" +
+					"member.unmute=%s (%s) has been unbanned by %s (%s)!\n" +
 					"open=turned on\n" +
 					"off=turned off\n" +
 					"mute.all=Mute all \n" +
