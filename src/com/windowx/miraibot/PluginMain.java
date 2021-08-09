@@ -334,6 +334,9 @@ public class PluginMain {
 	 */
 	public static boolean runCommand(String msg) throws Exception {
 		String[] cmd = msg.split(" ");
+		if (cmd.length < 1) {
+			return false;
+		}
 		switch (cmd[0]) {
 			case "reload":
 				if (cmd.length == 1) {
