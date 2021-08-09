@@ -490,6 +490,9 @@ public class PluginMain {
 						ConfigUtil.getLanguage("font.size") + "> <" + ConfigUtil.getLanguage("contents") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.new.img") + "\n" +
 						
+						"nudge <" + ConfigUtil.getLanguage("qq") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.nudge") + "\n" +
+						
 						"plugins\n" +
 						" - " + ConfigUtil.getLanguage("command.plugins") + "\n" +
 						
@@ -561,6 +564,27 @@ public class PluginMain {
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": kick <" + ConfigUtil.getLanguage("qq") + "> <" +
 							ConfigUtil.getLanguage("reason") + ">");
+				}
+				return true;
+			case "nudge":
+				if (cmd.length > 1) {
+					try {
+						NormalMember member = group.get(Long.parseLong(cmd[1]));
+						if (member != null) {
+							try {
+								member.nudge();
+								LogUtil.log(ConfigUtil.getLanguage("nudged"));
+							} catch (Exception e) {
+								LogUtil.error(ConfigUtil.getLanguage("no.permission"));
+							}
+						} else {
+							LogUtil.error(ConfigUtil.getLanguage("not.user"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.error(ConfigUtil.getLanguage("not.qq"), cmd[1]);
+					}
+				} else {
+					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": nudge <" + ConfigUtil.getLanguage("qq") + ">");
 				}
 				return true;
 			case "mute":
