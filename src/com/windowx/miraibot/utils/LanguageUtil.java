@@ -133,6 +133,10 @@ public class LanguageUtil {
 					"music.id=网易云音乐 ID\n" +
 					"music.id.error=网易云音乐 ID 错误, 请检查后再试！\n" +
 					"music.code.error=获取音乐信息失败, 请检查后再试！\n" +
+					"you=你\n" +
+					"itself=TA自己\n" +
+					"yourself=你自己\n" +
+					"nudge.message=%s%s%s的%s" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -259,6 +263,10 @@ public class LanguageUtil {
 					"music.id=網易雲音樂 ID\n" +
 					"music.id.error=網易雲音樂 ID 錯誤, 請檢查后再試！\n" +
 					"music.code.error=獲取音樂信息失敗, 請檢查后再試！\n" +
+					"you=你\n" +
+					"itself=TA自己\n" +
+					"yourself=你自己\n" +
+					"nudge.message=%s%s%s的%s" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -385,6 +393,10 @@ public class LanguageUtil {
 					"music.id=NetEase Cloud Music ID\n" +
 					"music.id.error=NetEase Cloud Music ID error, please check and try again！\n" +
 					"music.code.error=Failed to get music information, please check and try again！\n" +
+					"you=You\n" +
+					"itself=itself\n" +
+					"yourself=yourself\n" +
+					"nudge.message=%s %s %s's %s" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
