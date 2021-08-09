@@ -235,6 +235,39 @@ public class EventListener implements ListenerHost {
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onNudge(NudgeEvent event) {
+		if (event.getSubject() == PluginMain.group) {
+			Member from = PluginMain.group.get(event.getFrom().getId());
+			Member target = PluginMain.group.get(event.getTarget().getId());
+			if (from != null && target != null) {
+				LogUtil.log(ConfigUtil.getLanguage("group.nudge.message")
+						, from != PluginMain.group.getBotAsMember() ? from.getNameCard() + showQQ(from.getId()) : ConfigUtil.getLanguage("you")
+						, event.getAction()
+						, target != from ? target.getNameCard() + showQQ(target.getId()) :
+								target != PluginMain.group.getBotAsMember() ? ConfigUtil.getLanguage("itself") : ConfigUtil.getLanguage("yourself")
+						, event.getSuffix()
+				);
+			}
+		} else {
+			if (!(ConfigUtil.getConfig("friend").equals("*") || event.getFrom().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+				event.cancel();
+				return;
+			}
+			Friend from = event.getBot().getFriend(event.getFrom().getId());
+			Friend target = event.getBot().getFriend(event.getTarget().getId());
+			if (from != null && target != null) {
+				LogUtil.log(ConfigUtil.getLanguage("friend.nudge.message")
+						, from != event.getBot().getAsFriend() ? from.getNick() + showQQ(from.getId()) : ConfigUtil.getLanguage("you")
+						, event.getAction()
+						, target != from ? target.getNick() + showQQ(target.getId()) :
+								target != event.getBot().getAsFriend() ? ConfigUtil.getLanguage("itself") : ConfigUtil.getLanguage("yourself")
+						, event.getSuffix()
+				);
+			}
+		}
+	}
+	
 	private void logMute(Member op, Member member, Group group, int time) {
 		if (op == null) {
 			op = group.getBotAsMember();
