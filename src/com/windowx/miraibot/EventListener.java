@@ -379,7 +379,7 @@ public class EventListener implements ListenerHost {
 		}
 		
 		for (Plugin p : PluginMain.plugins) {
-			if (!p.isEnabled()) continue;
+			if (!p.isEnabled() && !msg.trim().isEmpty()) continue;
 			try {
 				p.onGroupMessage(event);
 			} catch (Exception e) {
