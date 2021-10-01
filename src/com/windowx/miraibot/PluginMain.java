@@ -30,14 +30,14 @@ import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class PluginMain {
 	public static final String language = Locale.getDefault().getLanguage();
-	public static Group group = null;
-	public static String[] groups = null;
-	public static String[] allowedGroups = null;
+	public static Group group;
+	public static String[] groups;
+	public static String[] allowedGroups;
 	public static Bot bot;
 	public static ArrayList<String> commands = new ArrayList<>(Arrays.asList(
 			"accept", "avatar", "checkUpdate", "del", "friendList", "help", "image", "imageInfo", "kick", "language", "load",
@@ -182,65 +182,17 @@ public class PluginMain {
 						}
 					}
 				}
-				File pluginsDir = new File("plugins");
-				plugins = new ArrayList<>();
-				try {
-					File[] pluginsFile = pluginsDir.listFiles();
-					if (pluginsFile != null) {
-						for (File f : pluginsFile) {
-							if (!f.getName().endsWith(".jar") && !f.getName().endsWith(".class")) continue;
-							Plugin plugin = null;
-							if (f.getName().endsWith(".jar")) {
-								URLClassLoader u = new URLClassLoader(new URL[]{ f.toURI().toURL() });
-								InputStream is = u.getResourceAsStream("plugin.ini");
-								if (is != null) {
-									try {
-										plugin = initPlugin(is, u);
-										plugin.setClassLoader(u);
-									} catch (Exception e) {
-										System.out.println();
-										e.printStackTrace();
-									}
-								} else {
-									LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
-								}
-							} else if (f.getName().endsWith(".class")) {
-								try {
-									MyClassLoader myClassLoader = new MyClassLoader();
-									Class<?> clazz = myClassLoader.findClass(f);
-									plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
-									plugin.setName(f.getName().substring(0, f.getName().length() - 6));
-									plugin.setClassName(f.getName().substring(0, f.getName().length() - 6));
-									plugin.setClassLoader(myClassLoader);
-								} catch (Exception e) {
-									e.printStackTrace();
-									LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), e.toString());
-								}
-							}
-							if (plugin != null) {
-								plugin.setFile(f);
-								plugin.setEnabled(true);
-								plugins.add(plugin);
-							} else {
-								LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), "unknown error");
-							}
-						}
+				initPlugins();
+				for (Plugin p : plugins) {
+					try {
+						LogUtil.log(ConfigUtil.getLanguage("enabling.plugin"), p.getName());
+						p.onEnable();
+						commands.addAll(List.of(p.getCommands()));
+					} catch (Exception e) {
+						p.setEnabled(false);
+						LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), p.getName(), e.toString());
+						e.printStackTrace();
 					}
-					for (Plugin p : plugins) {
-						try {
-							LogUtil.log(ConfigUtil.getLanguage("enabling.plugin"), p.getName());
-							p.onEnable();
-							commands.addAll(List.of(p.getCommands()));
-						} catch (Exception e) {
-							p.setEnabled(false);
-							LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), p.getName(), e.toString());
-							e.printStackTrace();
-						}
-					}
-				} catch (Exception e) {
-					LogUtil.error(ConfigUtil.getLanguage("unknown.error"));
-					e.printStackTrace();
-					System.exit(-1);
 				}
 			} catch (Exception e) {
 				LogUtil.error(ConfigUtil.getLanguage("unknown.error"));
@@ -522,6 +474,9 @@ public class PluginMain {
 						
 						"upImg <" + ConfigUtil.getLanguage("file.path") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.up.img") + "\n" +
+						
+						"voice <" + ConfigUtil.getLanguage("file.path") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.voice") + "\n" +
 						"· -------------------------------------- ·\n";
 				LogUtil.log(help);
 				return true;
@@ -646,20 +601,44 @@ public class PluginMain {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": avatar <" + ConfigUtil.getLanguage("qq") + ">");
 				}
 				return true;
+			case "voice":
+				if (cmd.length > 1) {
+					Thread upVoice = new Thread(() -> {
+						try {
+							File file = new File(msg.substring(6));
+							ExternalResource externalResource = ExternalResource.create(file);
+							LogUtil.log(ConfigUtil.getLanguage("up.loading.voice"));
+							Voice voice = group.uploadVoice(externalResource);
+							group.sendMessage(voice);
+							externalResource.close();
+						} catch (IOException e) {
+							LogUtil.error(ConfigUtil.getLanguage("file.error"));
+							if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						}
+					});
+					upVoice.start();
+				} else {
+					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": voice <" +
+							ConfigUtil.getLanguage("file.path") + ">");
+				}
+				return true;
 			case "image":
 				if (cmd.length > 1) {
-					try {
-						File file = new File(msg.substring(6));
-						ExternalResource externalResource = ExternalResource.create(file);
-						LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
-						Image img = group.uploadImage(externalResource);
-						group.sendMessage(img);
-						externalResource.close();
-						imageInfo(bot, img);
-					} catch (IOException e) {
-						LogUtil.error(ConfigUtil.getLanguage("file.error"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
-					}
+					Thread upImg = new Thread(() -> {
+						try {
+							File file = new File(msg.substring(6));
+							ExternalResource externalResource = ExternalResource.create(file);
+							LogUtil.log(ConfigUtil.getLanguage("up.loading.img"));
+							Image img = group.uploadImage(externalResource);
+							group.sendMessage(img);
+							externalResource.close();
+							imageInfo(bot, img);
+						} catch (IOException e) {
+							LogUtil.error(ConfigUtil.getLanguage("file.error"));
+							if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						}
+					});
+					upImg.start();
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": image <" +
 							ConfigUtil.getLanguage("file.path") + ">");
@@ -1074,6 +1053,61 @@ public class PluginMain {
 			LogUtil.error(ConfigUtil.getLanguage("plugin.file.not.exits")
 					.replaceAll("\\$1", name)
 			);
+		}
+	}
+	
+	/**
+	 * 初始化插件，将所有 plugins 文件夹内的 .jar 和 .class 文件加载到插件列表
+	 */
+	public static void initPlugins() {
+		File pluginsDir = new File("plugins");
+		plugins = new ArrayList<>();
+		try {
+			File[] pluginsFile = pluginsDir.listFiles();
+			if (pluginsFile != null) {
+				for (File f : pluginsFile) {
+					if (!f.getName().endsWith(".jar") && !f.getName().endsWith(".class")) continue;
+					Plugin plugin = null;
+					if (f.getName().endsWith(".jar")) {
+						URLClassLoader u = new URLClassLoader(new URL[]{ f.toURI().toURL() });
+						InputStream is = u.getResourceAsStream("plugin.ini");
+						if (is != null) {
+							try {
+								plugin = initPlugin(is, u);
+								plugin.setClassLoader(u);
+							} catch (Exception e) {
+								System.out.println();
+								e.printStackTrace();
+							}
+						} else {
+							LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
+						}
+					} else if (f.getName().endsWith(".class")) {
+						try {
+							MyClassLoader myClassLoader = new MyClassLoader();
+							Class<?> clazz = myClassLoader.findClass(f);
+							plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
+							plugin.setName(f.getName().substring(0, f.getName().length() - 6));
+							plugin.setClassName(f.getName().substring(0, f.getName().length() - 6));
+							plugin.setClassLoader(myClassLoader);
+						} catch (Exception e) {
+							e.printStackTrace();
+							LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), e.toString());
+						}
+					}
+					if (plugin != null) {
+						plugin.setFile(f);
+						plugin.setEnabled(true);
+						plugins.add(plugin);
+					} else {
+						LogUtil.error(ConfigUtil.getLanguage("failed.load.plugin"), f.getName(), "unknown error");
+					}
+				}
+			}
+		} catch (Exception e) {
+			LogUtil.error(ConfigUtil.getLanguage("unknown.error"));
+			e.printStackTrace();
+			System.exit(-1);
 		}
 	}
 	
