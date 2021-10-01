@@ -63,6 +63,7 @@ public class LanguageUtil {
 					"qq.password.error=请检查配置文件中的 QQ号 是否正确！\n" +
 					"success.change.language=成功修改语言为 简体中文\n" +
 					"up.loading.img=正在上传图片...\n" +
+					"up.loading.voice=正在上传语音...\n" +
 					"join.request.group=[%s] %s (%s) 请求加入聊群 %s (%s)\n" +
 					"joined.group=%s (%s) 加入了聊群 %s (%s)\n" +
 					"left.group=%s (%s) 离开了聊群 %s (%s)\n" +
@@ -103,6 +104,7 @@ public class LanguageUtil {
 					"command.reload=重载某个插件\n" +
 					"command.music=通过网易云音乐 ID 分享音乐\n" +
 					"command.nudge=戳一戳某人\n" +
+					"command.voice=发送一个语音\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
@@ -193,6 +195,7 @@ public class LanguageUtil {
 					"qq.password.error=請檢查配置文件中的 QQ號 是否正確！\n" +
 					"success.change.language=成功修改語言為 繁體中文\n" +
 					"up.loading.img=正在上傳圖片...\n" +
+					"up.loading.voice=正在上傳語音...\n" +
 					"join.request.group=[%s] %s (%s) 請求加入聊群 %s (%s)\n" +
 					"joined.group=%s (%s) 加入了聊群 %s (%s)\n" +
 					"left.group=%s (%s) 離開了聊群 %s (%s)\n" +
@@ -233,6 +236,7 @@ public class LanguageUtil {
 					"command.reload=重載某個插件\n" +
 					"command.music=通過網易云音樂 ID 分享音樂\n" +
 					"command.nudge=戳一戳某人\n" +
+					"command.voice=發送一個語音\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
@@ -323,6 +327,7 @@ public class LanguageUtil {
 					"qq.password.error=Please check whether the QQ number in the configuration file is correct!\n" +
 					"success.change.language=Successfully changed the language to English\n" +
 					"up.loading.img=Uploading Image File...\n" +
+					"up.loading.voice=Uploading Voice File...\n" +
 					"join.request.group=[%s] %s (%s) request to join the chat group %s (%s)\n" +
 					"joined.group=%s (%s) joined the chat group %s (%s)\n" +
 					"left.group=%s (%s) left the chat group %s (%s)\n" +
@@ -363,6 +368,7 @@ public class LanguageUtil {
 					"command.reload=Reload a plugin\n" +
 					"command.music=Share music through NetEase Cloud Music ID\n" +
 					"command.nudge=Nudge a member\n" +
+					"command.voice=Send a voice\n" +
 					"name.card.set=The group nickname of %s has been set to %s\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"please.input=Please input \n" +
