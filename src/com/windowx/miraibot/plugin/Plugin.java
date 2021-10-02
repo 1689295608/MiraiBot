@@ -143,6 +143,18 @@ public class Plugin extends JavaPlugin {
 		LogUtil.warn("[" + name + "] " + warn, args);
 	}
 	
+	public void infop(String prefix, String info, String... args) {
+		LogUtil.logp(prefix, "[" + name + "] " + info, args);
+	}
+	
+	public void errorp(String prefix, String error, String... args) {
+		LogUtil.errorp(prefix, "[" + name + "] " + error, args);
+	}
+	
+	public void warnp(String prefix, String warn, String... args) {
+		LogUtil.warnp(prefix, "[" + name + "] " + warn, args);
+	}
+	
 	public void info(String info) {
 		LogUtil.log("[" + name + "] " + info);
 	}
