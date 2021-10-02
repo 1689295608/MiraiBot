@@ -52,7 +52,7 @@ public class PluginMain {
 		LogUtil.init();
 		try {
 			URL url = ClassLoader.getSystemResource("Version");
-			String version = "ERROR";
+			String version = "";
 			if (url != null) {
 				version = new String(url.openStream().readAllBytes()).replaceAll("[^0-9.]", "");
 			}
@@ -69,8 +69,10 @@ public class PluginMain {
 				if (eula.createNewFile()) {
 					FileOutputStream fos = new FileOutputStream(eula);
 					fos.write((
-							"# 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须使用 AGPL-3.0 License 协议开源\n" +
-									"# To use this software, you must abide by our agreement. All plug-ins developed based on this software must be open sourced under the AGPL-3.0 License agreement.\n" +
+							"# 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须在项目明显位置准确提及来自 MiraiBot，不得扭曲或隐藏免费且开源的事实。\n" +
+									"# To use this software, you must abide by our agreement." +
+									" All plug-ins developed based on this software must accurately mention MiraiBot in the obvious place of the project," +
+									" and must not distort or hide the fact that it is free and open source\n" +
 									"# 详情请查看：https://github.com/1689295608/MiraiBot/blob/main/LICENSE\n" +
 									"# Details: https://github.com/1689295608/MiraiBot/blob/main/LICENSE\n" +
 									"eula=false"
