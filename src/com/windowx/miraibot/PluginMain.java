@@ -10,6 +10,7 @@ import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.GlobalEventChannel;
+import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Image;
@@ -40,7 +41,7 @@ public class PluginMain {
 	public static String[] allowedGroups;
 	public static Bot bot;
 	public static ArrayList<String> commands = new ArrayList<>(Arrays.asList(
-			"accept", "avatar", "checkUpdate", "del", "friendList", "help", "image", "imageInfo", "kick", "language", "load",
+			"accept-request", "accept-invite", "avatar", "checkUpdate", "del", "friendList", "help", "image", "imageInfo", "kick", "language", "load",
 			"music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
 	);
 	protected static ArrayList<Plugin> plugins;
@@ -393,8 +394,11 @@ public class PluginMain {
 				return true;
 			case "help":
 				String help = "· --------====== MiraiBot ======-------- ·\n" +
-						"accept <" + ConfigUtil.getLanguage("request.id") + ">\n" +
-						" - " + ConfigUtil.getLanguage("command.accept") + "\n" +
+						"accept-invite <" + ConfigUtil.getLanguage("invite.id") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.accept.invite") + "\n" +
+						
+						"accept-request <" + ConfigUtil.getLanguage("request.id") + ">\n" +
+						" - " + ConfigUtil.getLanguage("command.accept.request") + "\n" +
 						
 						"avatar <" + ConfigUtil.getLanguage("qq") + ">\n" +
 						" - " + ConfigUtil.getLanguage("command.avatar") + "\n" +
@@ -756,17 +760,17 @@ public class PluginMain {
 				LogUtil.log(ConfigUtil.getLanguage("checking.update"));
 				checkUpdate(null);
 				return true;
-			case "accept":
+			case "accept-request":
 				if (cmd.length > 1) {
 					try {
 						if (Integer.parseInt(cmd[1]) - 1 >= 0) {
-							MemberJoinRequestEvent request = EventListener.requests.get(Integer.parseInt(cmd[1]) - 1);
+							MemberJoinRequestEvent request = EventListener.joinRequest.get(Integer.parseInt(cmd[1]) - 1);
 							if (request != null) {
 								try {
 									request.accept();
-									LogUtil.log(ConfigUtil.getLanguage("accepted"));
+									LogUtil.log(ConfigUtil.getLanguage("request.accepted"));
 								} catch (Exception e) {
-									LogUtil.error(ConfigUtil.getLanguage("failed.accept"));
+									LogUtil.error(ConfigUtil.getLanguage("failed.accept.request"));
 								}
 							} else {
 								LogUtil.error(ConfigUtil.getLanguage("request.not.found"));
@@ -778,8 +782,35 @@ public class PluginMain {
 						LogUtil.error(ConfigUtil.getLanguage("request.id.error"));
 						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
 					}
+				} else {
+					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": accept-request <" + ConfigUtil.getLanguage("request.id") + ">");
 				}
 				return true;
+			case "accept-invite":
+				if (cmd.length > 1) {
+					try {
+						if (Integer.parseInt(cmd[1]) - 1 >= 0) {
+							BotInvitedJoinGroupRequestEvent request = EventListener.inviteRequest.get(Integer.parseInt(cmd[1]) - 1);
+							if (request != null) {
+								try {
+									request.accept();
+									LogUtil.log(ConfigUtil.getLanguage("invite.accepted"));
+								} catch (Exception e) {
+									LogUtil.error(ConfigUtil.getLanguage("failed.accept.invite"));
+								}
+							} else {
+								LogUtil.error(ConfigUtil.getLanguage("invite.not.found"));
+							}
+						} else {
+							LogUtil.error(ConfigUtil.getLanguage("invite.not.found"));
+						}
+					} catch (NumberFormatException e) {
+						LogUtil.error(ConfigUtil.getLanguage("invite.id.error"));
+						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+					}
+				} else {
+					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": accept-invite <" + ConfigUtil.getLanguage("invite.id") + ">");
+				}
 			case "nameCard":
 				if (cmd.length > 2) {
 					try {
