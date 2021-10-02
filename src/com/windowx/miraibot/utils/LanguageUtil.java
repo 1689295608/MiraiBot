@@ -46,7 +46,7 @@ public class LanguageUtil {
 					"message.id.error=消息位置必须是整数！\n" +
 					"request.not.found=未找到该入群请求！\n" +
 					"request.id.error=入群请求位置必须是整数！\n" +
-					"request.accept=已同意该入群请求！\n" +
+					"request.accepted=已同意该入群请求！\n" +
 					"failed.accept.request=无法同意该入群请求！\n" +
 					"recalled=已撤回该消息！\n" +
 					"kicked=已踢出该成员！\n" +
@@ -190,7 +190,7 @@ public class LanguageUtil {
 					"message.id.error=消息位置必須是整數！\n" +
 					"request.not.found=未找到該入群請求！\n" +
 					"request.id.error=入群請求位置必須是整數！\n" +
-					"request.accept=已同意該入群請求！\n" +
+					"request.accepted=已同意該入群請求！\n" +
 					"failed.accept.request=無法同意該入群請求！\n" +
 					"recalled=已撤回該消息！\n" +
 					"kicked=已踢出該成員！\n" +
@@ -334,7 +334,7 @@ public class LanguageUtil {
 					"message.id.error=The message position must be an integer!\n" +
 					"request.not.found=The request to join the group was not found!\n" +
 					"request.id.error=The group entry request position must be an integer!\n" +
-					"request.accept=Agreed group request!\n" +
+					"request.accepted=Agreed group request!\n" +
 					"failed.accept.request=Unable to agree to the join group request!\n" +
 					"recalled=The message has been recalled!\n" +
 					"kicked=This member has been kicked out!\n" +
