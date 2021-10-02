@@ -18,6 +18,7 @@ import net.mamoe.mirai.utils.ExternalResource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.BufferedInputStream;
@@ -32,7 +33,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EventListener implements ListenerHost {
-	public static final ArrayList<MemberJoinRequestEvent> requests = new ArrayList<>();
+	public static final ArrayList<MemberJoinRequestEvent> joinRequest = new ArrayList<>();
+	public static final ArrayList<BotInvitedJoinGroupRequestEvent> inviteRequest = new ArrayList<>();
 	public static boolean showQQ;
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
@@ -101,15 +103,31 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		if (event.getGroup() != null) {
-			requests.add(event);
+			joinRequest.add(event);
 			LogUtil.log(ConfigUtil.getLanguage("join.request.group")
-					, String.valueOf(requests.size())
+					, String.valueOf(joinRequest.size())
 					, event.getFromNick()
 					, String.valueOf(event.getFromId())
 					, event.getGroup().getName()
 					, String.valueOf(event.getGroupId())
 			);
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBotInvitedJoinGroupRequest(BotInvitedJoinGroupRequestEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		inviteRequest.add(event);
+		LogUtil.log(ConfigUtil.getLanguage("invite.request.group")
+			, String.valueOf(inviteRequest.size())
+			, event.getInvitorNick()
+			, String.valueOf(event.getInvitorId())
+			, event.getGroupName()
+			, String.valueOf(event.getGroupId())
+		);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -180,6 +198,91 @@ public class EventListener implements ListenerHost {
 		} else {
 			LogUtil.log(ConfigUtil.getLanguage("recall.unknown.message"), operator.getNick() + showQQ(operator.getId()));
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBotLeave(BotLeaveEvent.Active event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("bot.leave.group")
+				, event.getBot().getNick()
+				, String.valueOf(event.getBot().getId())
+				, event.getGroup().getName()
+				, String.valueOf(event.getGroupId())
+		);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBotKick(BotLeaveEvent.Kick event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("bot.leave.group")
+				, event.getBot().getNick()
+				, String.valueOf(event.getBot().getId())
+				, event.getOperator().getNameCard()
+				, String.valueOf(event.getOperator().getId())
+				, event.getGroup().getName()
+				, String.valueOf(event.getGroupId())
+		);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBotPermissionChange(BotGroupPermissionChangeEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("bot.permission.change")
+				, event.getBot().getNick()
+				, String.valueOf(event.getBot().getId())
+				, event.getOrigin().name()
+				, event.getNew().name()
+		);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onGroupNameChange(GroupNameChangeEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("group.name.change")
+				, String.valueOf(event.getGroupId())
+				, event.getOrigin()
+				, event.getNew()
+		);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onMemberNameCardChange(MemberCardChangeEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("member.name.card.change")
+				, event.getMember().getNick()
+				, String.valueOf(event.getMember().getId())
+				, event.getOrigin()
+				, event.getNew()
+		);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onMemberPermissionChange(MemberPermissionChangeEvent event) {
+		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+			event.cancel();
+			return;
+		}
+		LogUtil.log(ConfigUtil.getLanguage("member.permission.change")
+				, event.getMember().getNick()
+				, String.valueOf(event.getMember().getId())
+				, event.getOrigin().name()
+				, event.getNew().name()
+		);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -423,7 +526,7 @@ public class EventListener implements ListenerHost {
 							}
 							if (breakRespond) {
 								for (String s : owners) {
-									if (String.valueOf(event.getSender().getId()).equals(s)) {
+									if (String.valueOf(event.getSender().getId() ).equals(s)) {
 										breakRespond = false;
 									}
 								}
@@ -676,7 +779,9 @@ public class EventListener implements ListenerHost {
 				String u = matcher.group(1);
 				boolean hasP = u.toLowerCase().startsWith("https://") || u.toLowerCase().startsWith("http://");
 				url = new URL(hasP ? u : "https://" + u);
-				InputStream is = url.openStream();
+				HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+				connection.setRequestMethod("GET");
+				InputStream is = connection.getInputStream();
 				BufferedInputStream bis = new BufferedInputStream(is);
 				con = new String(bis.readAllBytes(), StandardCharsets.UTF_8);
 			} catch (IOException e) {
