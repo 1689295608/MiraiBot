@@ -17,7 +17,6 @@ public class LanguageUtil {
 					"found.new.update=发现新版本：%s\n" +
 					"checking.update=正在检测更新...\n" +
 					"already.latest.version=已是最新版本！（%s）\n" +
-					"too.new.version=当前版本高于最新版本，你修改了 Jar 包？ =)\n" +
 					"trying.login=正在尝试使用%s登录, 稍后可能会出现验证码弹窗...\n" +
 					"registering.event=正在注册事件...\n" +
 					"enabling.plugin=正在加载插件 [%s]...\n" +
@@ -160,7 +159,6 @@ public class LanguageUtil {
 					"failed.check.update=檢測更新失敗！（%s）\n" +
 					"checking.update=正在檢測更新...\n" +
 					"already.latest.version=已是最新版本！（%s）\n" +
-					"too.new.version=當前版本高於最新版本，你修改了 Jar 包？ =)\n" +
 					"found.new.update=發現新版本：%s\n" +
 					"trying.login=正在嘗試使用%s登錄, 稍後可能會出現驗證碼彈窗...\n" +
 					"registering.event=正在註冊事件...\n" +
@@ -304,7 +302,6 @@ public class LanguageUtil {
 					"failed.check.update=Failed to check update! (%s)\n" +
 					"checking.update=Checking update...\n" +
 					"already.latest.version=This version is the latest version. (%s)\n" +
-					"too.new.version=The current version is higher than the latest version. Have you modified the Jar package? =)\n" +
 					"found.new.update=New version found: %s\n" +
 					"trying.login=Trying to log in with %s, a verification code pop-up window may appear later...\n" +
 					"registering.event=Registering event...\n" +
