@@ -60,14 +60,41 @@ public class LogUtil {
 		}
 	}
 	
+	public static String formatStr(String str) {
+		String[] spl = str.split("\n");
+		if (spl.length == 1) return str;
+		StringBuilder sb = new StringBuilder();
+		for (String s : spl) {
+			if (sb.toString().isEmpty()) {
+				sb.append(s).append("\n");
+				continue;
+			}
+			sb.append(formatTime()).append(s).append("\n");
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * 获取格式化后的时间
+	 * @return 格式化后的时间
+	 */
+	public static String formatTime() {
+		SimpleDateFormat formatter = new SimpleDateFormat(ConfigUtil.getLanguage("format.time"));
+		Date date = new Date(System.currentTimeMillis());
+		return formatter.format(date);
+	}
+	
+	/**
+	 * 获取格式化后的时间并将内容写入日志
+	 * @param str 内容
+	 * @param args 参数
+	 * @return 格式化后的时间
+	 */
 	public static String write(String str, String... args) {
 		if (str == null) return null;
 		lastOpt = String.format(str, (Object[]) args);
-		String time = "";
+		String time = formatTime();
 		try {
-			SimpleDateFormat formatter = new SimpleDateFormat("[HH:mm:ss] ");
-			Date date = new Date(System.currentTimeMillis());
-			time = formatter.format(date);
 			FileInputStream fis = new FileInputStream(file);
 			all = fis.readAllBytes();
 			FileOutputStream fos = new FileOutputStream(file);
@@ -94,12 +121,12 @@ public class LogUtil {
 	 */
 	public static void log(String str, String... args) {
 		if (str == null) return;
-		AnsiConsole.out().printf("\r" + write(str, args) + str + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 	}
 	
 	public static void log(String str) {
 		if (str == null) return;
-		AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
+		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	
 	/**
@@ -112,7 +139,7 @@ public class LogUtil {
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str, args) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.err().printf("\r" + write(str, args) + str + "\n> ", (Object[]) args);
+			AnsiConsole.err().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 		}
 	}
 	public static void error(String str) {
@@ -120,7 +147,7 @@ public class LogUtil {
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
 		} else if (os.contains("windows")) {
-			AnsiConsole.err().print("\r" + write(str) + str + "\n> ");
+			AnsiConsole.err().print("\r" + write(str) + formatStr(str) + "\n> ");
 		}
 	}
 	
@@ -134,7 +161,7 @@ public class LogUtil {
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str, args) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.out().printf("\r" + write(str, args) + str + "\n> ", (Object[]) args);
+			AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 		}
 	}
 	public static void warn(String str) {
@@ -142,7 +169,7 @@ public class LogUtil {
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
 		} else if (os.contains("windows")) {
-			AnsiConsole.out().print("\r" + write(str) + str + "\n> ");
+			AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 		}
 	}
 	
