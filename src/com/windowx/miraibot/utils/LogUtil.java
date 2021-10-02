@@ -146,9 +146,9 @@ public class LogUtil {
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	
-	public static void logp(String prefix, String str) {
+	public static void logp(String prefix, String str, String... args) {
 		if (str == null) return;
-		AnsiConsole.out().print("\r" + write(str) + formatStr(prefix, str) + "\n> ");
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
 	}
 	
 	/**
@@ -172,12 +172,12 @@ public class LogUtil {
 			AnsiConsole.err().print("\r" + write(str) + formatStr(str) + "\n> ");
 		}
 	}
-	public static void errorp(String prefix, String str) {
+	public static void errorp(String prefix, String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.err().print("\r" + write(str) + formatStr(prefix, str) + "\n> ");
+			AnsiConsole.err().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
 		}
 	}
 	
@@ -204,12 +204,12 @@ public class LogUtil {
 		}
 	}
 	
-	public static void warnp(String prefix, String str) {
+	public static void warnp(String prefix, String str, String... args) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
+			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
 		} else if (os.contains("windows")) {
-			AnsiConsole.out().print("\r" + write(str) + formatStr(prefix, str) + "\n> ");
+			AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
 		}
 	}
 	
