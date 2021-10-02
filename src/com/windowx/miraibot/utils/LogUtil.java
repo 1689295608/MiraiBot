@@ -108,7 +108,8 @@ public class LogUtil {
 	 */
 	public static String write(String str, String... args) {
 		if (str == null) return null;
-		lastOpt = String.format(str, (Object[]) args);
+		str = String.format(str, (Object[]) args);
+		lastOpt = str;
 		String time = formatTime();
 		try {
 			FileInputStream fis = new FileInputStream(file);
