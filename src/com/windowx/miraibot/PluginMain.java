@@ -771,6 +771,7 @@ public class PluginMain {
 								try {
 									request.accept();
 									LogUtil.log(ConfigUtil.getLanguage("request.accepted"));
+									EventListener.joinRequest.remove(request);
 								} catch (Exception e) {
 									LogUtil.error(ConfigUtil.getLanguage("failed.accept.request"));
 								}
@@ -1084,7 +1085,7 @@ public class PluginMain {
 			}
 		} else {
 			LogUtil.error(ConfigUtil.getLanguage("plugin.file.not.exits")
-					.replaceAll("\\$1", name)
+					, name
 			);
 		}
 	}
