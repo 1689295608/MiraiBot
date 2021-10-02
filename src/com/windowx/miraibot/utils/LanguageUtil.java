@@ -46,8 +46,8 @@ public class LanguageUtil {
 					"message.id.error=消息位置必须是整数！\n" +
 					"request.not.found=未找到该入群请求！\n" +
 					"request.id.error=入群请求位置必须是整数！\n" +
-					"accepted=已同意该入群请求！\n" +
-					"failed.accept=无法同意该入群请求！\n" +
+					"request.accept=已同意该入群请求！\n" +
+					"failed.accept.request=无法同意该入群请求！\n" +
 					"recalled=已撤回该消息！\n" +
 					"kicked=已踢出该成员！\n" +
 					"nudged=成功戳一戳该成员！\n" +
@@ -93,7 +93,7 @@ public class LanguageUtil {
 					"command.new.img=创建并上传一个图片\n" +
 					"command.del=删除一个好友\n" +
 					"command.avatar=获取一个用户的头像\n" +
-					"command.accept=同意一个入群请求\n" +
+					"command.accept.request=同意一个入群请求\n" +
 					"command.kick=踢出一个用户\n" +
 					"command.mute=禁言一个用户指定时间（单位：秒）\n" +
 					"command.name.card=修改一个用户的群昵称\n" +
@@ -105,6 +105,7 @@ public class LanguageUtil {
 					"command.music=通过网易云音乐 ID 分享音乐\n" +
 					"command.nudge=戳一戳某人\n" +
 					"command.voice=发送一个语音\n" +
+					"command.accept.invite=接受一个邀请入群请求\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加载配置文件！\n" +
 					"please.input=请输入\n" +
@@ -139,6 +140,17 @@ public class LanguageUtil {
 					"itself=TA自己\n" +
 					"yourself=你自己\n" +
 					"nudge.message=%s%s%s%s\n" +
+					"bot.leave.group=机器人 %s(%s) 离开了群 %s(%s)\n" +
+					"bot.leave.group=机器人 %s(%s) 被 %s(%s) 踢出了群 %s(%s)\n" +
+					"bot.permission.change=机器人 %s(%s) 的群权限由 %s 更改为了 %s\n" +
+					"member.name.card.change=群成员 %s(%s) 的群昵称由 %s 被修改为了 %s\n" +
+					"member.permission.change=群成员 %s(%s) 的权限由 %s 被修改为了 %s\n" +
+					"invite.request.group=[%s] 好友 %s(%s) 邀请你进入群 %s(%s)\n" +
+					"invite.id=邀请入群 ID\n" +
+					"invite.id.error=邀请入群请求 ID 错误！\n" +
+					"invite.not.found=未找到该入群请求 ID！\n" +
+					"failed.accept.invite=同意邀请入群请求失败！\n" +
+					"invite.accepted=成功接受该邀请入群请求！\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -178,8 +190,8 @@ public class LanguageUtil {
 					"message.id.error=消息位置必須是整數！\n" +
 					"request.not.found=未找到該入群請求！\n" +
 					"request.id.error=入群請求位置必須是整數！\n" +
-					"accepted=已同意該入群請求！\n" +
-					"failed.accept=無法同意該入群請求！\n" +
+					"request.accept=已同意該入群請求！\n" +
+					"failed.accept.request=無法同意該入群請求！\n" +
 					"recalled=已撤回該消息！\n" +
 					"kicked=已踢出該成員！\n" +
 					"nudged=成功戳一戳該成員！\n" +
@@ -224,7 +236,7 @@ public class LanguageUtil {
 					"command.up.clip.img=上傳當前剪切板的圖片\n" +
 					"command.new.img=創建並上傳一個圖片\n" +
 					"command.del=刪除一個好友\n" +
-					"command.accept=同意一個入群請求\n" +
+					"command.accept.request=同意一個入群請求\n" +
 					"command.avatar=獲取一個用戶的頭像\n" +
 					"command.kick=踢出一個用戶\n" +
 					"command.mute=禁言一個用戶指定時間（單位：秒）\n" +
@@ -237,6 +249,7 @@ public class LanguageUtil {
 					"command.music=通過網易云音樂 ID 分享音樂\n" +
 					"command.nudge=戳一戳某人\n" +
 					"command.voice=發送一個語音\n" +
+					"command.accept.invite=接受一個邀請入群請求\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加載配置文件！\n" +
 					"please.input=請輸入\n" +
@@ -271,6 +284,17 @@ public class LanguageUtil {
 					"itself=TA自己\n" +
 					"yourself=你自己\n" +
 					"nudge.message=%s%s%s%s\n" +
+					"bot.leave.group=機器人 %s(%s) 離開了群 %s(%s)\n" +
+					"bot.leave.group=機器人 %s(%s) 被 %s(%s) 踢出了群 %s(%s)\n" +
+					"bot.permission.change=機器人 %s(%s) 的群權限由 %s 更改為了 %s\n" +
+					"member.name.card.change=群成員 %s(%s) 的群昵稱由 %s 被修改為了 %s\n" +
+					"member.permission.change=群成員 %s(%s) 的權限由 %s 被修改為了 %s\n" +
+					"invite.request.group=[%s] 好友 %s(%s) 邀請你進入群 %s(%s)\n" +
+					"invite.id=邀請入群 ID\n" +
+					"invite.id.error=邀請入群請求 ID 錯誤！\n" +
+					"invite.not.found=未找到該邀請入群請求 ID！\n" +
+					"failed.accept.invite=同意邀請入群請求失敗！\n" +
+					"invite.accepted=成功接受該邀請入群請求！\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -310,8 +334,8 @@ public class LanguageUtil {
 					"message.id.error=The message position must be an integer!\n" +
 					"request.not.found=The request to join the group was not found!\n" +
 					"request.id.error=The group entry request position must be an integer!\n" +
-					"accepted=Agreed group request!\n" +
-					"failed.accept=Unable to agree to the join group request!\n" +
+					"request.accept=Agreed group request!\n" +
+					"failed.accept.request=Unable to agree to the join group request!\n" +
 					"recalled=The message has been recalled!\n" +
 					"kicked=This member has been kicked out!\n" +
 					"nudged=Nudge the member successfully!\n" +
@@ -356,7 +380,7 @@ public class LanguageUtil {
 					"command.up.clip.img=Upload a picture of the current clipboard\n" +
 					"command.new.img=Create and upload an image\n" +
 					"command.del=Delete a friend\n" +
-					"command.accept=Agree to a request to join the group\n" +
+					"command.accept.request=Agree to a request to join the group\n" +
 					"command.avatar=Get a user's avatar\n" +
 					"command.kick=Kick an user\n" +
 					"command.mute=Mute a user-specified time (unit: second)\n" +
@@ -369,6 +393,7 @@ public class LanguageUtil {
 					"command.music=Share music through NetEase Cloud Music ID\n" +
 					"command.nudge=Nudge a member\n" +
 					"command.voice=Send a voice\n" +
+					"command.accept.invite=Accept an invitation to join the group request\n" +
 					"name.card.set=The group nickname of %s has been set to %s\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"please.input=Please input \n" +
@@ -403,6 +428,17 @@ public class LanguageUtil {
 					"itself=itself\n" +
 					"yourself=yourself\n" +
 					"nudge.message=%s %s %s %s\n" +
+					"bot.leave.group=Robot %s(%s) left the group %s(%s)\n" +
+					"bot.leave.group=Robot %s(%s) was kicked out of group %s(%s) by %s(%s)\n" +
+					"bot.permission.change=The group permissions of the robot %s(%s) have been changed from %s to %s\n" +
+					"member.name.card.change=The group nickname of group member %s(%s) was changed from %s to %s\n" +
+					"member.permission.change=The permissions of group member %s(%s) have been changed from %s to %s\n" +
+					"invite.request.group=[%s] Friends %s(%s) invited you to join group %s(%s)\n" +
+					"invite.id=Invite group ID\n" +
+					"invite.id.error=Invite group request ID is wrong!\n" +
+					"invite.not.found=The request ID of the invitation to join the group was not found!\n" +
+					"failed.accept.invite=The request to agree to join the group failed!\n" +
+					"invite.accepted=Successfully accepted the invitation to join the group!\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
