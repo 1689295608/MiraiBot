@@ -60,11 +60,18 @@ public class LogUtil {
 		}
 	}
 	
-	public static String formatStr(String str) {
+	/**
+	 * 获取多行优化后的内容
+	 * @param str 内容
+	 * @param prefix 前缀
+	 * @return 优化后的内容
+	 */
+	public static String formatStr(String prefix, String str) {
 		String[] spl = str.split("\n");
 		if (spl.length == 1) return str;
 		StringBuilder sb = new StringBuilder();
 		for (String s : spl) {
+			s = s + prefix;
 			if (sb.toString().isEmpty()) {
 				sb.append(s).append("\n");
 				continue;
@@ -72,6 +79,15 @@ public class LogUtil {
 			sb.append(formatTime()).append(s).append("\n");
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * 无前缀的优化
+	 * @param str 内容
+	 * @return 优化后的内容
+	 */
+	public static String formatStr(String str) {
+		return formatStr("", str);
 	}
 	
 	/**
@@ -129,6 +145,11 @@ public class LogUtil {
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	
+	public static void log(String prefix, String str) {
+		if (str == null) return;
+		AnsiConsole.out().print("\r" + write(str) + formatStr(prefix, str) + "\n> ");
+	}
+	
 	/**
 	 * Output an error message and record it in the log file
 	 *
@@ -150,6 +171,14 @@ public class LogUtil {
 			AnsiConsole.err().print("\r" + write(str) + formatStr(str) + "\n> ");
 		}
 	}
+	public static void error(String prefix, String str) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
+		} else if (os.contains("windows")) {
+			AnsiConsole.err().print("\r" + write(str) + formatStr(prefix, str) + "\n> ");
+		}
+	}
 	
 	/**
 	 * Output an error message and record it in the log file
@@ -164,12 +193,22 @@ public class LogUtil {
 			AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 		}
 	}
+	
 	public static void warn(String str) {
 		if (str == null) return;
 		if (os.contains("linux") || ansiColor) {
 			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
 		} else if (os.contains("windows")) {
 			AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
+		}
+	}
+	
+	public static void warn(String prefix, String str) {
+		if (str == null) return;
+		if (os.contains("linux") || ansiColor) {
+			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
+		} else if (os.contains("windows")) {
+			AnsiConsole.out().print("\r" + write(str) + formatStr(prefix, str) + "\n> ");
 		}
 	}
 	
