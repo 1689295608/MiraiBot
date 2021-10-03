@@ -614,8 +614,8 @@ public class PluginMain {
 							File file = new File(msg.substring(6));
 							ExternalResource externalResource = ExternalResource.create(file);
 							LogUtil.log(ConfigUtil.getLanguage("up.loading.voice"));
-							Voice voice = group.uploadVoice(externalResource);
-							group.sendMessage(voice);
+							Audio audio = group.uploadAudio(externalResource);
+							group.sendMessage(audio);
 							externalResource.close();
 						} catch (IOException e) {
 							LogUtil.error(ConfigUtil.getLanguage("file.error"));
