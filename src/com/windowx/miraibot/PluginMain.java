@@ -44,8 +44,8 @@ public class PluginMain {
 			"accept-request", "accept-invite", "avatar", "checkUpdate", "del", "friendList", "help", "image", "imageInfo", "kick", "language", "load",
 			"music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
 	);
-	protected static ArrayList<Plugin> plugins;
 	public static boolean running;
+	protected static ArrayList<Plugin> plugins;
 	
 	public static void main(String[] args) {
 		String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
@@ -236,8 +236,8 @@ public class PluginMain {
 					System.out.print("> ");
 					continue;
 				}
-				if (!runCommand(msg)) {
-					try {
+				try {
+					if (!runCommand(msg)) {
 						String decode;
 						try {
 							decode = decodeUnicode(msg);
@@ -245,9 +245,9 @@ public class PluginMain {
 							decode = msg;
 						}
 						group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
-					} catch (BotIsBeingMutedException e) {
-						LogUtil.error(ConfigUtil.getLanguage("bot.is.being.muted"));
 					}
+				} catch (BotIsBeingMutedException e) {
+					LogUtil.error(ConfigUtil.getLanguage("bot.is.being.muted"));
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -959,6 +959,24 @@ public class PluginMain {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": music <" + ConfigUtil.getLanguage("music.id") + ">");
 				}
 				return true;
+			case "dice":
+				if (cmd.length > 1) {
+					int value;
+					try {
+						value = Integer.parseInt(cmd[1]);
+					} catch (NumberFormatException exception) {
+						LogUtil.error(ConfigUtil.getLanguage("dice.not.number"));
+						return true;
+					}
+					if (value > 0 && value <= 6) {
+						Dice dice = new Dice(value);
+						group.sendMessage(dice);
+					} else {
+						LogUtil.error(ConfigUtil.getLanguage("dice.value.error"));
+					}
+				} else {
+					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": dice <" + ConfigUtil.getLanguage("dice.value") + ">");
+				}
 			default:
 				boolean isCmd = false;
 				for (Plugin p : plugins) {
@@ -980,7 +998,8 @@ public class PluginMain {
 	 * @param name 插件名
 	 * @return 插件
 	 */
-	@Nullable public static Plugin getPlugin(String name) {
+	@Nullable
+	public static Plugin getPlugin(String name) {
 		for (Plugin p : plugins) {
 			if (p.getName().equals(name)) return p;
 		}
@@ -1103,7 +1122,7 @@ public class PluginMain {
 					if (!f.getName().endsWith(".jar") && !f.getName().endsWith(".class")) continue;
 					Plugin plugin = null;
 					if (f.getName().endsWith(".jar")) {
-						URLClassLoader u = new URLClassLoader(new URL[]{ f.toURI().toURL() });
+						URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
 						InputStream is = u.getResourceAsStream("plugin.ini");
 						if (is != null) {
 							try {
