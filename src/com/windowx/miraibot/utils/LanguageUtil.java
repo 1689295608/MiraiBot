@@ -150,6 +150,10 @@ public class LanguageUtil {
 					"invite.not.found=未找到该入群请求 ID！\n" +
 					"failed.accept.invite=同意邀请入群请求失败！\n" +
 					"invite.accepted=成功接受该邀请入群请求！\n" +
+					"format.time=[HH:mm:ss] \n" +
+					"dice.not.number=骰子值必须是整数\n" +
+					"dice.value.error=骰子的值不能大于六和小于一！\n" +
+					"dice.value=骰子值\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -293,6 +297,10 @@ public class LanguageUtil {
 					"invite.not.found=未找到該邀請入群請求 ID！\n" +
 					"failed.accept.invite=同意邀請入群請求失敗！\n" +
 					"invite.accepted=成功接受該邀請入群請求！\n" +
+					"format.time=[HH:mm:ss] \n" +
+					"dice.not.number=骰子值必須是整數\n" +
+					"dice.value.error=骰子的值不能大於六和小於一！\n" +
+					"dice.value=骰子值\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -436,6 +444,10 @@ public class LanguageUtil {
 					"invite.not.found=The request ID of the invitation to join the group was not found!\n" +
 					"failed.accept.invite=The request to agree to join the group failed!\n" +
 					"invite.accepted=Successfully accepted the invitation to join the group!\n" +
+					"format.time=[HH:mm:ss] \n" +
+					"dice.not.number=The dice value must be an integer\n" +
+					"dice.value.error=The value of the dice cannot be greater than six and less than one！\n" +
+					"dice.value=Dice value\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
