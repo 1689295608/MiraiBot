@@ -977,6 +977,7 @@ public class PluginMain {
 				} else {
 					LogUtil.warn(ConfigUtil.getLanguage("usage") + ": dice <" + ConfigUtil.getLanguage("dice.value") + ">");
 				}
+				return true;
 			default:
 				boolean isCmd = false;
 				for (Plugin p : plugins) {
