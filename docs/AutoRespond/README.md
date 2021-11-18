@@ -17,7 +17,7 @@
 支持正则语法
 
 ### Respond
-执行自动回复项后发送的消息，详见 `[AutoRespond.json](//github.com/1689295608/MiraiBot/blob/main/AutoRespond.json)`
+执行自动回复项后发送的消息，详见 [AutoRespond.json](//github.com/1689295608/MiraiBot/blob/main/AutoRespond.json)
 
 ### Recall
 执行后是否撤回该消息，布尔值（`true`/`false`）
