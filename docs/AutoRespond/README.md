@@ -17,24 +17,7 @@
 支持正则语法
 
 ### Respond
-执行自动回复项后发送的消息，目前支持变量：
-- `%sender_nick%` : 发送者昵称
-- `%sender_id%` : 发送者 QQ 号
-- `%sender_name_card%` : 发送者群昵称
-- `%sender_avatar_id%` : 发送者头像图片 ID
-- `%group_name%` : 本群名称
-- `%group_id%` : 本群群号
-- `%group_owner_nick%` : 本群群主昵称
-- `%group_owner_id%` : 本群群主 QQ 号
-- `%group_owner_name_card%` : 发送者昵称
-- `%message_mirai_code%` : 消息的 Mirai 码
-- `%message_content%` : 消息的内容
-- `%message_id%` : 消息的 ID
-- `%bot_nick%` : 机器人昵称
-- `%bot_id%` : 机器人 QQ 号
-- `%flash_id%` : 闪照 ID
-- `%image_id%` : 图片 ID
-- `%file_id%` : 文件 ID
+执行自动回复项后发送的消息，详见 `[AutoRespond.json](//github.com/1689295608/MiraiBot/blob/main/AutoRespond.json)`
 
 ### Recall
 执行后是否撤回该消息，布尔值（`true`/`false`）
