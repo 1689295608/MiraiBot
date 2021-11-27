@@ -1320,7 +1320,7 @@ public class PluginMain {
 				String password = scanner.nextLine();
 				LogUtil.log(language("please.input") + language("group"));
 				String group = scanner.nextLine();
-				LogUtil.log(language("please.input") + language("true.or.false") + language("check.update"));
+				LogUtil.log(language("please.input") + language("true.or.false") + language("check.update") + "(true/false)");
 				String checkUpdate = scanner.nextLine();
 				
 				FileOutputStream fos = new FileOutputStream(file);
