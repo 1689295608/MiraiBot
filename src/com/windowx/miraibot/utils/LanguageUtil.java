@@ -154,6 +154,8 @@ public class LanguageUtil {
 					"dice.not.number=骰子值必须是整数\n" +
 					"dice.value.error=骰子的值不能大于六和小于一！\n" +
 					"dice.value=骰子值\n" +
+					"contact.id.error=联系人 ID 错误！\n" +
+					"contact=联系人\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -301,6 +303,8 @@ public class LanguageUtil {
 					"dice.not.number=骰子值必須是整數\n" +
 					"dice.value.error=骰子的值不能大於六和小於一！\n" +
 					"dice.value=骰子值\n" +
+					"contact.id.error=聯係人 ID 錯誤！\n" +
+					"contact=聯係人\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -448,6 +452,8 @@ public class LanguageUtil {
 					"dice.not.number=The dice value must be an integer\n" +
 					"dice.value.error=The value of the dice cannot be greater than six and less than one！\n" +
 					"dice.value=Dice value\n" +
+					"contact.id.error=Wrong contact ID!\n" +
+					"contact=Contact\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
