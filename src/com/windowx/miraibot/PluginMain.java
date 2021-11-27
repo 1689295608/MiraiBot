@@ -953,15 +953,19 @@ public class PluginMain {
 							} else {
 								try {
 									long tid = Long.parseLong(cmd[2]);
-									Contact contact = bot.getGroup(tid);
-									if (contact == null) {
-										contact = bot.getFriend(tid);
-									}
-									if (contact != null) {
-										contact.sendMessage(share);
+									Group g = bot.getGroup(tid);
+									if (g != null) {
+										g.sendMessage(share);
+									} else {
+										Friend f = bot.getFriend(tid);
+										if (f != null) {
+											f.sendMessage(share);
+										}
 									}
 								} catch (NumberFormatException e) {
 									LogUtil.error(language("contact.id.error"));
+								} catch (Exception e) {
+									LogUtil.error(e.toString());
 								}
 							}
 						} else {
@@ -1151,7 +1155,7 @@ public class PluginMain {
 						} else {
 							LogUtil.error(language("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
 						}
-					} else if (f.getName().endsWith(".class")) {
+					} else if (f.getName().endsWith(".class")) { // .class 插件文件随时可能被弃用
 						try {
 							MyClassLoader myClassLoader = new MyClassLoader();
 							Class<?> clazz = myClassLoader.findClass(f);
