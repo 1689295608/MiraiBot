@@ -56,7 +56,7 @@ public class PluginMain {
 			if (url != null) {
 				version = new String(url.openStream().readAllBytes()).replaceAll("[^0-9.]", "");
 			}
-			LogUtil.log(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
+			System.out.println(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
 					(language.equals("tw") ? "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021" :
 							"MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021"));
 		} catch (Exception e) {
