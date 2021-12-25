@@ -39,25 +39,13 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 
 
 ### Windows 用户
-**Windows** 用户请先运行 `Login.bat` 然后进行验证
-
-也可使用登录过该账户的 `device.json` 来直接登录到该账户
-
-验证成功后当前目录的 `device.json` 就可以用于在任何其他设备登录该账户
-
-接下来使用 `Start.bat` 即可登录到该账户
+**Windows** 用户直接运行 `Start.bat` 即可。
 
 
 ### Linux 用户
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
 
-首次运行请先运行 `Login.sh` 然后进行验证
-
-也可使用登录过该账户的 `device.json` 来直接登录到该账户
-
-验证成功后当前目录的 `device.json` 就可以用于在任何其他设备登录该账户
-
-验证成功后可以使用 `Start.sh` 来登录到该账户
+然后运行 `Start.sh` 即可。
 
 ---
 
@@ -102,22 +90,10 @@ Then unzip it to any folder (*folders and paths containing special characters ar
 
 
 ### Windows users
-For **Windows** users, please run `Login.bat` first and then verify.
-
-You can also use the `device.json` that has been logged in to the account to log in to the account directly
-
-The `device.json` in the current directory can be used to log in to the account on any other device
-
-Then run `Start.bat` to log in to the account
+**Windows** users can run `Start.bat` directly.
 
 
 ### Linux users
-**Linux** users need to run a terminal in the `MiraiBot` directory first.
+**Linux** users first need to run a terminal in the `MiraiBot` directory
 
-For the first run, please run `Login.sh` and verify.
-
-You can also use the `device.json` that has been logged in to the account to log in to the account directly
-
-After the verification is successful, the `device.json` in the current directory can be used to log in to the account on any other device
-
-After the verification is successful, you can run `Start.sh` to log in to the account
+Then run `Start.sh`.
