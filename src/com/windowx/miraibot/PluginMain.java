@@ -17,10 +17,12 @@ import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
+import org.fusesource.jansi.AnsiConsole;
 import org.jetbrains.annotations.Nullable;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -83,7 +85,7 @@ public class PluginMain {
 			prop.load(new FileInputStream(eula));
 			boolean e = Boolean.parseBoolean(prop.getProperty("eula", "false"));
 			if (!e) {
-				LogUtil.log(language.equals("zh") ? "使用本软件，您必须遵守我们的协议，请修改 eula.txt 来同意协议！" :
+				System.out.println(language.equals("zh") ? "使用本软件，您必须遵守我们的协议，请修改 eula.txt 来同意协议！" :
 						(language.equals("tw") ? "使用本軟件，您必須遵守我們的協議，請修改 eula.txt 來同意協議！" :
 								"To use this software, you must abide by our agreement, please modify eula.txt to agree to the agreement!"));
 				System.exit(0);
@@ -172,17 +174,11 @@ public class PluginMain {
 				new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
 			}
 			try {
-				File demo = new File("plugins");
-				if (!demo.exists()) {
-					if (demo.mkdirs()) {
-						demo = new File("plugins" + File.separator + "demo.jar");
-						if (demo.createNewFile()) {
-							FileOutputStream fos = new FileOutputStream(demo);
-							URL url = ClassLoader.getSystemResource("demo.jar");
-							if (url != null) fos.write(url.openStream().readAllBytes());
-							fos.flush();
-							fos.close();
-						}
+				File pluginDir = new File("plugins");
+				if (!pluginDir.exists()) {
+					if (!pluginDir.mkdirs()) {
+						LogUtil.log(language("cannot.create.plugin.dir"));
+						System.exit(-1);
 					}
 				}
 				initPlugins();
@@ -324,6 +320,7 @@ public class PluginMain {
 				}
 				bot.close();
 				System.out.print("\n");
+				AnsiConsole.systemUninstall();
 				System.exit(0);
 				return true;
 			case "friendList": {
@@ -1202,7 +1199,7 @@ public class PluginMain {
 				String nowV = version.replaceAll("[^0-9.]", "");
 				String newV = LatestVersion.replaceAll("[^0-9.]", "");
 				if (!nowV.equals(newV)) {
-					LogUtil.log(language("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion);
+					LogUtil.warn(language("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion);
 				} else {
 					LogUtil.log(language("already.latest.version"), LatestVersion);
 				}
@@ -1314,49 +1311,27 @@ public class PluginMain {
 					return false;
 				}
 				Scanner scanner = new Scanner(System.in);
-				LogUtil.log(language("please.input") + language("qq"));
+				LogUtil.log(language("before.settings"));
+				LogUtil.log(language("please.input.qq"));
 				String qq = scanner.nextLine();
-				LogUtil.log(language("please.input") + language("password"));
+				LogUtil.log(language("please.input.password"));
 				String password = scanner.nextLine();
-				LogUtil.log(language("please.input") + language("group"));
-				String group = scanner.nextLine();
-				LogUtil.log(language("please.input") + language("true.or.false") + language("check.update") + "(true/false)");
+				LogUtil.log(language("please.input.group.id"));
+				String groups = scanner.nextLine();
+				LogUtil.log(language("please.input.check.update.on.setup"));
 				String checkUpdate = scanner.nextLine();
 				
 				FileOutputStream fos = new FileOutputStream(file);
-				String config =
-						"# 输入你的 QQ\n" +
-						"qq=" + qq + "\n" +
-						"# 输入你的 QQ 密码\n" +
-						"password=" + password + "\n" +
-						"# 输入你要聊天的聊群, 用 “,” 分隔\n" +
-						"group=" + group + "\n" +
-						"# 允许运行机器人的聊群, 用 “,” 分隔\n" +
-						"allowedGroups=" + group + "\n" +
-						"# 机器人主人 QQ 号, 即拥有一切权力的 QQ 号. 用 \",\" 分隔\n" +
-						"owner=\n" +
-						"# 每一个新消息是否都显示发送者的 QQ 号\n" +
-						"showQQ=false\n" +
-						"# 输入你接收的好友信息（“*” 为 全部\n" +
-						"friend=*\n" +
-						"# 每次启动时都检测更新 (true / false)\n" +
-						"checkUpdate=" + checkUpdate + "\n" +
-						"# 输入使用 “newImg” 指令生成的字体\n" +
-						"font=微软雅黑\n" +
-						"# 输入使用 “newImg” 指令生成的字体颜色\n" +
-						"font-color=#ffffff\n" +
-						"# 输入使用 “newImg” 指令生成的背景颜色\n" +
-						"background-color=#000000\n" +
-						"# 使用的登录协议（PAD: 平板，WATCH: 手表，PHONE: 手机），默认 PHONE\n" +
-						"protocol=PHONE\n" +
-						"# 是否启用 Debug 模式（即显示 MiraiCode）(true / false)\n" +
-						"debug=false\n" +
-						"# 是否强制使用 AnsiConsole 渲染颜色 (true / false)\n" +
-						"ansiColor=false\n" +
-						"\n" +
-						"# ----=== MiraiBot ===----\n" +
-						"# 使用“help”获取帮助！\n" +
-						"# -----------------------------\n";
+				InputStream is = ClassLoader.getSystemResourceAsStream("config.properties");
+				if (is == null) {
+					System.out.println(language("unknown.error"));
+					System.exit(-1);
+				}
+				String config = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+				config = config.replaceAll("%qq%", qq);
+				config = config.replaceAll("%password%", password);
+				config = config.replaceAll("%groups%", groups);
+				config = config.replaceAll("%check.as.setup%", checkUpdate);
 				fos.write(config.getBytes());
 				fos.close();
 				LogUtil.warn(language("please.restart"));
