@@ -161,21 +161,21 @@ public class LogUtil {
 	public static void error(String str, String... args) {
 		if (str == null) return;
 		if (ansiColor) {
-			str = ansi().eraseScreen().fgBright(Ansi.Color.RED).a(str).reset().toString();
+			str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 	}
 	public static void error(String str) {
 		if (str == null) return;
 		if (ansiColor) {
-			str = ansi().eraseScreen().fgBright(Ansi.Color.RED).a(str).reset().toString();
+			str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	public static void errorp(String prefix, String str, String... args) {
 		if (str == null) return;
 		if (ansiColor) {
-			str = ansi().eraseScreen().fgBright(Ansi.Color.RED).a(str).reset().toString();
+			str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
 	}
@@ -188,7 +188,7 @@ public class LogUtil {
 	public static void warn(String str, String... args) {
 		if (str == null) return;
 		if (ansiColor) {
-			str = ansi().eraseScreen().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
+			str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 	}
@@ -196,7 +196,7 @@ public class LogUtil {
 	public static void warn(String str) {
 		if (str == null) return;
 		if (ansiColor) {
-			str = ansi().eraseScreen().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
+			str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
@@ -204,7 +204,7 @@ public class LogUtil {
 	public static void warnp(String prefix, String str, String... args) {
 		if (str == null) return;
 		if (ansiColor) {
-			str = ansi().eraseScreen().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
+			str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
 	}
