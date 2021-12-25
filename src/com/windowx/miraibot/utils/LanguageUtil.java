@@ -107,9 +107,11 @@ public class LanguageUtil {
 					"command.accept.invite=接受一个邀请入群请求\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加载配置文件！\n" +
-					"please.input=请输入\n" +
-					"true.or.false=是否\n" +
-					"check.update=检查更新\n" +
+					"before.settings=在启动前，您需要完成一些最基础的设置\n" +
+					"please.input.qq=请输入您的机器人的 QQ 号\n" +
+					"please.input.password=请输入您的机器人的密码\n" +
+					"please.input.group.id=请输入启用机器人的群（用\",\"分隔）\n" +
+					"please.input.check.update.on.setup=是否在每次启动都执行检查更新程序？（是(true) 否(false)）\n" +
 					"group=群\n" +
 					"id=ID\n" +
 					"name.card=群昵称\n" +
@@ -156,6 +158,7 @@ public class LanguageUtil {
 					"dice.value=骰子值\n" +
 					"contact.id.error=联系人 ID 错误！\n" +
 					"contact=联系人\n" +
+					"cannot.create.plugin.dir=创建插件目录失败\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -256,9 +259,11 @@ public class LanguageUtil {
 					"command.accept.invite=接受一個邀請入群請求\n" +
 					"name.card.set=已将 %s 的群昵称设置为 %s\n" +
 					"reloaded=已重新加載配置文件！\n" +
-					"please.input=請輸入\n" +
-					"true.or.false=是否\n" +
-					"check.update=檢查更新\n" +
+					"before.settings=在啟動前，您需要完成一些最基礎的設置\n" +
+					"please.input.qq=請輸入您的機器人的 QQ 號\n" +
+					"please.input.password=請輸入您的機器人的密碼\n" +
+					"please.input.group.id=請輸入啟用機器人的群（用\",\"分隔）\n" +
+					"please.input.check.update.on.setup=是否在每次啟動都執行檢查更新程序？ （是(true) 否(false)）\n" +
 					"group=群\n" +
 					"id=ID\n" +
 					"name.card=群昵稱\n" +
@@ -305,6 +310,7 @@ public class LanguageUtil {
 					"dice.value=骰子值\n" +
 					"contact.id.error=聯係人 ID 錯誤！\n" +
 					"contact=聯係人\n" +
+					"cannot.create.plugin.dir=創建插件目錄失敗\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -379,7 +385,7 @@ public class LanguageUtil {
 					"command.friend.list=Get the current robot's friend list\n" +
 					"command.language=Change the language of MiraiBot\n" +
 					"command.group.list=Get the list of current chat group members\n" +
-					"command.help=Show all MiraiBot's commands\n" +
+					"command.help=Show all commands of MiraiBot\n" +
 					"command.send=Send messages to friends (support Mirai code)\n" +
 					"command.reply=Reply to a message\n" +
 					"command.recall=Recall a message\n" +
@@ -405,9 +411,11 @@ public class LanguageUtil {
 					"command.accept.invite=Accept an invitation to join the group request\n" +
 					"name.card.set=The group nickname of %s has been set to %s\n" +
 					"reloaded=Reloaded the configuration file!\n" +
-					"please.input=Please input \n" +
-					"true.or.false= whether \n" +
-					"check.update= check update\n" +
+					"before.settings=Before using the bot, you should set something basically up\n" +
+					"please.input.qq=Please input the qq number of the bot\n" +
+					"please.input.password=Please input the password of the bot\n" +
+					"please.input.group.id=Please input the enabled groups number (use \",\" split it)\n" +
+					"please.input.check.update.on.setup=Whether check update on setup? (true/false)\n" +
 					"group=Group\n" +
 					"id=ID\n" +
 					"name.card=Group Name Card\n" +
@@ -454,6 +462,7 @@ public class LanguageUtil {
 					"dice.value=Dice value\n" +
 					"contact.id.error=Wrong contact ID!\n" +
 					"contact=Contact\n" +
+					"cannot.create.plugin.dir=Failed to create plugin directory\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
