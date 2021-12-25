@@ -1,5 +1,6 @@
 package com.windowx.miraibot.utils;
 
+import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class LogUtil {
 	 * Initialize the log system
 	 */
 	public static void init() {
+		AnsiConsole.systemInstall();
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = new Date(System.currentTimeMillis());
@@ -158,27 +160,24 @@ public class LogUtil {
 	 */
 	public static void error(String str, String... args) {
 		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str, args) + str + "|@") + "\n> ", (Object[]) args);
-		} else if (os.contains("windows")) {
-			AnsiConsole.err().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
+		if (ansiColor) {
+			str = ansi().eraseScreen().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 	}
 	public static void error(String str) {
 		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ");
-		} else if (os.contains("windows")) {
-			AnsiConsole.err().print("\r" + write(str) + formatStr(str) + "\n> ");
+		if (ansiColor) {
+			str = ansi().eraseScreen().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
+		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	public static void errorp(String prefix, String str, String... args) {
 		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|red "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
-		} else if (os.contains("windows")) {
-			AnsiConsole.err().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
+		if (ansiColor) {
+			str = ansi().eraseScreen().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
 	}
 	
 	/**
@@ -188,29 +187,26 @@ public class LogUtil {
 	 */
 	public static void warn(String str, String... args) {
 		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str, args) + str + "|@") + "\n> ", (Object[]) args);
-		} else if (os.contains("windows")) {
-			AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
+		if (ansiColor) {
+			str = ansi().eraseScreen().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
 	}
 	
 	public static void warn(String str) {
 		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().print("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ");
-		} else if (os.contains("windows")) {
-			AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
+		if (ansiColor) {
+			str = ansi().eraseScreen().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
+		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	
 	public static void warnp(String prefix, String str, String... args) {
 		if (str == null) return;
-		if (os.contains("linux") || ansiColor) {
-			AnsiConsole.out().printf("\r" + ansi().eraseScreen().render("@|yellow "+ write(str) + str + "|@") + "\n> ", (Object[]) args);
-		} else if (os.contains("windows")) {
-			AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
+		if (ansiColor) {
+			str = ansi().eraseScreen().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
 	}
 	
 	/**
