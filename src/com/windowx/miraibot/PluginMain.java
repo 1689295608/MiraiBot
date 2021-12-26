@@ -13,7 +13,6 @@ import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
@@ -22,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.reader.EndOfFileException;
+import org.jline.reader.UserInterruptException;
 import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -250,6 +251,8 @@ public class PluginMain {
 			LogUtil.error(language("qq.password.error"));
 			e.printStackTrace();
 			System.exit(-1);
+        } catch (UserInterruptException|EndOfFileException e){
+            System.exit(0);
 		} catch (Exception e) {
 			LogUtil.error(language("unknown.error"));
 			e.printStackTrace();
