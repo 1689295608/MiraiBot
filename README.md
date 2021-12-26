@@ -61,8 +61,8 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 反之，你可以尝试通过 [MiraiAndroid](https://github.com/mzdluo123/MiraiAndroid) 来进行设备锁验证
 
 你可以使用两种方法来生产 `device.json`：
-1. [将您当前的 `device.json` 导入到 `MiraiAndroid`](#将您当前的 device.json 导入到 MiraiAndroid)
-2. [将 `MiraiAndroid` 的 `device.json` 应用于当前](#将 MiraiAndroid 的 device.json 应用于当前)
+1. [将您当前的 `device.json` 导入到 `MiraiAndroid`](#将您当前的-device.json-导入到-MiraiAndroid)
+2. [将 `MiraiAndroid` 的 `device.json` 应用于当前](#将-MiraiAndroid-的-device.json-应用于当前)
 
 这两个的区别在于，如果你当前的 `device.json` 需要用于其他用处不想被覆盖，则可以导入当前 `device.json` 到 `MiraiAndroid`
 
