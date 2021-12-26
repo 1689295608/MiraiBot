@@ -41,59 +41,51 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 ### Windows 用户
 **Windows** 用户直接运行 `Start.bat` 即可。
 
+登录时如果这个 `device.json` 没有登录过这个 QQ 那么一般情况下会进行设备锁验证
+
+那将会弹出一个窗口，一般是一个链接，如果你有手机 QQ 那么推荐使用 QQ 内置浏览器打开
+
+因为那样就可以进行人脸验证（如果没开启就没有）
+
+在电脑浏览器打开也可以，可以进行 QQ 扫码验证 需要登录该 QQ 的手机 QQ 扫码授权
+
+如果近几天没有使用账户信息辅助验证，那么也可以进行账户信息辅助验证来登录该 QQ
 
 ### Linux 用户
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
 
-然后运行 `Start.sh` 即可。
+然后运行 `Start.sh` （即在终端输入 `bash Start.sh`）即可。
 
----
+如果您的 Linux 有可视化环境，那么可以按照 Windows 用户方法进行设备锁验证
 
-# MiraiBot
-A console robot based on [Mirai](https://github.com/mamoe/mirai).
+反之，你可以尝试通过 [MiraiAndroid](https://github.com/mzdluo123/MiraiAndroid) 来进行设备锁验证
 
-**Please note before use:**
-```
-This project is developed based on JDK11, so please use Java above JDK11 to run this program!
-```
+你可以使用两种方法来生产 `device.json`：
+1. [将您当前的 `device.json` 导入到 `MiraiAndroid`](#将您当前的 device.json 导入到 MiraiAndroid)
+2. [将 `MiraiAndroid` 的 `device.json` 应用于当前](#将 MiraiAndroid 的 device.json 应用于当前)
 
-## Statement
+这两个的区别在于，如果你当前的 `device.json` 需要用于其他用处不想被覆盖，则可以导入当前 `device.json` 到 `MiraiAndroid`
 
-<h3>All development is for learning, please do not use it for illegal purposes</h3>
+#### 将您当前的 `device.json` 导入到 `MiraiAndroid`
 
-- MiraiBot is a free and open source software for learning and personal using.
-- MiraiBot will FREE forever.
-- MiraiBot is maintained by the entire open source community and is not a work belonging to an individual. All contributors enjoy the copyright of their work.
+首先将当前的 `device.json` 通过任何方式传输到你的手机中
 
-## License
+然后在你的手机打开 `MiraiAndroid`，点击左上角菜单按钮，在弹出的菜单中选择 `工具` 选项卡
 
-See https://github.com/1689295608/MiraiBot/blob/main/LICENSE for details
+然后点击 `导入 DEVICE.JSON`，然后选择你刚才传输到你手机中的 `device.json`
 
-MiraiBot inherits [Mirai](https://github.com/mamoe/mirai) and uses the AGPLv3 protocol to open source. For the healthy development of the entire community, we strongly recommend that you do the following:
+最后使用 `MiraiAndroid` 登录一次你的 QQ 即可
 
-- Software indirectly exposed to MiraiBot uses AGPLv3 open source
-- **We don't encourage, and not support all commercial use**
+#### 将 `MiraiAndroid` 的 `device.json` 应用于当前
 
-<h3>If your misuse of MiraiBot causes any loss to you, the software and the software developer shall not be held responsible</h3>
+首先在你的手机上打开 `MiraiAndroid`
 
-### Derivative software needs to declare and quote
+然后登录并进行相应验证后
 
-- If the package released by MiraiBot is quoted without modifying MiraiBot, the derivative project needs to clearly state that the part where the relevant content first appears comes from this warehouse ([MiraiBot](https://github.com/1689295608/MiraiBot)).
-- If you want to fork it and release it, DO NOT HIDE THE TRUTH OF OPEN-SOURCE!
+点击左上角菜单按钮，在弹出的菜单中选择 `工具` 选项卡
 
----
+点击 `导出 DEVICE.JSON` 然后选择保存位置后
 
-## First use
-**The newbies**, please go to [Release](https://github.com/1689295608/MiraiBot/releases/latest) to download the latest .zip/.7z package
+将这个 `device.json` 传输到你的 Linux 中，替换你当前的 `device.json`
 
-Then unzip it to any folder (*folders and paths containing special characters are not recommended* ), and then you can proceed.
-
-
-### Windows users
-**Windows** users can run `Start.bat` directly.
-
-
-### Linux users
-**Linux** users first need to run a terminal in the `MiraiBot` directory
-
-Then run `Start.sh`.
+再次登录即可成功登录
