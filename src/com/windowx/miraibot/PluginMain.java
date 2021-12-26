@@ -251,8 +251,8 @@ public class PluginMain {
 			LogUtil.error(language("qq.password.error"));
 			e.printStackTrace();
 			System.exit(-1);
-        } catch (UserInterruptException|EndOfFileException e){
-            System.exit(0);
+                } catch (UserInterruptException|EndOfFileException e){
+                    System.exit(0);
 		} catch (Exception e) {
 			LogUtil.error(language("unknown.error"));
 			e.printStackTrace();
