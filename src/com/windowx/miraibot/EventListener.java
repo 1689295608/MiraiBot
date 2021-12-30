@@ -182,7 +182,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendRecall(MessageRecallEvent.FriendRecall event) {
-		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getOperator().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getString("friend").equals("*") || event.getOperator().getId() == Long.parseLong(ConfigUtil.getString("friend")))) {
 			event.cancel();
 			return;
 		}
@@ -295,7 +295,7 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		MessageReceipt<Group> receipt = event.getReceipt();
-		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
+		String msg = (ConfigUtil.getBoolean("debug") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
 		if (receipt != null) {
 			messages.add(receipt.getSource());
 			LogUtil.log(ConfigUtil.getLanguage("format.group.recallable.message")
@@ -316,7 +316,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
 		MessageReceipt<Friend> receipt = event.getReceipt();
-		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
+		String msg = (ConfigUtil.getBoolean("debug") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
 		if (receipt != null) {
 			messages.add(receipt.getSource());
 			LogUtil.log(ConfigUtil.getLanguage("format.user.recallable.message")
@@ -353,7 +353,7 @@ public class EventListener implements ListenerHost {
 				);
 			}
 		} else {
-			if (!(ConfigUtil.getConfig("friend").equals("*") || event.getFrom().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+			if (!(ConfigUtil.getString("friend").equals("*") || event.getFrom().getId() == Long.parseLong(ConfigUtil.getString("friend")))) {
 				event.cancel();
 				return;
 			}
@@ -459,7 +459,7 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		LogUtil.log(ConfigUtil.getLanguage("mute.all") +
-				(event.getNew() ? ConfigUtil.getConfig("on") : ConfigUtil.getConfig("off")));
+				(event.getNew() ? ConfigUtil.getString("on") : ConfigUtil.getString("off")));
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -469,7 +469,7 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		String mCode = event.getMessage().serializeToMiraiCode();
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getBoolean("debug") ?
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
 		if (PluginMain.group == event.getGroup()) {
 			messages.add(event.getSource());
@@ -508,7 +508,7 @@ public class EventListener implements ListenerHost {
 						String permission = sectionObject.has("Permission") ? sectionObject.getString("Permission") : "*";
 						String noPermission = (sectionObject.has("NoPermission") ? sectionObject.getString("NoPermission") : "");
 						String noPermissionMsg = sectionObject.has("NoPermissionMsg") ? sectionObject.getString("NoPermissionMsg") : "";
-						String[] owners = ConfigUtil.getConfig("owner").split(",");
+						String[] owners = ConfigUtil.getString("owner").split(",");
 						runCmd = mCode.replaceAll(regex, runCmd);
 						
 						regex = replaceGroupMsgPlaceholder(event, regex);
@@ -675,33 +675,33 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendMessage(FriendMessageEvent event) {
-		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getString("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getString("friend")))) {
 			event.cancel();
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getBoolean("debug") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onTempMessage(GroupTempMessageEvent event) {
-		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getString("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getString("friend")))) {
 			event.cancel();
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getBoolean("debug") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onStrangerMessage(StrangerMessageEvent event) {
-		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getString("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getString("friend")))) {
 			event.cancel();
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
+		String msg = ConfigUtil.getBoolean("debug") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
 		LogUtil.log(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
