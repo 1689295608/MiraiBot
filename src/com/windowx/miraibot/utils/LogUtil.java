@@ -17,15 +17,15 @@ public class LogUtil {
 	static byte[] all = new byte[0];
 	static File file;
 	public static boolean ansiColor;
-	static String os = System.getProperty("os.name").toLowerCase();
 	public static String lastOpt;
 	
 	/**
 	 * Initialize the log system
 	 */
 	public static void init() {
-		AnsiConsole.systemInstall();
 		try {
+			AnsiConsole.out().install();
+
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = new Date(System.currentTimeMillis());
 			String time = formatter.format(date);
@@ -101,7 +101,7 @@ public class LogUtil {
 		Date date = new Date(System.currentTimeMillis());
 		return formatter.format(date);
 	}
-	
+
 	/**
 	 * 获取格式化后的时间并将内容写入日志
 	 * @param str 内容
