@@ -19,12 +19,8 @@ import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.fusesource.jansi.AnsiConsole;
 import org.jetbrains.annotations.Nullable;
-import org.jline.reader.EndOfFileException;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.UserInterruptException;
+import org.jline.reader.*;
 import org.jline.reader.impl.completer.StringsCompleter;
-import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -44,8 +40,8 @@ public class PluginMain {
 	public static String[] groups;
 	public static String[] allowedGroups;
 	public static Bot bot;
-	public static ArrayList<String> commands = new ArrayList<>(Arrays.asList(
-			"accept-request", "accept-invite", "avatar", "checkUpdate", "del", "friendList", "help", "image", "imageInfo", "kick", "language", "load",
+	public static ArrayList<String> completes = new ArrayList<>(Arrays.asList(
+			"accept-request", "accept-invite", "avatar", "checkUpdate", "del", "friendList", "memberList", "help", "image", "imageInfo", "kick", "language", "load",
 			"music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
 	);
 	public static boolean running;
@@ -116,8 +112,7 @@ public class PluginMain {
 			System.exit(-1);
 		}
 		ConfigUtil.init();
-		ConfigUtil.getConfig("ansiColor");
-		LogUtil.ansiColor = Boolean.parseBoolean(ConfigUtil.getConfig("ansiColor"));
+		LogUtil.ansiColor = ConfigUtil.getBoolean("ansi-console");
 		
 		loadAutoRespond();
 		
@@ -126,25 +121,25 @@ public class PluginMain {
 			System.exit(-1);
 			return;
 		}
-		ConfigUtil.getConfig("checkUpdate");
-		if (ConfigUtil.getConfig("checkUpdate").equals("true")) {
+		ConfigUtil.getString("checkUpdate");
+		if (ConfigUtil.getString("checkUpdate").equals("true")) {
 			LogUtil.log(language("checking.update"));
 			Thread thread = new Thread(() -> checkUpdate(null));
 			thread.start();
 		}
 		
-		String qq = ConfigUtil.getConfig("qq");
-		String password = ConfigUtil.getConfig("password");
-		groups = ConfigUtil.getConfig("group").split(",");
-		allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
-		EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ", "false"));
+		String qq = ConfigUtil.getString("qq");
+		String password = ConfigUtil.getString("password");
+		groups = ConfigUtil.getString("group").split(",");
+		allowedGroups = ConfigUtil.getString("allowedGroups").split(",");
+		EventListener.showQQ = ConfigUtil.getBoolean("showQQ");
 		if (qq.isEmpty() || password.isEmpty()) {
 			LogUtil.error(language("qq.password.not.exits"));
 			System.exit(-1);
 			return;
 		}
 		
-		String protocol = !ConfigUtil.getConfig("protocol").isEmpty() ? ConfigUtil.getConfig("protocol") : "";
+		String protocol = !ConfigUtil.getString("protocol").isEmpty() ? ConfigUtil.getString("protocol") : "";
 		LogUtil.log(language("trying.login"), protocol);
 		try {
 			BotConfiguration.MiraiProtocol miraiProtocol;
@@ -188,7 +183,7 @@ public class PluginMain {
 					try {
 						LogUtil.log(language("enabling.plugin"), p.getName());
 						p.onEnable();
-						commands.addAll(List.of(p.getCommands()));
+						completes.addAll(List.of(p.getCommands()));
 					} catch (Exception e) {
 						p.setEnabled(false);
 						LogUtil.error(language("failed.load.plugin"), p.getName(), e.toString());
@@ -200,7 +195,7 @@ public class PluginMain {
 				e.printStackTrace();
 				System.exit(-1);
 			}
-			
+
 			if (groups.length < 1) {
 				LogUtil.log(language("not.group.set"));
 			} else if (!bot.getGroups().contains(Long.parseLong(groups[0]))) {
@@ -214,7 +209,7 @@ public class PluginMain {
 				LogUtil.error(language("unknown.error"));
 				System.exit(-1);
 			}
-			
+
 			for (Plugin p : plugins) {
 				if (!p.isEnabled()) continue;
 				try {
@@ -224,25 +219,39 @@ public class PluginMain {
 				}
 			}
 			running = true;
+			boolean jline = ConfigUtil.getBoolean("jline");
 			LineReaderBuilder builder = LineReaderBuilder.builder();
-			builder.completer(new StringsCompleter(commands));
-			LineReader reader = builder.build();
+			builder.completer(new StringsCompleter(completes));
+			LineReader lReader = builder.build();
+			InputStreamReader isr = new InputStreamReader(System.in);
+			BufferedReader bReader = new BufferedReader(isr);
 			while (running) {
-				if (reader.isReading()) continue;
-				String msg = reader.readLine();
-				if (msg.isEmpty()) {
+				if (jline) {
+					if (lReader.isReading()) continue;
+				}
+				String msg;
+				try {
+					if (jline) {
+						msg = lReader.readLine();
+					} else {
+						msg = bReader.readLine();
+					}
+				} catch (ArithmeticException e) {
+					continue;
+				}
+				if (msg.trim().isEmpty()) {
 					System.out.print("> ");
 					continue;
 				}
 				try {
 					if (!runCommand(msg)) {
-						String decode;
-						try {
-							decode = decodeUnicode(msg);
-						} catch (Exception e) {
-							decode = msg;
+						if (msg.contains("\\u")) {
+							try {
+								msg = decodeUnicode(msg);
+							} catch (Exception ignored) {
+							}
 						}
-						group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
+						group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
 					}
 				} catch (BotIsBeingMutedException e) {
 					LogUtil.error(language("bot.is.being.muted"));
@@ -260,7 +269,7 @@ public class PluginMain {
 			System.exit(-1);
 		}
 	}
-	
+
 	public static String decodeUnicode(final String dataStr) {
 		int start = 0;
 		int end;
@@ -324,7 +333,7 @@ public class PluginMain {
 				}
 				bot.close();
 				System.out.print("\n");
-				AnsiConsole.systemUninstall();
+				AnsiConsole.out().uninstall();
 				System.exit(0);
 				return true;
 			case "friendList": {
@@ -339,7 +348,7 @@ public class PluginMain {
 				LogUtil.log(out.toString());
 				return true;
 			}
-			case "groupList": {
+			case "memberList": {
 				ContactList<NormalMember> members = group.getMembers();
 				StringBuilder out = new StringBuilder();
 				int c = 1;
@@ -417,10 +426,7 @@ public class PluginMain {
 						
 						"group\n" +
 						" - " + language("command.group") + "\n" +
-						
-						"groupList\n" +
-						" - " + language("command.group.list") + "\n" +
-						
+
 						"help\n" +
 						" - " + language("command.help") + "\n" +
 						
@@ -438,6 +444,9 @@ public class PluginMain {
 						
 						"load <" + language("file.name") + ">\n" +
 						" - " + language("command.load") + "\n" +
+
+						"memberList\n" +
+						" - " + language("command.member.list") + "\n" +
 						
 						"music <" + language("music.id") + "> [" + language("contact") + "]\n" +
 						" - " + language("command.music") + "\n" +
@@ -568,10 +577,10 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("not.qq"), cmd[1]);
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					} catch (PermissionDeniedException e) {
 						LogUtil.error(language("no.permission"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": mute <" + language("qq") + "> <" +
@@ -602,7 +611,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("not.qq"), cmd[1]);
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": avatar <" + language("qq") + ">");
@@ -620,7 +629,7 @@ public class PluginMain {
 							externalResource.close();
 						} catch (IOException e) {
 							LogUtil.error(language("file.error"));
-							if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+							if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 						}
 					});
 					upVoice.start();
@@ -642,7 +651,7 @@ public class PluginMain {
 							imageInfo(bot, img);
 						} catch (IOException e) {
 							LogUtil.error(language("file.error"));
-							if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+							if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 						}
 					});
 					upImg.start();
@@ -666,11 +675,16 @@ public class PluginMain {
 				return true;
 			case "upImg":
 				if (cmd.length > 1) {
-					File file = new File(msg.substring(6));
-					ExternalResource externalResource = ExternalResource.create(file);
-					Image img = group.uploadImage(externalResource);
-					externalResource.close();
-					imageInfo(bot, img);
+					try {
+						File file = new File(msg.substring(6));
+						ExternalResource externalResource = ExternalResource.create(file);
+						Image img = group.uploadImage(externalResource);
+						externalResource.close();
+						imageInfo(bot, img);
+					} catch (Exception e) {
+						LogUtil.error(language("operation.failed"));
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
+					}
 				} else {
 					LogUtil.warn(language("usage") + ": upImg <" +
 							language("file.path") + ">");
@@ -679,11 +693,16 @@ public class PluginMain {
 			case "upClipImg":
 				byte[] clip = ClipboardUtil.getImageFromClipboard();
 				if (clip != null) {
-					ExternalResource externalResource = ExternalResource.create(clip);
-					LogUtil.log(language("up.loading.img"));
-					Image img = group.uploadImage(externalResource);
-					externalResource.close();
-					imageInfo(bot, img);
+					try {
+						ExternalResource externalResource = ExternalResource.create(clip);
+						LogUtil.log(language("up.loading.img"));
+						Image img = group.uploadImage(externalResource);
+						externalResource.close();
+						imageInfo(bot, img);
+					} catch (Exception e) {
+						LogUtil.error(language("operation.failed"));
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
+					}
 				} else {
 					LogUtil.error(language("failed.clipboard"));
 				}
@@ -697,7 +716,7 @@ public class PluginMain {
 						}
 						LogUtil.log(language("creating.word.image"));
 						byte[] file = WordToImage.createImage(content.toString(),
-								new Font(ConfigUtil.getConfig("font"), Font.PLAIN, Integer.parseInt(cmd[3])),
+								new Font(ConfigUtil.getString("font"), Font.PLAIN, Integer.parseInt(cmd[3])),
 								Integer.parseInt(cmd[1]), Integer.parseInt(cmd[2]));
 						ExternalResource externalResource = ExternalResource.create(file);
 						LogUtil.log(language("up.loading.img"));
@@ -707,7 +726,7 @@ public class PluginMain {
 						group.sendMessage(img);
 					} catch (NumberFormatException e) {
 						LogUtil.warn(language("width.height.error"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.warn(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.warn(e.toString());
 					}
 				} else {
 					LogUtil.log(language("usage") +
@@ -730,7 +749,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("not.qq"), cmd[1]);
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": del <QQ>");
@@ -751,7 +770,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("message.id.error"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": reply <" +
@@ -784,7 +803,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("request.id.error"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": accept-request <" + language("request.id") + ">");
@@ -810,7 +829,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("invite.id.error"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": accept-invite <" + language("invite.id") + ">");
@@ -834,10 +853,10 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("not.qq"), cmd[1]);
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					} catch (PermissionDeniedException e) {
 						LogUtil.error(language("no.permission"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": nameCard <" +
@@ -863,7 +882,7 @@ public class PluginMain {
 										LogUtil.log(language("recalled"));
 									} catch (PermissionDeniedException e) {
 										LogUtil.error(language("no.permission"));
-										if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+										if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 									} catch (Exception e) {
 										LogUtil.error(language("failed.recall"));
 									}
@@ -876,7 +895,7 @@ public class PluginMain {
 						}
 					} catch (NumberFormatException e) {
 						LogUtil.error(language("message.id.error"));
-						if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.error(e.toString());
+						if (ConfigUtil.getBoolean("debug")) LogUtil.error(e.toString());
 					}
 				} else {
 					LogUtil.warn(language("usage") + ": recall <" +
@@ -1115,7 +1134,7 @@ public class PluginMain {
 				plugins.add(plugin);
 				try {
 					plugin.onEnable();
-					commands.addAll(List.of(plugin.getCommands()));
+					completes.addAll(List.of(plugin.getCommands()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1209,11 +1228,11 @@ public class PluginMain {
 				}
 			} catch (Exception e) {
 				LogUtil.error(language("failed.check.update"), e.toString());
-				if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
+				if (ConfigUtil.getBoolean("debug")) LogUtil.log(e.toString());
 			}
 		} catch (Exception e) {
 			LogUtil.error(language("failed.check.update"), e.toString());
-			if (ConfigUtil.getConfig("debug").equals("true")) LogUtil.log(e.toString());
+			if (ConfigUtil.getBoolean("debug")) LogUtil.log(e.toString());
 		}
 	}
 	
