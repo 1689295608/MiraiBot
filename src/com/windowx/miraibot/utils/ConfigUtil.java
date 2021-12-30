@@ -9,6 +9,7 @@ import java.util.Properties;
 public class ConfigUtil {
 	public static final Properties config = new Properties();
 	public static final Properties language = new Properties();
+	public static final Properties defaultConfig = new Properties();
 	
 	/**
 	 * Initialize the config system
@@ -23,6 +24,10 @@ public class ConfigUtil {
 			if (tmpFile.exists()) {
 				language.load(new BufferedReader(new FileReader("language.properties")));
 			}
+			InputStream is = ClassLoader.getSystemResourceAsStream("config.properties");
+			if (is != null) {
+				defaultConfig.load(is);
+			}
 		} catch (IOException e) {
 			LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
 			e.printStackTrace();
@@ -36,19 +41,31 @@ public class ConfigUtil {
 	 * @param key Key
 	 * @return Config value
 	 */
-	@NotNull public static String getConfig(String key) {
+	public static String getString(String key) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 			if (isPrivate(stack)) return "";
 		}
-		return config.getProperty(key) != null ? config.getProperty(key) : "";
+		return def(config.getProperty(key), def(defaultConfig.getProperty(key), ""));
 	}
-	@NotNull public static String getConfig(String key, String defaultValue) {
+	public static String getString(String key, String defaultValue) {
 		if (key.equals("password")) {
 			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 			if (isPrivate(stack)) return "";
 		}
-		return config.getProperty(key) != null ? config.getProperty(key) : defaultValue;
+		return def(config.getProperty(key), defaultValue);
+	}
+
+	public static boolean getBoolean(String key) {
+		return Boolean.parseBoolean(getString(key));
+	}
+
+	public static boolean getBoolean(String key, String defaultValue) {
+		return Boolean.parseBoolean(getString(key, defaultValue));
+	}
+
+	public static String def(String str, String def) {
+		return str == null ? def : str;
 	}
 	
 	private static boolean isPrivate(StackTraceElement[] stack) {
