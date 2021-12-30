@@ -80,7 +80,7 @@ public class LanguageUtil {
 					"command.check.update=手动检查 MiraiBot 是否有更新\n" +
 					"command.friend.list=获取当前机器人好友列表\n" +
 					"command.language=更改 MiraiBot 的语言\n" +
-					"command.group.list=获取当前聊群成员列表\n" +
+					"command.member.list=获取当前聊群成员列表\n" +
 					"command.help=显示 MiraiBot 所有指令\n" +
 					"command.send=向好友发送消息（支持 Mirai码）\n" +
 					"command.reply=回复一条消息\n" +
@@ -159,6 +159,7 @@ public class LanguageUtil {
 					"contact.id.error=联系人 ID 错误！\n" +
 					"contact=联系人\n" +
 					"cannot.create.plugin.dir=创建插件目录失败\n" +
+					"operation.failed=操作失败，请稍后尝试\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -232,7 +233,7 @@ public class LanguageUtil {
 					"command.check.update=手動檢查 MiraiBot 是否有更新\n" +
 					"command.friend.list=獲取當前機器人好友列表\n" +
 					"command.language=更改 MiraiBot 的語言\n" +
-					"command.group.list=獲取當前聊群成員列表\n" +
+					"command.member.list=獲取當前聊群成員列表\n" +
 					"command.help=顯示 MiraiBot 所有指令\n" +
 					"command.send=向好友發送消息（支持 Mirai碼）\n" +
 					"command.reply=回復一條消息\n" +
@@ -311,6 +312,7 @@ public class LanguageUtil {
 					"contact.id.error=聯係人 ID 錯誤！\n" +
 					"contact=聯係人\n" +
 					"cannot.create.plugin.dir=創建插件目錄失敗\n" +
+					"operation.failed=操作失敗，請稍後嘗試\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -384,7 +386,7 @@ public class LanguageUtil {
 					"command.check.update=Manually check if MiraiBot is updated\n" +
 					"command.friend.list=Get the current robot's friend list\n" +
 					"command.language=Change the language of MiraiBot\n" +
-					"command.group.list=Get the list of current chat group members\n" +
+					"command.member.list=Get the list of current chat group members\n" +
 					"command.help=Show all commands of MiraiBot\n" +
 					"command.send=Send messages to friends (support Mirai code)\n" +
 					"command.reply=Reply to a message\n" +
@@ -463,6 +465,7 @@ public class LanguageUtil {
 					"contact.id.error=Wrong contact ID!\n" +
 					"contact=Contact\n" +
 					"cannot.create.plugin.dir=Failed to create plugin directory\n" +
+					"operation.failed=Operation failed, please try later\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
