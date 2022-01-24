@@ -1,0 +1,53 @@
+{
+  "AutoRespondDemo": {
+    "Message": "\\[mirai:at:%bot_id%\\](.*)?Hello!(.*)?",
+    "Reply": true,
+    "Respond": "[mirai:at:%sender_id%] Hello!"
+  },
+  "AutoSendFlash": {
+    "Message": "\\[mirai:flash:(.*)\\]",
+    "Reply": true,
+    "Respond": "[mirai:image:%flash_id%]"
+  },
+  "**Prompt": {
+    "自动回复支持操作": {
+      "Reply": "Boolean, 是否回复该消息, 增加 \"!SCRIPT\" 前缀即可运行 JavaScript 脚本",
+      "Recall": "Boolean, 是否撤回该消息",
+      "Mute": "Integer, 禁言该消息的发送者",
+      "Permission": "String, 允许运行该自动回复的 QQ 号, 用 ',' 分隔, 为 '*' 时所有人都可以运行",
+      "NoPermission": "String, 不允许运行该自动回复的 QQ 号, 用 ',' 分割, 为 '*' 时所有人都不能运行",
+      "NoPermissionReply": "String, 无权消息是否回复",
+      "NoPermissionRecall": "Boolean, 无权消息否撤回",
+      "NoPermissionMute": "Integer, 无权时是否禁言",
+      "NoPermissionMsg": "String, 没有权限时回复的消息, 增加 \"!SCRIPT\" 前缀即可运行 JavaScript 脚本",
+      "RunCommand": "String, 运行指令",
+      "ChangeNameCard": "String, 修改群昵称",
+      "Respond": "String, 正常执行后发送的内容"
+    },
+    "自动回复支持变量": {
+      "%sender_nick%": "发送者昵称",
+      "%sender_id%": "发送者 QQ 号",
+      "%sender_name_card%": "发送者群昵称",
+      "%sender_avatar_id%": "发送者头像图片 ID",
+      "%group_name%": "本群名称",
+      "%group_id%": "本群群号",
+      "%group_owner_nick%": "本群群主昵称",
+      "%group_owner_id%": "本群群主 QQ 号",
+      "%group_owner_name_card%": "本群群主群名片",
+      "%message_mirai_code%": "消息的 Mirai 码",
+      "%message_content%": "消息的内容",
+      "%message_id%": "消息的 ID",
+      "%bot_nick%": "机器人昵称",
+      "%bot_id%": "机器人 QQ 号",
+      "%flash_id%": "闪照 ID",
+      "%image_id%": "图片 ID",
+      "%file_id%": "文件 ID",
+      "%last_console_output%": "控制台最后一条输出 (仅在 NoPermissionMsg 和 Reply 中生效)",
+      "%url_[xxx]%": "读取互联网上的内容, \"[xxx]\" 表示 URL 地址"
+    },
+    "Tips": {
+      "Tip1": ["如果卷名开头为 “**” ，则该规则不会执行（相当于注释）"],
+      "Tip2": ["如果要使用中文的话需先对其进行 Unicode 编码，否则可能会出现乱码问题"]
+    }
+  }
+}
