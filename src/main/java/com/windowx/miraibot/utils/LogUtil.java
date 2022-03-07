@@ -108,9 +108,9 @@ public class LogUtil {
 	 * @param args 参数
 	 * @return 格式化后的时间
 	 */
-	public static String write(String str, String... args) {
+	public static String write(String str, Object... args) {
 		if (str == null) return null;
-		str = String.format(str, (Object[]) args);
+		str = String.format(str, args);
 		lastOpt = str;
 		String time = formatTime();
 		try {
@@ -138,9 +138,9 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void log(String str, String... args) {
+	public static void log(String str, Object... args) {
 		if (str == null) return;
-		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
 	}
 	
 	public static void log(String str) {
@@ -148,9 +148,9 @@ public class LogUtil {
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	
-	public static void logp(String prefix, String str, String... args) {
+	public static void logp(String prefix, String str, Object... args) {
 		if (str == null) return;
-		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
 	}
 	
 	/**
@@ -158,12 +158,12 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void error(String str, String... args) {
+	public static void error(String str, Object... args) {
 		if (str == null) return;
 		if (ansiColor) {
 			str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
-		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
 	}
 	public static void error(String str) {
 		if (str == null) return;
@@ -172,12 +172,12 @@ public class LogUtil {
 		}
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
-	public static void errorp(String prefix, String str, String... args) {
+	public static void errorp(String prefix, String str, Object... args) {
 		if (str == null) return;
 		if (ansiColor) {
 			str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
-		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
 	}
 	
 	/**
@@ -185,12 +185,12 @@ public class LogUtil {
 	 *
 	 * @param str What to output
 	 */
-	public static void warn(String str, String... args) {
+	public static void warn(String str, Object... args) {
 		if (str == null) return;
 		if (ansiColor) {
 			str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
-		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
 	}
 	
 	public static void warn(String str) {
@@ -201,12 +201,12 @@ public class LogUtil {
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
 	
-	public static void warnp(String prefix, String str, String... args) {
+	public static void warnp(String prefix, String str, Object... args) {
 		if (str == null) return;
 		if (ansiColor) {
 			str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
-		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", (Object[]) args);
+		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
 	}
 	
 	/**
