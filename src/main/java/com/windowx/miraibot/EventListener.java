@@ -742,15 +742,9 @@ public class EventListener implements ListenerHost {
 		String flashId = "", imageId = "", fileId = "";
 		if (spl.length >= 3) {
 			switch (spl[1]) {
-				case "flash":
-					flashId = spl[2].substring(0, spl[2].indexOf("]"));
-					break;
-				case "image":
-					imageId = spl[2].substring(0, spl[2].indexOf("]"));
-					break;
-				case "file":
-					fileId = spl[2].substring(0, spl[2].indexOf("]"));
-					break;
+				case "flash" -> flashId = spl[2].substring(0, spl[2].indexOf("]"));
+				case "image" -> imageId = spl[2].substring(0, spl[2].indexOf("]"));
+				case "file" -> fileId = spl[2].substring(0, spl[2].indexOf("]"));
 			}
 		}
 		str = str.replaceAll("%flash_id%", flashId);
