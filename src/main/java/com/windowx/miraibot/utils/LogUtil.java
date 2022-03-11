@@ -17,7 +17,6 @@ public class LogUtil {
 	static byte[] all = new byte[0];
 	static File file;
 	public static boolean ansiColor;
-	static String os = System.getProperty("os.name").toLowerCase();
 	public static String lastOpt;
 	
 	/**
