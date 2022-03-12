@@ -1264,7 +1264,6 @@ public class PluginMain {
 		LogUtil.log("· ------==== Image Info ====------ ·");
 		LogUtil.log("I D: " + image.getImageId());
 		LogUtil.log("URL: " + Mirai.getInstance().queryImageUrl(bot, image));
-		LogUtil.log("MD5: " + Arrays.toString(image.getMd5()));
 		LogUtil.log("MiraiCode: " + image.serializeToMiraiCode());
 		LogUtil.log("· -------------------------------- ·");
 	}
