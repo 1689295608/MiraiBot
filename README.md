@@ -33,10 +33,13 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 ---
 
 ## 初次使用
-**初次使用** 的用户, 请前往 [Release](https://github.com/1689295608/MiraiBot/releases/latest) 下载最新的 .zip/.7z 包
+**初次使用** 的用户, 请前往 [MiraiCore-Release](https://github.com/1689295608/MiraiCore/releases/tag/v1.0-origin) 下载最新的 MiraiCore 独立包
 
-然后将其解压到任意文件夹内 ( *不推荐包含特殊字符的文件夹及路径* ), 即可进行后续操作.
+然后在 [Release](https://github.com/1689295608/MiraiBot/releases/latest) 下载最新版 MiraiBot 的 .zip 或 .7z 文件
 
+然后将其解压到任意文件夹内 ( *不推荐包含特殊字符的文件夹及路径* ) 后
+
+将下载好的 MiraiCore 放入该文件夹，需要注意的是**文件名必须为 `MiraiCore.jar`**
 
 ### Windows 用户
 **Windows** 用户直接运行 `Start.bat` 即可。
