@@ -1,6 +1,7 @@
 package com.windowx.miraibot.plugin;
 
 import com.windowx.miraibot.utils.LogUtil;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
