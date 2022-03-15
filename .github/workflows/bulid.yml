@@ -31,7 +31,7 @@ jobs:
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: true
-        title: "Build - ${{ github.run_id }}"
+        title: "AutoBuild - ${{ github.run_id }}"
         automatic_release_tag: "autobuild-${{ github.run_id }}"
         files: |
             ${{ github.workspace }}/target/*.jar
