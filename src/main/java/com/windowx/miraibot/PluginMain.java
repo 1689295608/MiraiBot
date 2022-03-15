@@ -1081,7 +1081,7 @@ public class PluginMain {
 				plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
 				plugin.setName(file.getName().substring(0, file.getName().length() - 6));
 				plugin.setClassName(file.getName().substring(6));
-				plugin.setClassLoader(myClassLoader);
+				plugin.setMyClassLoader(myClassLoader);
 			} else {
 				URLClassLoader u = new URLClassLoader(new URL[]{file.toURI().toURL()});
 				InputStream is = u.getResourceAsStream("plugin.ini");
