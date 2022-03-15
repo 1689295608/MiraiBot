@@ -1139,7 +1139,7 @@ public class PluginMain {
 						if (is != null) {
 							try {
 								plugin = initPlugin(is, u);
-								plugin.setClassLoader(u);
+								plugin.setMyClassLoader(u);
 							} catch (Exception e) {
 								System.out.println();
 								e.printStackTrace();
@@ -1154,7 +1154,7 @@ public class PluginMain {
 							plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
 							plugin.setName(f.getName().substring(0, f.getName().length() - 6));
 							plugin.setClassName(f.getName().substring(0, f.getName().length() - 6));
-							plugin.setClassLoader(myClassLoader);
+							plugin.setMyClassLoader(myClassLoader);
 						} catch (Exception e) {
 							e.printStackTrace();
 							LogUtil.error(language("failed.load.plugin"), f.getName(), e.toString());
