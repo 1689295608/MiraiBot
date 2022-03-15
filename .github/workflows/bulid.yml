@@ -22,7 +22,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: |
+        mvn -B package --file pom.xml
+        cd target
+        mv MiraiBot-1.0-SNAPSHOT.jar MiraiBot.jar
     - uses: "marvinpinto/action-automatic-releases@latest"
       name: Push to Repository
       with:
