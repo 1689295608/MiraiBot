@@ -23,7 +23,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: |
-        mvn -B package --file pom.xml dependency:copy-dependencies
+        mvn -B package --file pom.xml dependency:copy-dependencies -DoutputDirectory=lib -DexcludeGroupIds=net.mamoe
         cd target
         mv MiraiBot-1.0-SNAPSHOT.jar MiraiBot.jar
     - uses: "marvinpinto/action-automatic-releases@latest"
