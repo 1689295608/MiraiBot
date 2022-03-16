@@ -25,14 +25,12 @@ jobs:
       run: |
         mvn -B package --file pom.xml dependency:copy-dependencies -DoutputDirectory=lib -DexcludeGroupIds=net.mamoe
         cd lib
+        mkdir unzip
         for name in `ls *.jar`
         do
-          mv $name ${name%.jar}.zip
+          unzip $name -d ../unzip
         done
         cd ..
-        mkdir unzip
-        cd lib
-        unzip *.zip -d ../unzip
         mv target/MiraiBot-1.0-SNAPSHOT.jar target/MiraiBot.jar
         zip -m target/MiraiBot.jar unzip/*
     - uses: "marvinpinto/action-automatic-releases@latest"
