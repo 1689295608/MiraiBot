@@ -31,7 +31,8 @@ jobs:
         done
         cd ..
         mkdir unzip
-        unzip lib/*.zip -d unzip
+        cd lib
+        unzip *.zip -d ../unzip
         mv target/MiraiBot-1.0-SNAPSHOT.jar target/MiraiBot.jar
         zip -m target/MiraiBot.jar unzip/*
     - uses: "marvinpinto/action-automatic-releases@latest"
