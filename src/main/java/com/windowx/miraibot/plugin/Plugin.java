@@ -44,6 +44,10 @@ public class Plugin extends JavaPlugin {
 		this.classLoader = classLoader;
 	}
 	
+	public InputStream getResourceAsStream(String name) {
+		return classLoader.getResourceAsStream(name);
+	}
+	
 	public Properties getPlugin() {
 		return plugin;
 	}
