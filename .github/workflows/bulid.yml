@@ -23,7 +23,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: |
-        mvn -B package --file pom.xml dependency:copy-dependencies -DoutputDirectory=lib -DexcludeGroupIds=net.mamoe,org.jetbrains,org.jetbrains.kotlinx,org.bouncycastle,me.him188,org.jetbrains.kotlin,io.ktor,org.apache.logging.log4j,io.netty,com.squareup.okhttp3,com.squareup.okio,org.slf4j
+        mvn -B package --file pom.xml dependency:copy-dependencies -DoutputDirectory=lib -DexcludeGroupIds=net.mamoe,org.jetbrains,org.jetbrains.kotlinx,org.bouncycastle,me.him188,org.jetbrains.kotlin,io.ktor,io.netty,com.squareup.okhttp3,com.squareup.okio,org.slf4j
         mv target/MiraiBot-1.0-SNAPSHOT.jar lib/MiraiBot.jar
         mkdir output
         cd output
