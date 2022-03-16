@@ -5,6 +5,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -43,11 +44,11 @@ public class Plugin extends JavaPlugin {
 		}
 		this.classLoader = classLoader;
 	}
-	
+
 	public InputStream getResourceAsStream(String name) {
 		return classLoader.getResourceAsStream(name);
 	}
-	
+
 	public Properties getPlugin() {
 		return plugin;
 	}
