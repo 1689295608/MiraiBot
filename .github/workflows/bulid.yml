@@ -23,6 +23,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: |
+        apt-get install util-linux
         mvn -B package --file pom.xml dependency:copy-dependencies -DoutputDirectory=lib -DexcludeGroupIds=net.mamoe
         rename "s//.jar//.zip/" lib/*
         mkdir unzip
