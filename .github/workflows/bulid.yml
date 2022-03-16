@@ -24,9 +24,8 @@ jobs:
     - name: Build with Maven
       run: |
         mvn -B package --file pom.xml dependency:copy-dependencies -DoutputDirectory=lib -DexcludeGroupIds=net.mamoe
-        cd target
-        mv MiraiBot-1.0-SNAPSHOT.jar MiraiBot.jar
-        zip -m MiraiBot.jar ../lib
+        mv target/MiraiBot-1.0-SNAPSHOT.jar target/MiraiBot.jar
+        zip -m target/MiraiBot.jar lib/*
     - uses: "marvinpinto/action-automatic-releases@latest"
       name: Push to Repository
       with:
