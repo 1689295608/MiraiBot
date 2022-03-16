@@ -23,9 +23,13 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: |
-        apt-get install util-linux
         mvn -B package --file pom.xml dependency:copy-dependencies -DoutputDirectory=lib -DexcludeGroupIds=net.mamoe
-        rename "s//.jar//.zip/" lib/*
+        cd lib
+        for name in `ls *.jar`
+        do
+          mv $name ${name%.jar}.zip
+        done
+        cd ..
         mkdir unzip
         unzip lib/*.zip -d unzip
         mv target/MiraiBot-1.0-SNAPSHOT.jar target/MiraiBot.jar
