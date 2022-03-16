@@ -35,7 +35,7 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 ## 初次使用
 **初次使用** 的用户
 
-请前往 [MiraiCore-Release](https://github.com/1689295608/MiraiCore/releases/tag/v1.0-origin) 下载最新的 MiraiCore 独立包*（如果使用的版本低于 1.2.1 可以跳过这个步骤）*
+请前往 [MiraiCore-Release](https://github.com/1689295608/MiraiCore/releases/tag/v1.0-origin) 下载最新的 MiraiCore 独立包 *（如果使用的版本低于 1.2.1 可以跳过这个步骤）*
 
 然后在 [Release](https://github.com/1689295608/MiraiBot/releases/latest) 下载最新版 MiraiBot 的 .zip 或 .7z 文件
 
