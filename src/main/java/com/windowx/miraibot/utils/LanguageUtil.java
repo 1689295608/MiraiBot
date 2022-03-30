@@ -159,6 +159,7 @@ public class LanguageUtil {
 					"contact.id.error=联系人 ID 错误！\n" +
 					"contact=联系人\n" +
 					"cannot.create.plugin.dir=创建插件目录失败\n" +
+					"depend.not.exits=缺少插件依赖 \"%s\"\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -311,6 +312,7 @@ public class LanguageUtil {
 					"contact.id.error=聯係人 ID 錯誤！\n" +
 					"contact=聯係人\n" +
 					"cannot.create.plugin.dir=創建插件目錄失敗\n" +
+					"depend.not.exits=缺少插件依賴 \"%s\"\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -463,6 +465,7 @@ public class LanguageUtil {
 					"contact.id.error=Wrong contact ID!\n" +
 					"contact=Contact\n" +
 					"cannot.create.plugin.dir=Failed to create plugin directory\n" +
+					"depend.not.exits=Missing plugin dependency \"%s\"\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
