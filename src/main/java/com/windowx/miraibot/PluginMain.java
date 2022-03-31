@@ -1,6 +1,7 @@
 package com.windowx.miraibot;
 
 import com.windowx.miraibot.plugin.Plugin;
+import com.windowx.miraibot.plugin.PluginLoader;
 import com.windowx.miraibot.utils.ClipboardUtil;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LanguageUtil;
@@ -18,23 +19,18 @@ import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.fusesource.jansi.AnsiConsole;
-import org.jetbrains.annotations.Nullable;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.reader.impl.completer.StringsCompleter;
-import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
 
@@ -44,12 +40,12 @@ public class PluginMain {
 	public static String[] groups;
 	public static String[] allowedGroups;
 	public static Bot bot;
+	public static PluginLoader loader = new PluginLoader();
 	public static ArrayList<String> completes = new ArrayList<>(Arrays.asList(
 			"accept-request", "accept-invite", "avatar", "checkUpdate", "del", "friendList", "memberList", "help", "image", "imageInfo", "kick", "language", "load",
 			"music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
 	);
 	public static boolean running;
-	protected static ArrayList<Plugin> plugins;
 
 	public static void main(String[] args) {
 		String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
@@ -175,8 +171,8 @@ public class PluginMain {
 						System.exit(-1);
 					}
 				}
-				initPlugins();
-				for (Plugin p : plugins) {
+				loader.initPlugins();
+				for (Plugin p : loader.plugins) {
 					try {
 						LogUtil.log(language("enabling.plugin"), p.getName());
 						p.onEnable();
@@ -207,7 +203,7 @@ public class PluginMain {
 				System.exit(-1);
 			}
 
-			for (Plugin p : plugins) {
+			for (Plugin p : loader.plugins) {
 				if (!p.isEnabled()) continue;
 				try {
 					p.onFinished();
@@ -292,10 +288,10 @@ public class PluginMain {
 					LogUtil.log(language("reloaded"));
 				} else {
 					try {
-						Plugin plugin = getPlugin(cmd[1]);
+						Plugin plugin = loader.getPlugin(cmd[1]);
 						if (plugin != null) {
-							unloadPlugin(cmd[1]);
-							loadPlugin(plugin.getFile(), plugin.getName());
+							loader.unloadPlugin(cmd[1]);
+							loader.loadPlugin(plugin.getFile(), plugin.getName());
 						} else {
 							LogUtil.log(language("unloading.plugin"), cmd[1]);
 						}
@@ -307,7 +303,7 @@ public class PluginMain {
 			case "stop":
 				LogUtil.warn(language("stopping.bot"), bot.getNick(), String.valueOf(bot.getId()));
 				running = false;
-				for (Plugin p : plugins) {
+				for (Plugin p : loader.plugins) {
 					try {
 						p.onDisable();
 					} catch (Exception e) {
@@ -348,7 +344,7 @@ public class PluginMain {
 			case "plugins":
 				StringBuilder out = new StringBuilder();
 				int c = 1;
-				for (Plugin p : plugins) {
+				for (Plugin p : loader.plugins) {
 					if (!p.isEnabled()) continue;
 					out.append(c).append(". ").append(p.getName()).append(" v").append(p.getVersion()).append(" by ").append(p.getOwner()).append("\n");
 					c++;
@@ -904,7 +900,7 @@ public class PluginMain {
 				return true;
 			case "unload":
 				if (cmd.length > 1) {
-					unloadPlugin(cmd[1]);
+					loader.unloadPlugin(cmd[1]);
 				} else {
 					LogUtil.warn(language("usage") + ": unload <" +
 							language("plugin.name") + ">");
@@ -913,7 +909,7 @@ public class PluginMain {
 			case "load":
 				if (cmd.length > 1) {
 					File f = new File("plugins/" + (cmd[1].endsWith(".jar") || cmd[1].endsWith(".class") ? cmd[1] : cmd[1] + ".jar"));
-					loadPlugin(f, cmd[1]);
+					loader.loadPlugin(f, cmd[1]);
 				} else {
 					LogUtil.warn(language("usage") + ": load <" +
 							language("file.name") + ">");
@@ -992,7 +988,7 @@ public class PluginMain {
 				return true;
 			default:
 				boolean isCmd = false;
-				for (Plugin p : plugins) {
+				for (Plugin p : loader.plugins) {
 					if (!p.isEnabled()) continue;
 					try {
 						boolean s = p.onCommand(msg);
@@ -1005,230 +1001,6 @@ public class PluginMain {
 		}
 	}
 
-	/**
-	 * 通过插件名获取插件对象
-	 *
-	 * @param name 插件名
-	 * @return 插件
-	 */
-	@Nullable
-	public static Plugin getPlugin(String name) {
-		for (Plugin p : plugins) {
-			if (p.getName().equals(name)) return p;
-		}
-		return null;
-	}
-
-	/**
-	 * 通过插件名获取插件是否存在
-	 *
-	 * @param name 插件名
-	 * @return 是否存在
-	 */
-	public static boolean hasPlugin(String name) {
-		for (Plugin p : plugins) {
-			if (p.getName().equals(name)) return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 卸载某个插件
-	 *
-	 * @param name 插件名
-	 */
-	public static void unloadPlugin(String name) {
-		Plugin plugin = null;
-		for (Plugin value : plugins) {
-			if (value.getName().equals(name)) {
-				plugin = value;
-				break;
-			}
-		}
-		if (plugin != null) {
-			LogUtil.log(language("unloading.plugin"), plugin.getName());
-			try {
-				plugin.onDisable();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			plugin.setEnabled(false);
-			System.gc();
-			LogUtil.log(language("unloaded.plugin"), plugin.getName());
-		} else {
-			LogUtil.error(language("plugin.not.exits"), name);
-		}
-	}
-
-	private static Plugin initPlugin(Properties plugin, URLClassLoader u) throws Exception {
-		Class<?> clazz = u.loadClass(plugin.getProperty("main"));
-		Plugin p = (Plugin) clazz.getDeclaredConstructor().newInstance();
-		p.setName(plugin.getProperty("name", "Untitled"));
-		p.setOwner(plugin.getProperty("owner", "Unnamed"));
-		p.setClassName(plugin.getProperty("main"));
-		p.setVersion(plugin.getProperty("version", "1.0.0"));
-		p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
-		p.setCommands(plugin.getProperty("commands", "").split(","));
-		p.setMyClassLoader(u);
-		p.setPlugin(plugin);
-		Properties config = new Properties();
-		File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
-		if (file.exists()) config.load(new FileReader(file));
-		p.setConfig(config);
-		return p;
-	}
-
-	/**
-	 * 加载某个插件
-	 *
-	 * @param file 文件
-	 * @param name 名称
-	 * @throws Exception 报错
-	 */
-	public static void loadPlugin(File file, String name) throws Exception {
-		if (file.exists()) {
-			Plugin plugin = null;
-			URLClassLoader u = new URLClassLoader(new URL[]{file.toURI().toURL()});
-			InputStream is = u.getResourceAsStream("plugin.ini");
-			if (is != null) {
-				LogUtil.log(language("loading.plugin"), name);
-				Properties prop = new Properties();
-				prop.load(is);
-				if (prop.containsKey("depend")) {
-					String[] split = prop.getProperty("depend").split(",");
-					for (String s : split) {
-						if (!hasPlugin(s)) {
-							LogUtil.error(language("depend.not.exits"), s);
-							return;
-						}
-					}
-				}
-				plugin = initPlugin(prop, u);
-			} else {
-				LogUtil.error(language("failed.load.plugin"), file.getName(), "\"plugin.ini\" not found");
-			}
-			if (plugin != null) {
-				plugin.setFile(file);
-				Plugin p = getPlugin(plugin.getName());
-				if (p != null) {
-					if (p.isEnabled()) {
-						LogUtil.warn(language("plugin.already.loaded"), plugin.getName());
-						plugins.remove(p);
-						return;
-					}
-				}
-				plugin.setEnabled(true);
-				plugins.add(plugin);
-				try {
-					plugin.onEnable();
-					completes.addAll(List.of(plugin.getCommands()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				LogUtil.log(language("loaded.plugin"), plugin.getName());
-			} else {
-				LogUtil.error(language("failed.load.plugin"), file.getName(), "unknown error");
-			}
-		} else {
-			LogUtil.error(language("plugin.file.not.exits")
-					, name
-			);
-		}
-	}
-
-	/**
-	 * 初始化插件，将所有 plugins 文件夹内的 .jar 和 .class 文件加载到插件列表
-	 */
-	public static void initPlugins() {
-		File pluginsDir = new File("plugins");
-		plugins = new ArrayList<>();
-		try {
-			File[] pluginsFile = pluginsDir.listFiles();
-			if (pluginsFile != null) {
-				ArrayList<File> after = new ArrayList<>();
-				for (File f : pluginsFile) {
-					if (!f.getName().endsWith(".jar")) continue;
-					Plugin plugin = null;
-					URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
-					InputStream is = u.getResourceAsStream("plugin.ini");
-					if (is != null) {
-						try {
-							Properties prop = new Properties();
-							prop.load(is);
-							if (prop.containsKey("depend")) {
-								String[] split = prop.getProperty("depend").split(",");
-								boolean con = false;
-								for (String s : split) {
-									if (getPlugin(s) == null) {
-										after.add(f);
-										con = true;
-										break;
-									}
-								}
-								if (con) {
-									continue;
-								}
-							}
-							plugin = initPlugin(prop, u);
-							plugin.setMyClassLoader(u);
-						} catch (Exception e) {
-							System.out.println();
-							e.printStackTrace();
-						}
-					} else {
-						LogUtil.error(language("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
-					}
-					if (plugin != null) {
-						plugin.setFile(f);
-						plugin.setEnabled(true);
-						plugins.add(plugin);
-					} else {
-						LogUtil.error(language("failed.load.plugin"), f.getName(), "unknown error");
-					}
-				}
-				if (after.size() < 1) {
-					return;
-				}
-				for (File f : after) {
-					Plugin plugin = null;
-					URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
-					InputStream is = u.getResourceAsStream("plugin.ini");
-					assert is != null;
-
-					try {
-						Properties prop = new Properties();
-						prop.load(is);
-						if (prop.containsKey("depend")) {
-							String[] split = prop.getProperty("depend").split(",");
-							for (String s : split) {
-								if (!hasPlugin(s)) {
-									LogUtil.error(language("depend.not.exits"), s);
-									return;
-								}
-							}
-						}
-						plugin = initPlugin(prop, u);
-						plugin.setMyClassLoader(u);
-					} catch (Exception e) {
-						System.out.println();
-						e.printStackTrace();
-					}
-
-					if (plugin != null) {
-						plugin.setFile(f);
-						plugin.setEnabled(true);
-						plugins.add(plugin);
-					} else {
-						LogUtil.error(language("failed.load.plugin"), f.getName(), "unknown error");
-					}
-				}
-			}
-		} catch (Exception e) {
-			LogUtil.error(language("unknown.error"));
-			e.printStackTrace();
-			System.exit(-1);
-		}
-	}
 
 	/**
 	 * Check if there is a new release
@@ -1392,13 +1164,5 @@ public class PluginMain {
 			return false;
 		}
 		return true;
-	}
-}
-
-class MyClassLoader extends ClassLoader {
-	public Class<?> findClass(File file) throws IOException {
-		Path path = file.toPath();
-		byte[] bytes = Files.readAllBytes(path);
-		return defineClass(null, bytes, 0, bytes.length, null);
 	}
 }
