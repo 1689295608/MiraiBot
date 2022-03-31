@@ -1,6 +1,5 @@
 package com.windowx.miraibot.plugin;
 
-import com.windowx.miraibot.PluginMain;
 import com.windowx.miraibot.utils.LogUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,16 +7,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static com.windowx.miraibot.PluginMain.completes;
 import static com.windowx.miraibot.PluginMain.language;
 
 public class PluginLoader {
     public ArrayList<Plugin> plugins;
+    public final HashMap<String, Class<?>> classes = new HashMap<>();
+    public final HashMap<String, PluginClassLoader> loaders = new LinkedHashMap<>();
 
     /**
      * 通过插件名获取插件对象
@@ -89,7 +87,36 @@ public class PluginLoader {
         File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
         if (file.exists()) config.load(new FileReader(file));
         p.setConfig(config);
+        loaders.put(p.getName(), u);
         return p;
+    }
+
+    Class<?> getClassByName(String name) {
+        Class<?> cachedClass = classes.get(name);
+
+        if (cachedClass != null) {
+            return cachedClass;
+        } else {
+            for (String current : loaders.keySet()) {
+                PluginClassLoader loader = loaders.get(current);
+
+                try {
+                    cachedClass = loader.findClass(name, false);
+                } catch (ClassNotFoundException ignored) {
+
+                }
+                if (cachedClass != null) {
+                    return cachedClass;
+                }
+            }
+        }
+        return null;
+    }
+
+    void setClass(final String name, final Class<?> clazz) {
+        if (!classes.containsKey(name)) {
+            classes.put(name, clazz);
+        }
     }
 
     /**
@@ -102,7 +129,7 @@ public class PluginLoader {
     public void loadPlugin(File file, String name) throws Exception {
         if (file.exists()) {
             Plugin plugin = null;
-            PluginClassLoader u = new PluginClassLoader(new URL[]{file.toURI().toURL()}, getClass().getClassLoader());
+            PluginClassLoader u = new PluginClassLoader(new URL[]{file.toURI().toURL()}, getClass().getClassLoader(), this);
             InputStream is = u.getResourceAsStream("plugin.ini");
             if (is != null) {
                 LogUtil.log(language("loading.plugin"), name);
@@ -165,7 +192,7 @@ public class PluginLoader {
             for (File f : pluginsFile) {
                 if (!f.getName().endsWith(".jar")) continue;
                 Plugin plugin = null;
-                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader());
+                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader(), this);
                 InputStream is = u.getResourceAsStream("plugin.ini");
                 if (is == null) {
                     LogUtil.error(language("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
@@ -207,7 +234,7 @@ public class PluginLoader {
             }
             for (File f : after) {
                 Plugin plugin = null;
-                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader());
+                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader(), this);
                 InputStream is = u.getResourceAsStream("plugin.ini");
                 assert is != null;
 
