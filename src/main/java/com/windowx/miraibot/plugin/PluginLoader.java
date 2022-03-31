@@ -83,7 +83,7 @@ public class PluginLoader {
         p.setVersion(plugin.getProperty("version", "1.0.0"));
         p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
         p.setCommands(plugin.getProperty("commands", "").split(","));
-        p.setPluginLoader(u);
+        p.setPluginClassLoader(u);
         p.setPlugin(plugin);
         Properties config = new Properties();
         File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
@@ -189,7 +189,7 @@ public class PluginLoader {
                         }
                     }
                     plugin = init(prop, u);
-                    plugin.setPluginLoader(u);
+                    plugin.setPluginClassLoader(u);
                 } catch (Exception e) {
                     System.out.println();
                     e.printStackTrace();
@@ -224,7 +224,7 @@ public class PluginLoader {
                         }
                     }
                     plugin = init(prop, u);
-                    plugin.setPluginLoader(u);
+                    plugin.setPluginClassLoader(u);
                 } catch (Exception e) {
                     System.out.println();
                     e.printStackTrace();
