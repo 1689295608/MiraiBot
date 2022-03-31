@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class Plugin extends JavaPlugin {
+public class Plugin extends PluginBase {
 	private File file;
 	private String name;
 	private String owner;
@@ -17,7 +17,7 @@ public class Plugin extends JavaPlugin {
 	private String version;
 	private String description;
 	private Properties config;
-	private ClassLoader classLoader;
+	private PluginClassLoader classLoader;
 	private boolean isEnabled;
 	private Properties plugin;
 	private String[] commands;
@@ -30,11 +30,11 @@ public class Plugin extends JavaPlugin {
 		this.commands = commands;
 	}
 	
-	public ClassLoader getMyClassLoader() {
+	public PluginClassLoader getPluginClassLoader() {
 		return classLoader;
 	}
 	
-	public void setMyClassLoader(ClassLoader classLoader) {
+	public void setPluginLoader(PluginClassLoader classLoader) {
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		for (StackTraceElement ste : stack) {
 			if (!ste.getClassName().equals("java.lang.Thread") && !ste.getClassName().equals("com.windowx.miraibot.PluginMain") &&
@@ -172,36 +172,4 @@ public class Plugin extends JavaPlugin {
 	public void warn(String warn) {
 		LogUtil.warn("[" + name + "] " + warn);
 	}
-}
-
-abstract class JavaPlugin {
-	/**
-	 * 用户输入内容并回车时触发
-	 * @param cmd 用户输入的内容
-	 * @return 若为 false 则阻止这条消息被发送
-	 */
-	public boolean onCommand(String cmd) {
-		return true;
-	}
-
-	/**
-	 * 插件加载时触发
-	 */
-	public void onEnable() { }
-
-	/**
-	 * 插件加载完毕时触发
-	 */
-	public void onFinished() { }
-
-	/**
-	 * 插件禁用时触发，也会在关闭机器人时触发
-	 */
-	public void onDisable() { }
-
-	/**
-	 * 在已允许的群中有新消息时触发
-	 * @param event 新消息事件
-	 */
-	public void onGroupMessage(GroupMessageEvent event) { }
 }
