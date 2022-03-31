@@ -32,6 +32,8 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.windowx.miraibot.PluginMain.loader;
+
 public class EventListener implements ListenerHost {
 	public static final ArrayList<MemberJoinRequestEvent> joinRequest = new ArrayList<>();
 	public static final ArrayList<BotInvitedJoinGroupRequestEvent> inviteRequest = new ArrayList<>();
@@ -481,7 +483,7 @@ public class EventListener implements ListenerHost {
 			);
 		}
 		
-		for (Plugin p : PluginMain.plugins) {
+		for (Plugin p : loader.plugins) {
 			if (!p.isEnabled() && msg.trim().isEmpty()) continue;
 			try {
 				p.onGroupMessage(event);
