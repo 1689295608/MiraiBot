@@ -216,7 +216,6 @@ public class PluginLoader {
                         }
                     }
                     plugin = init(prop, u);
-                    plugin.setPluginClassLoader(u);
                 } catch (Exception e) {
                     System.out.println();
                     e.printStackTrace();
@@ -251,7 +250,6 @@ public class PluginLoader {
                         }
                     }
                     plugin = init(prop, u);
-                    plugin.setPluginClassLoader(u);
                 } catch (Exception e) {
                     System.out.println();
                     e.printStackTrace();
