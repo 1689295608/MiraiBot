@@ -34,14 +34,7 @@ public class Plugin extends PluginBase {
 		return classLoader;
 	}
 	
-	public void setPluginLoader(PluginClassLoader classLoader) {
-		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-		for (StackTraceElement ste : stack) {
-			if (!ste.getClassName().equals("java.lang.Thread") && !ste.getClassName().equals("com.windowx.miraibot.PluginMain") &&
-					!ste.getClassName().equals("com.windowx.miraibot.plugin.Plugin")) {
-				return;
-			}
-		}
+	public void setPluginClassLoader(PluginClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}
 
