@@ -74,7 +74,7 @@ public class PluginLoader {
         }
     }
 
-    private Plugin init(Properties plugin, URLClassLoader u) throws Exception {
+    private Plugin init(Properties plugin, PluginClassLoader u) throws Exception {
         Class<?> clazz = u.loadClass(plugin.getProperty("main"));
         Plugin p = (Plugin) clazz.getDeclaredConstructor().newInstance();
         p.setName(plugin.getProperty("name", "Untitled"));
@@ -165,7 +165,7 @@ public class PluginLoader {
             for (File f : pluginsFile) {
                 if (!f.getName().endsWith(".jar")) continue;
                 Plugin plugin = null;
-                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, PluginMain.class.getClassLoader());
+                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader());
                 InputStream is = u.getResourceAsStream("plugin.ini");
                 if (is == null) {
                     LogUtil.error(language("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
@@ -207,7 +207,7 @@ public class PluginLoader {
             }
             for (File f : after) {
                 Plugin plugin = null;
-                URLClassLoader u = new URLClassLoader(new URL[]{f.toURI().toURL()});
+                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader());
                 InputStream is = u.getResourceAsStream("plugin.ini");
                 assert is != null;
 
