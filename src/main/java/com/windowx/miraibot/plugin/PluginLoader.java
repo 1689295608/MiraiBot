@@ -1,11 +1,15 @@
 package com.windowx.miraibot.plugin;
 
+import com.windowx.miraibot.event.Listener;
+import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LogUtil;
+import net.mamoe.mirai.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 
@@ -15,7 +19,68 @@ import static com.windowx.miraibot.PluginMain.language;
 public class PluginLoader {
     public ArrayList<Plugin> plugins;
     public final HashMap<String, Class<?>> classes = new HashMap<>();
-    public final HashMap<String, PluginClassLoader> loaders = new LinkedHashMap<>();
+    public final HashMap<Plugin, PluginClassLoader> loaders = new LinkedHashMap<>();
+    public final HashMap<Plugin, ArrayList<Listener>> listeners = new HashMap<>();
+
+    public void broadcastEvent(Event event) {
+        for(Plugin plugin : listeners.keySet()) {
+            if (!plugin.isEnabled()) continue;
+            ArrayList<Listener> listeners = this.listeners.get(plugin);
+            for(Listener listener : listeners) {
+                Method[] methods = listener.getClass().getMethods();
+                for(Method method : methods) {
+                    if (!method.isAnnotationPresent(Listener.class)) {
+                        continue;
+                    }
+                    try {
+                        Object instance = listener.getClass().getDeclaredConstructor().newInstance();
+                        method.invoke(instance, event);
+                    } catch (Exception e) {
+                        LogUtil.error(ConfigUtil.getLanguage("event.error"),
+                                plugin.getName(),
+                                event.getClass().getName(),
+                                e.toString()
+                        );
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * 注册事件监听器
+     * @param plugin 插件
+     * @param listener 监听器
+     */
+    public void registerListener(Plugin plugin, Listener listener) {
+        ArrayList<Listener> list = listeners.get(plugin);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        if (!list.contains(listener)) {
+            list.add(listener);
+        }
+        listeners.put(plugin, list);
+    }
+
+    /**
+     * 注册多个事件监听器
+     * @param plugin 插件
+     * @param listeners 监听器数组
+     */
+    public void registerListeners(Plugin plugin, Listener[] listeners) {
+        ArrayList<Listener> list = this.listeners.get(plugin);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        for(Listener l : listeners) {
+            if (list.contains(l)) {
+                continue;
+            }
+            list.add(l);
+        }
+        this.listeners.put(plugin, list);
+    }
 
     /**
      * 通过插件名获取插件对象
@@ -66,7 +131,7 @@ public class PluginLoader {
             }
             plugin.setEnabled(false);
             removeClass(plugin.getName());
-            loaders.remove(plugin.getName());
+            loaders.remove(plugin);
             System.gc();
             LogUtil.log(language("unloaded.plugin"), plugin.getName());
         } else {
@@ -89,7 +154,7 @@ public class PluginLoader {
         File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
         if (file.exists()) config.load(new FileReader(file));
         p.setConfig(config);
-        loaders.put(p.getName(), u);
+        loaders.put(p, u);
         return p;
     }
 
@@ -99,7 +164,7 @@ public class PluginLoader {
         if (cachedClass != null) {
             return cachedClass;
         } else {
-            for (String current : loaders.keySet()) {
+            for (Plugin current : loaders.keySet()) {
                 PluginClassLoader loader = loaders.get(current);
 
                 try {
@@ -144,10 +209,11 @@ public class PluginLoader {
                 if (prop.containsKey("depend")) {
                     String[] split = prop.getProperty("depend").split(",");
                     for (String s : split) {
-                        if (!hasPlugin(s)) {
-                            LogUtil.error(language("depend.not.exits"), s);
-                            return;
+                        if (hasPlugin(s)) {
+                            continue;
                         }
+                        LogUtil.error(language("depend.not.exits"), s);
+                        return;
                     }
                 }
                 plugin = init(prop, u);
@@ -249,10 +315,11 @@ public class PluginLoader {
                     if (prop.containsKey("depend")) {
                         String[] split = prop.getProperty("depend").split(",");
                         for (String s : split) {
-                            if (!hasPlugin(s)) {
-                                LogUtil.error(language("depend.not.exits"), s);
-                                return;
+                            if (hasPlugin(s)) {
+                                continue;
                             }
+                            LogUtil.error(language("depend.not.exits"), s);
+                            return;
                         }
                     }
                     plugin = init(prop, u);
