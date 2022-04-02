@@ -1,12 +1,11 @@
 package com.windowx.miraibot.plugin;
 
 import com.windowx.miraibot.utils.LogUtil;
-import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class Plugin extends PluginBase {
@@ -21,7 +20,16 @@ public class Plugin extends PluginBase {
 	private boolean isEnabled;
 	private Properties plugin;
 	private String[] commands;
-	
+	private PluginLoader loader;
+
+	public PluginLoader getPluginLoader() {
+		return loader;
+	}
+
+	public void setPluginLoader(PluginLoader loader) {
+		this.loader = loader;
+	}
+
 	public String[] getCommands() {
 		return commands;
 	}
