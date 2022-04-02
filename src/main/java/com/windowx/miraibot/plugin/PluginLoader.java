@@ -65,6 +65,8 @@ public class PluginLoader {
                 e.printStackTrace();
             }
             plugin.setEnabled(false);
+            removeClass(plugin.getName());
+            loaders.remove(plugin.getName());
             System.gc();
             LogUtil.log(language("unloaded.plugin"), plugin.getName());
         } else {
@@ -117,6 +119,10 @@ public class PluginLoader {
         if (!classes.containsKey(name)) {
             classes.put(name, clazz);
         }
+    }
+
+    void removeClass(final String name) {
+        classes.remove(name);
     }
 
     /**
