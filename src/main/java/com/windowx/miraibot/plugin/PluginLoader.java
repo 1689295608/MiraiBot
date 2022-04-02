@@ -1,6 +1,7 @@
 package com.windowx.miraibot.plugin;
 
 import com.windowx.miraibot.event.Listener;
+import com.windowx.miraibot.event.ListenerHost;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.event.Event;
@@ -20,13 +21,13 @@ public class PluginLoader {
     public ArrayList<Plugin> plugins;
     public final HashMap<String, Class<?>> classes = new HashMap<>();
     public final HashMap<Plugin, PluginClassLoader> loaders = new LinkedHashMap<>();
-    public final HashMap<Plugin, ArrayList<Listener>> listeners = new HashMap<>();
+    public final HashMap<Plugin, ArrayList<ListenerHost>> listeners = new HashMap<>();
 
     public void broadcastEvent(Event event) {
         for(Plugin plugin : listeners.keySet()) {
             if (!plugin.isEnabled()) continue;
-            ArrayList<Listener> listeners = this.listeners.get(plugin);
-            for(Listener listener : listeners) {
+            ArrayList<ListenerHost> listeners = this.listeners.get(plugin);
+            for(ListenerHost listener : listeners) {
                 Method[] methods = listener.getClass().getMethods();
                 for(Method method : methods) {
                     if (!method.isAnnotationPresent(Listener.class)) {
@@ -52,8 +53,8 @@ public class PluginLoader {
      * @param plugin 插件
      * @param listener 监听器
      */
-    public void registerListener(Plugin plugin, Listener listener) {
-        ArrayList<Listener> list = listeners.get(plugin);
+    public void registerListener(Plugin plugin, ListenerHost listener) {
+        ArrayList<ListenerHost> list = listeners.get(plugin);
         if (list == null) {
             list = new ArrayList<>();
         }
@@ -68,12 +69,12 @@ public class PluginLoader {
      * @param plugin 插件
      * @param listeners 监听器数组
      */
-    public void registerListeners(Plugin plugin, Listener[] listeners) {
-        ArrayList<Listener> list = this.listeners.get(plugin);
+    public void registerListeners(Plugin plugin, ListenerHost[] listeners) {
+        ArrayList<ListenerHost> list = this.listeners.get(plugin);
         if (list == null) {
             list = new ArrayList<>();
         }
-        for(Listener l : listeners) {
+        for(ListenerHost l : listeners) {
             if (list.contains(l)) {
                 continue;
             }
