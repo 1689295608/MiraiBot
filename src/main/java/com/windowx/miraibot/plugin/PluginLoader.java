@@ -33,15 +33,25 @@ public class PluginLoader {
                     if (!method.isAnnotationPresent(EventHandler.class)) {
                         continue;
                     }
+                    Class<?>[] type = method.getParameterTypes();
+                    if (type.length < 1) {
+                        continue;
+                    }
+                    Class<?> ec = event.getClass();
+                    if (type[0] != event.getClass() && !ec.isAssignableFrom(type[0]) && !type[0].isAssignableFrom(ec)) {
+                        continue;
+                    }
                     try {
                         Object instance = listener.getClass().getDeclaredConstructor().newInstance();
                         method.invoke(instance, event);
+
                     } catch (Exception e) {
                         LogUtil.error(ConfigUtil.getLanguage("event.error"),
                                 plugin.getName(),
-                                event.getClass().getName(),
+                                className(event.getClass().getName()),
                                 e.toString()
                         );
+                        System.out.println();
                         e.printStackTrace();
                     }
                 }
@@ -83,6 +93,10 @@ public class PluginLoader {
         this.listeners.put(plugin, list);
     }
 
+    private String className(String name) {
+        String[] split = name.split("\\.");
+        return split[split.length - 1];
+    }
     /**
      * 通过插件名获取插件对象
      *
