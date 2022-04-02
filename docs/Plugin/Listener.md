@@ -99,8 +99,10 @@ public class Demo extends Plugin {
 ```Java
 package com.demo;
 
+import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.event.ListenerHost;
 import com.windowx.mirainot.event.EventHandler;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public class DemoListener implements ListenerHost {
   static Plugin plugin;
