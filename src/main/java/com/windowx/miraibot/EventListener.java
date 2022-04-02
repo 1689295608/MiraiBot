@@ -5,6 +5,7 @@ import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LogUtil;
 import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.*;
+import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.EventPriority;
 import net.mamoe.mirai.event.ListenerHost;
@@ -41,6 +42,11 @@ public class EventListener implements ListenerHost {
 	public static File autoRespond;
 	public static ArrayList<MessageSource> messages = new ArrayList<>();
 	public static JSONObject autoRespondConfig;
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEvent(Event event) {
+		loader.broadcastEvent(event);
+	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupJoin(MemberJoinEvent event) {
