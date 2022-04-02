@@ -1,6 +1,6 @@
 package com.windowx.miraibot.plugin;
 
-import com.windowx.miraibot.event.Listener;
+import com.windowx.miraibot.event.EventHandler;
 import com.windowx.miraibot.event.ListenerHost;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LogUtil;
@@ -30,7 +30,7 @@ public class PluginLoader {
             for(ListenerHost listener : listeners) {
                 Method[] methods = listener.getClass().getMethods();
                 for(Method method : methods) {
-                    if (!method.isAnnotationPresent(Listener.class)) {
+                    if (!method.isAnnotationPresent(EventHandler.class)) {
                         continue;
                     }
                     try {
