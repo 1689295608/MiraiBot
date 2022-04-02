@@ -1,5 +1,6 @@
 package com.windowx.miraibot.plugin;
 
+import com.windowx.miraibot.PluginMain;
 import com.windowx.miraibot.event.EventHandler;
 import com.windowx.miraibot.event.ListenerHost;
 import com.windowx.miraibot.utils.ConfigUtil;
@@ -165,6 +166,7 @@ public class PluginLoader {
         p.setCommands(plugin.getProperty("commands", "").split(","));
         p.setPluginClassLoader(u);
         p.setPlugin(plugin);
+        p.setPluginLoader(PluginMain.loader);
         Properties config = new Properties();
         File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
         if (file.exists()) config.load(new FileReader(file));
