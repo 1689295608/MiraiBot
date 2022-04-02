@@ -160,6 +160,7 @@ public class LanguageUtil {
 					"contact=联系人\n" +
 					"cannot.create.plugin.dir=创建插件目录失败\n" +
 					"depend.not.exits=缺少插件依赖 \"%s\"\n" +
+					"event.error=执行 %s 插件的 %s 事件时出现错误：%s\n" +
 					"unknown.error=出现错误！进程即将终止！\n").getBytes();
 		} else if (language.equals("tw")) {
 			return ("# 中文（繁體）\n" +
@@ -313,6 +314,7 @@ public class LanguageUtil {
 					"contact=聯係人\n" +
 					"cannot.create.plugin.dir=創建插件目錄失敗\n" +
 					"depend.not.exits=缺少插件依賴 \"%s\"\n" +
+					"event.error=執行 %s 插件的 %s 事件時出現錯誤：%s\n" +
 					"unknown.error=出現錯誤！進程即將終止！\n").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
@@ -466,6 +468,7 @@ public class LanguageUtil {
 					"contact=Contact\n" +
 					"cannot.create.plugin.dir=Failed to create plugin directory\n" +
 					"depend.not.exits=Missing plugin dependency \"%s\"\n" +
+					"event.error=Error executing %s event for %s plugin: %s\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
