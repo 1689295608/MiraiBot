@@ -114,8 +114,6 @@ public class PluginMain {
 		ConfigUtil.getConfig("ansiColor");
 		LogUtil.ansiColor = Boolean.parseBoolean(ConfigUtil.getConfig("ansiColor"));
 
-		loadAutoRespond();
-
 		if (!checkConfig()) {
 			LogUtil.error(language("config.error"));
 			System.exit(-1);
@@ -154,8 +152,10 @@ public class PluginMain {
 				noBotLog();
 			}});
 			bot.login();
+
 			LogUtil.log(language("registering.event"));
 			GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
+
 			LogUtil.log(language("login.success"), bot.getNick());
 			String os = System.getProperty("os.name").toLowerCase();
 			if (os.contains("windows")) {
@@ -284,7 +284,6 @@ public class PluginMain {
 			case "reload":
 				if (cmd.length == 1) {
 					ConfigUtil.init();
-					loadAutoRespond();
 					LogUtil.log(language("reloaded"));
 				} else {
 					try {
@@ -1045,39 +1044,6 @@ public class PluginMain {
 			return EventListener.messages.get(id - 1);
 		}
 		return null;
-	}
-
-	/**
-	 * 加载自动回复
-	 */
-	public static void loadAutoRespond() {
-		EventListener.autoRespond = new File("AutoRespond.json");
-		if (!EventListener.autoRespond.exists()) {
-			try {
-				if (!EventListener.autoRespond.createNewFile()) {
-					LogUtil.error(language("failed.create.config"));
-					System.exit(-1);
-				}
-				FileOutputStream fos = new FileOutputStream(EventListener.autoRespond);
-				URL url = ClassLoader.getSystemResource("AutoRespond.json");
-				if (url != null) {
-					fos.write(url.openStream().readAllBytes());
-				}
-				fos.flush();
-				fos.close();
-			} catch (IOException e) {
-				LogUtil.error(language("failed.create.config"));
-				System.out.println();
-				e.printStackTrace();
-				System.exit(-1);
-			}
-		}
-		try {
-			EventListener.autoRespondConfig = new JSONObject(new String(new FileInputStream(EventListener.autoRespond).readAllBytes()));
-		} catch (IOException e) {
-			System.out.println();
-			e.printStackTrace();
-		}
 	}
 
 	/**
