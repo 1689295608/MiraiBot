@@ -17,7 +17,6 @@ public class LogUtil {
 	static byte[] all = new byte[0];
 	static File file;
 	public static boolean ansiColor;
-	public static String lastOpt;
 	
 	/**
 	 * Initialize the log system
@@ -110,7 +109,6 @@ public class LogUtil {
 	public static String write(String str, Object... args) {
 		if (str == null) return null;
 		str = String.format(str, args);
-		lastOpt = str;
 		String time = formatTime();
 		try {
 			FileInputStream fis = new FileInputStream(file);
