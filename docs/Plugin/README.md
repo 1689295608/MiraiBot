@@ -15,11 +15,11 @@
 你需要了解并储备一定的编程基础和 Java 基础，推荐使用 [Practie-It](https://practiceit.cs.washington.edu/) 学习 Java。
 
 ### 安装相关编译环境
-请前往 [Open JDK](https://jdk.java.net/) 下载**不低于 JDK 11**的 `Open JDK`
+请前往 [Open JDK](https://jdk.java.net/) 下载**不低于 JDK 17**的 `Open JDK`
 
-> 本项目基于 JDK 11 开发, 所以请使用 JDK 11 及以上的 Java 运行本程序!
+> 本项目基于 JDK 17 开发, 所以请使用 JDK 17 及以上的 Java 运行本程序!
 
-基于 JDK 11 开发，也代表着编译环境不能低于 JDK 11。
+基于 JDK 17 开发，也代表着编译环境不能低于 JDK 17。
 
 #### 目前需要注意的就这些，接下来 开始你的插件之旅吧！
 
