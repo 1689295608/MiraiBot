@@ -42,10 +42,10 @@ public class PluginLoader {
                     if (type[0] != event.getClass() && !ec.isAssignableFrom(type[0]) && !type[0].isAssignableFrom(ec)) {
                         continue;
                     }
+                    method.setAccessible(true);
                     try {
                         Object instance = listener.getClass().getDeclaredConstructor().newInstance();
                         method.invoke(instance, event);
-
                     } catch (Exception e) {
                         LogUtil.error(ConfigUtil.getLanguage("event.error"),
                                 plugin.getName(),
