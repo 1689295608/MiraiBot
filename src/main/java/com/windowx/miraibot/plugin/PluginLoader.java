@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
@@ -29,6 +30,10 @@ public class PluginLoader {
             if (!plugin.isEnabled()) continue;
             ArrayList<ListenerHost> listeners = this.listeners.get(plugin);
             for(ListenerHost listener : listeners) {
+                Field[] fields = listener.getClass().getFields();
+                for(Field field : fields) {
+                    field.setAccessible(true);
+                }
                 Method[] methods = listener.getClass().getMethods();
                 for(Method method : methods) {
                     if (!method.isAnnotationPresent(EventHandler.class)) {
