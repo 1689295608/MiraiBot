@@ -420,8 +420,11 @@ public class PluginMain {
                     Command c = commands.get(co);
                     String name = c.getName();
                     help.append(name)
-                            .append("\t".repeat((int) Math.floor((16 - name.length()) / 8F)))
-                            .append(c.getDescription())
+                            .append("\t");
+                    if (name.length() < 8) {
+                        help.append("\t");
+                    }
+                    help.append(c.getDescription())
                             .append("\n");
                 }
                 help.append("· -------------------------------------- ·");
