@@ -25,9 +25,15 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static com.windowx.miraibot.EventListener.messages;
 
 public class PluginMain {
     public static final String language = Locale.getDefault().getLanguage();
@@ -411,7 +417,7 @@ public class PluginMain {
             }
             case "clear" -> {
                 logger.clear();
-                EventListener.messages = new ArrayList<>();
+                messages = new ArrayList<>();
                 logger.info(language("console.cleared"));
             }
             case "help" -> {
@@ -437,7 +443,7 @@ public class PluginMain {
                     help.append(c.getDescription())
                             .append("\n");
                 }
-                help.append("· -------------------------------------- ·");
+                help.append("· -------------------------------------------- ·");
                 logger.info(help.toString());
             }
             case "send" -> {
@@ -805,32 +811,33 @@ public class PluginMain {
                     break;
                 }
                 try {
-                    if (Integer.parseInt(cmd[1]) - 1 >= 0) {
-                        MessageSource message = EventListener.messages.get(Integer.parseInt(cmd[1]) - 1);
-                        if (message != null) {
-                            if (message.getFromId() == message.getBotId()) {
-                                try {
-                                    Mirai.getInstance().recallMessage(bot, message);
-                                    logger.info(language("recalled"));
-                                } catch (Exception e) {
-                                    logger.error(language("failed.recall"));
-                                }
-                            } else {
-                                try {
-                                    Mirai.getInstance().recallMessage(bot, message);
-                                    logger.info(language("recalled"));
-                                } catch (PermissionDeniedException e) {
-                                    logger.error(language("no.permission"));
-                                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
-                                } catch (Exception e) {
-                                    logger.error(language("failed.recall"));
-                                }
-                            }
-                        } else {
-                            logger.error(language("message.not.found"));
+                    int index = Integer.parseInt(cmd[1]) - 1;
+                    if (index < 0 || messages.size() <= index) {
+                        logger.error(language("message.not.found"));
+                        break;
+                    }
+                    MessageSource message = messages.get(Integer.parseInt(cmd[1]) - 1);
+                    if (message == null) {
+                        logger.error(language("message.not.found"));
+                        break;
+                    }
+                    if (message.getFromId() == message.getBotId()) {
+                        try {
+                            Mirai.getInstance().recallMessage(bot, message);
+                            logger.info(language("recalled"));
+                        } catch (Exception e) {
+                            logger.error(language("failed.recall"));
                         }
                     } else {
-                        logger.error(language("message.not.found"));
+                        try {
+                            Mirai.getInstance().recallMessage(bot, message);
+                            logger.info(language("recalled"));
+                        } catch (PermissionDeniedException e) {
+                            logger.error(language("no.permission"));
+                            if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                        } catch (Exception e) {
+                            logger.error(language("failed.recall"));
+                        }
                     }
                 } catch (NumberFormatException e) {
                     logger.error(language("message.id.error"));
@@ -975,10 +982,21 @@ public class PluginMain {
      */
     public static void checkUpdate(String u) {
         try {
-            URL update = new URL(Objects.requireNonNullElse(u, "https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion"));
-            InputStream is = update.openStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-            String LatestVersion = new String(bis.readAllBytes()).replaceAll("\\n", "");
+            HttpClient client = HttpClient.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .build();
+
+            String def = "https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion";
+            URI uri = new URI(u == null ? def : u);
+            HttpRequest request = HttpRequest.newBuilder(uri).build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                throw new Exception("status code is not 200");
+            }
+            String v = response.body();
+
             URL url = ClassLoader.getSystemResource("Version");
             String version = "0.0.0";
             if (url != null) {
@@ -986,11 +1004,11 @@ public class PluginMain {
             }
             try {
                 String nowV = version.replaceAll("[^0-9.]", "");
-                String newV = LatestVersion.replaceAll("[^0-9.]", "");
+                String newV = v.replaceAll("[^0-9.]", "");
                 if (!nowV.equals(newV)) {
-                    logger.warn(language("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + LatestVersion);
+                    logger.warn(language("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + newV);
                 } else {
-                    logger.info(language("already.latest.version"), LatestVersion);
+                    logger.info(language("already.latest.version"), newV);
                 }
             } catch (Exception e) {
                 logger.error(language("failed.check.update"), e.toString());
@@ -1010,7 +1028,7 @@ public class PluginMain {
      */
     public static MessageSource getMessageById(int id) {
         if (id > 0) {
-            return EventListener.messages.get(id - 1);
+            return messages.get(id - 1);
         }
         return null;
     }
