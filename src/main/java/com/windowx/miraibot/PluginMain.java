@@ -415,7 +415,7 @@ public class PluginMain {
                 logger.info(language("console.cleared"));
             }
             case "help" -> {
-                int page = 0;
+                int page = 1;
                 if (cmd.length > 1) {
                     page = Integer.parseInt(cmd[1]);
                 }
@@ -426,8 +426,10 @@ public class PluginMain {
                     break;
                 }
                 StringBuilder help = new StringBuilder();
-                help.append(String.format("· ------====== MiraiBot 第 %d/%d 页 ======------ ·\n", page + 1, pages));
-                for (int i = page * 10 ; i < page * 10 + 10 ; i ++) {
+                int index = (page - 1) * 10;
+                help.append(String.format("· ------====== MiraiBot 第 %d/%d 页 ======------ ·\n", page, pages));
+                for (int i = index ; i < index + 10 ; i ++) {
+                    if(i >= key.length) break;
                     Command c = commands.get(key[i]);
                     String name = c.getName();
                     help.append(name)
