@@ -74,8 +74,6 @@ public void onGroupMessage(GroupMessageEvent event) {
 
 这样在 MiraiBot 触发 `GroupMessageEvent` 时便会调用这个方法 且将事件传递到这个方法的第一个参数
 
-**小提示：** 由于 Method.invoke 的奇怪特性，目前所有 Listener 的变量都需要是 static 的，否则会出现错误！
-
 ## 示例效果
 **Demo.java** 主类
 ```Java
@@ -84,13 +82,15 @@ package com.demo;
 import com.windowx.miraibot.plugin.Plugin;
 
 public class Demo extends Plugin {
+  public static Logger logger;
+  
   @Override
   public void onEnable() {
     // 注册事件
     PluginLoader loader = this.getPluginLoader();
     loader.registerListener(this, new DemoListener());
-    // 设置变量，为了方便调用插件的方法
-    DemoListener.plugin = this;
+    // 设置变量，在 DemoListener 中直接调用
+    logger = this.getLogger();
   }
 }
 ```
@@ -99,17 +99,16 @@ public class Demo extends Plugin {
 ```Java
 package com.demo;
 
+import com.demo.Demo;
 import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.event.ListenerHost;
 import com.windowx.mirainot.event.EventHandler;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 public class DemoListener implements ListenerHost {
-  static Plugin plugin;
-  
   @EventHandler
   public void onGroupMessage(GroupMessageEvent event) {
-    plugin.info(event.getNick() + ": " + event.getMessage());
+    logger.info(event.getNick() + ": " + event.getMessage());
   }
 }
 ```
