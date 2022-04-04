@@ -162,33 +162,27 @@ public class Plugin extends PluginBase {
 		this.logger = logger;
 	}
 
-	@Deprecated
 	public void info(String info, Object... args) {
-		this.getLogger().info(info, args);
+		logger.info(info, args);
 	}
 
-	@Deprecated
 	public void error(String error, Object... args) {
-		this.getLogger().error(error, args);
+		logger.error(error, args);
 	}
 
-	@Deprecated
 	public void warn(String warn, Object... args) {
-		this.getLogger().warn(warn, args);
+		logger.warn(warn, args);
 	}
 
-	@Deprecated
 	public void info(String info) {
-		this.getLogger().info(info);
+		logger.info(info);
 	}
 
-	@Deprecated
 	public void error(String error) {
-		this.getLogger().error(error);
+		logger.error(error);
 	}
 
-	@Deprecated
 	public void warn(String warn) {
-		this.getLogger().warn(warn);
+		logger.warn(warn);
 	}
 }
