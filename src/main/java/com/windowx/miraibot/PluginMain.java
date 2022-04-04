@@ -415,10 +415,15 @@ public class PluginMain {
                 logger.info(language("console.cleared"));
             }
             case "help" -> {
+                int page = 0;
+                if (cmd.length > 1) {
+                    page = Integer.parseInt(cmd[1]);
+                }
                 StringBuilder help = new StringBuilder();
-                help.append("· --------====== MiraiBot ======-------- ·\n");
-                for (String co : commands.keys()) {
-                    Command c = commands.get(co);
+                String[] key = commands.keys();
+                help.append(String.format("· ------====== MiraiBot 第 %d/%d 页 ======------ ·\n", page, (int) Math.floor(key.length / 10F)));
+                for (int i = page * 10 ; i < 10 ; i ++) {
+                    Command c = commands.get(key[i]);
                     String name = c.getName();
                     help.append(name)
                             .append(" ".repeat(16 - name.length()));
