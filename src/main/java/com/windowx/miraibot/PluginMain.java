@@ -418,8 +418,9 @@ public class PluginMain {
                 help.append("· --------====== MiraiBot ======-------- ·");
                 for (String co : commands.keys()) {
                     Command c = commands.get(co);
-                    help.append(c.getName())
-                            .append("\t")
+                    String name = c.getName();
+                    help.append(name)
+                            .append("\t".repeat((int) Math.floor((16 - name.length()) / 8F)))
                             .append(c.getDescription())
                             .append("\n");
                 }
