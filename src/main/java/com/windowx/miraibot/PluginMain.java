@@ -1,5 +1,7 @@
 package com.windowx.miraibot;
 
+import com.windowx.miraibot.command.Command;
+import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.plugin.PluginLoader;
 import com.windowx.miraibot.utils.*;
@@ -28,7 +30,6 @@ import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.*;
 
 public class PluginMain {
@@ -38,12 +39,10 @@ public class PluginMain {
     public static String[] allowedGroups;
     public static Bot bot;
     public static final PluginLoader loader = new PluginLoader();
-    public static final ArrayList<String> completes = new ArrayList<>(Arrays.asList(
-            "accept-request", "accept-invite", "avatar", "checkUpdate", "del", "friendList", "memberList", "help", "image", "imageInfo", "kick", "language", "load",
-            "music", "mute", "nameCard", "newImg", "plugins", "reload", "reply", "recall", "send", "stop", "unload", "upClipImg", "upImg")
-    );
     public static boolean running;
     public static final Logger logger = new Logger();
+    public static final Commands commands = new Commands();
+    public static LineReader reader;
 
     public static void main(String[] args) {
         String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
@@ -157,6 +156,31 @@ public class PluginMain {
             } else if (os.contains("linux")) {
                 new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
             }
+
+            String[] cmds = new String[] {
+                    "reload", "stop",
+                    "friendList", "memberList",
+                    "plugins", "language",
+                    "clear", "help",
+                    "send", "kick",
+                    "nudge", "mute",
+                    "avatar", "voice",
+                    "image", "imageInfo",
+                    "upImg", "upClipImg",
+                    "newImg", "del",
+                    "reply", "checkUpdate",
+                    "accept-request", "accept-invite",
+                    "nameCard", "recall",
+                    "group", "unload",
+                    "load", "music",
+                    "dice"
+            };
+            for (String c : cmds) {
+                String l = c.replaceAll("([A-Z])", ".$1").toLowerCase();
+                String de = language("command." + l);
+                commands.set(c, new Command(c, de));
+            }
+
             try {
                 File pluginDir = new File("plugins");
                 if (!pluginDir.exists()) {
@@ -170,7 +194,8 @@ public class PluginMain {
                     try {
                         logger.info(language("enabling.plugin"), p.getName());
                         p.onEnable();
-                        completes.addAll(List.of(p.getCommands()));
+
+                        loader.add2commands(p.getCommands());
                     } catch (Exception e) {
                         p.setEnabled(false);
                         logger.error(language("failed.load.plugin"), p.getName(), e.toString());
@@ -206,9 +231,7 @@ public class PluginMain {
                 }
             }
             running = true;
-            LineReaderBuilder builder = LineReaderBuilder.builder();
-            builder.completer(new StringsCompleter(completes));
-            LineReader reader = builder.build();
+            reloadCommands();
             while (running) {
                 if (reader.isReading()) continue;
                 String msg = reader.readLine();
@@ -241,6 +264,12 @@ public class PluginMain {
             logger.error(language("unknown.error"));
             System.exit(-1);
         }
+    }
+
+    public static void reloadCommands() {
+        LineReaderBuilder builder = LineReaderBuilder.builder();
+        builder.completer(new StringsCompleter(commands.keys()));
+        reader = builder.build();
     }
 
     public static String decodeUnicode(final String dataStr) {
