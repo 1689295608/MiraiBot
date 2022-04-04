@@ -4,7 +4,7 @@ import com.windowx.miraibot.PluginMain;
 import com.windowx.miraibot.event.EventHandler;
 import com.windowx.miraibot.event.ListenerHost;
 import com.windowx.miraibot.utils.ConfigUtil;
-import com.windowx.miraibot.utils.LogUtil;
+import com.windowx.miraibot.utils.Logger;
 import net.mamoe.mirai.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,8 +15,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 
-import static com.windowx.miraibot.PluginMain.completes;
-import static com.windowx.miraibot.PluginMain.language;
+import static com.windowx.miraibot.PluginMain.*;
 
 public class PluginLoader {
     public ArrayList<Plugin> plugins;
@@ -46,7 +45,7 @@ public class PluginLoader {
                         Object instance = listener.getClass().getDeclaredConstructor().newInstance();
                         method.invoke(instance, event);
                     } catch (Exception e) {
-                        LogUtil.error(ConfigUtil.getLanguage("event.error"),
+                        logger.error(ConfigUtil.getLanguage("event.error"),
                                 plugin.getName(),
                                 className(event.getClass().getName()),
                                 e.toString()
@@ -138,7 +137,7 @@ public class PluginLoader {
             }
         }
         if (plugin != null) {
-            LogUtil.log(language("unloading.plugin"), plugin.getName());
+            logger.info(language("unloading.plugin"), plugin.getName());
             try {
                 plugin.onDisable();
             } catch (Exception e) {
@@ -148,9 +147,9 @@ public class PluginLoader {
             removeClass(plugin.getName());
             loaders.remove(plugin);
             System.gc();
-            LogUtil.log(language("unloaded.plugin"), plugin.getName());
+            logger.info(language("unloaded.plugin"), plugin.getName());
         } else {
-            LogUtil.error(language("plugin.not.exits"), name);
+            logger.error(language("plugin.not.exits"), name);
         }
     }
 
@@ -166,6 +165,7 @@ public class PluginLoader {
         p.setPluginClassLoader(u);
         p.setPlugin(plugin);
         p.setPluginLoader(PluginMain.loader);
+        p.setLogger(new Logger("[" + p.getName() + "] "));
         Properties config = new Properties();
         File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
         if (file.exists()) config.load(new FileReader(file));
@@ -219,7 +219,7 @@ public class PluginLoader {
             PluginClassLoader u = new PluginClassLoader(new URL[]{file.toURI().toURL()}, getClass().getClassLoader(), this);
             InputStream is = u.getResourceAsStream("plugin.ini");
             if (is != null) {
-                LogUtil.log(language("loading.plugin"), name);
+                logger.info(language("loading.plugin"), name);
                 Properties prop = new Properties();
                 prop.load(is);
                 if (prop.containsKey("depend")) {
@@ -228,20 +228,20 @@ public class PluginLoader {
                         if (hasPlugin(s)) {
                             continue;
                         }
-                        LogUtil.error(language("depend.not.exits"), s);
+                        logger.error(language("depend.not.exits"), s);
                         return;
                     }
                 }
                 plugin = init(prop, u);
             } else {
-                LogUtil.error(language("failed.load.plugin"), file.getName(), "\"plugin.ini\" not found");
+                logger.error(language("failed.load.plugin"), file.getName(), "\"plugin.ini\" not found");
             }
             if (plugin != null) {
                 plugin.setFile(file);
                 Plugin p = getPlugin(plugin.getName());
                 if (p != null) {
                     if (p.isEnabled()) {
-                        LogUtil.warn(language("plugin.already.loaded"), plugin.getName());
+                        logger.warn(language("plugin.already.loaded"), plugin.getName());
                         plugins.remove(p);
                         return;
                     }
@@ -254,12 +254,12 @@ public class PluginLoader {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                LogUtil.log(language("loaded.plugin"), plugin.getName());
+                logger.info(language("loaded.plugin"), plugin.getName());
             } else {
-                LogUtil.error(language("failed.load.plugin"), file.getName(), "unknown error");
+                logger.error(language("failed.load.plugin"), file.getName(), "unknown error");
             }
         } else {
-            LogUtil.error(language("plugin.file.not.exits")
+            logger.error(language("plugin.file.not.exits")
                     , name
             );
         }
@@ -283,7 +283,7 @@ public class PluginLoader {
                 PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader(), this);
                 InputStream is = u.getResourceAsStream("plugin.ini");
                 if (is == null) {
-                    LogUtil.error(language("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
+                    logger.error(language("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
                     continue;
                 }
                 try {
@@ -313,7 +313,7 @@ public class PluginLoader {
                     plugin.setEnabled(true);
                     plugins.add(plugin);
                 } else {
-                    LogUtil.error(language("failed.load.plugin"), f.getName(), "unknown error");
+                    logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
                 }
             }
             if (after.size() < 1) {
@@ -334,7 +334,7 @@ public class PluginLoader {
                             if (hasPlugin(s)) {
                                 continue;
                             }
-                            LogUtil.error(language("depend.not.exits"), s);
+                            logger.error(language("depend.not.exits"), s);
                             return;
                         }
                     }
@@ -349,11 +349,11 @@ public class PluginLoader {
                     plugin.setEnabled(true);
                     plugins.add(plugin);
                 } else {
-                    LogUtil.error(language("failed.load.plugin"), f.getName(), "unknown error");
+                    logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
                 }
             }
         } catch (Exception e) {
-            LogUtil.error(language("unknown.error"));
+            logger.error(language("unknown.error"));
             e.printStackTrace();
             System.exit(-1);
         }
