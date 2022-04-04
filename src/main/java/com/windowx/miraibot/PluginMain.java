@@ -175,6 +175,7 @@ public class PluginMain {
             };
             for (String c : cmds) {
                 String l = c.replaceAll("([A-Z])", ".$1").toLowerCase();
+                l = l.replaceAll("-", ".");
                 String de = language("command." + l);
                 commands.set(c, new Command(c, de));
             }
@@ -415,7 +416,7 @@ public class PluginMain {
             }
             case "help" -> {
                 StringBuilder help = new StringBuilder();
-                help.append("· --------====== MiraiBot ======-------- ·");
+                help.append("· --------====== MiraiBot ======-------- ·\n");
                 for (String co : commands.keys()) {
                     Command c = commands.get(co);
                     String name = c.getName();
@@ -427,7 +428,7 @@ public class PluginMain {
                     help.append(c.getDescription())
                             .append("\n");
                 }
-                help.append("· -------------------------------------- ·");
+                help.append("· -------------------------------------- ·\n");
                 logger.info(help.toString());
             }
             case "send" -> {
