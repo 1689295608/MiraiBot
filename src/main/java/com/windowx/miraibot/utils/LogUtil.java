@@ -69,10 +69,11 @@ public class LogUtil {
      */
     public static String formatStr(String prefix, String str) {
         String[] spl = str.split("\n");
-        if (spl.length == 1) return str;
+        if (spl.length == 1) return replaceColor(prefix + str);
         StringBuilder sb = new StringBuilder();
         for (String s : spl) {
-            s = s + prefix;
+            s = prefix + s;
+            s = replaceColor(s);
             if (sb.toString().isEmpty()) {
                 sb.append(s).append("\n");
                 continue;
@@ -80,6 +81,31 @@ public class LogUtil {
             sb.append(formatTime()).append(s).append("\n");
         }
         return sb.toString();
+    }
+
+    public static String replaceColor(String str) {
+        if (!ansiColor) return str.replaceAll("&[0-9a-f]", "");
+        return str.replaceAll("&0", ansi().fgRgb(12, 12, 12).toString())
+                .replaceAll("&1", ansi().fgRgb(0, 55, 218).toString())
+                .replaceAll("&2", ansi().fgRgb(19, 161, 14).toString())
+                .replaceAll("&3", ansi().fgRgb(58, 150, 221).toString())
+                .replaceAll("&4", ansi().fgRgb(197, 15, 31).toString())
+                .replaceAll("&5", ansi().fgRgb(136, 23, 152).toString())
+                .replaceAll("&6", ansi().fgRgb(193, 156, 0).toString())
+                .replaceAll("&7", ansi().fgRgb(204, 204, 204).toString())
+                .replaceAll("&8", ansi().fgRgb(118, 118, 118).toString())
+                .replaceAll("&9", ansi().fgRgb(59, 120, 255).toString())
+                .replaceAll("&a", ansi().fgRgb(22, 198, 12).toString())
+                .replaceAll("&b", ansi().fgRgb(97, 214, 214).toString())
+                .replaceAll("&c", ansi().fgRgb(231, 72, 86).toString())
+                .replaceAll("&d", ansi().fgRgb(180, 0, 165).toString())
+                .replaceAll("&e", ansi().fgRgb(249, 241, 165).toString())
+                .replaceAll("&f", ansi().fgRgb(242, 242, 242).toString())
+                .replaceAll("&l", ansi().a(Ansi.Attribute.INTENSITY_BOLD).toString())
+                .replaceAll("&m", ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString())
+                .replaceAll("&n", ansi().a(Ansi.Attribute.UNDERLINE).toString())
+                .replaceAll("&o", ansi().a(Ansi.Attribute.ITALIC).toString())
+                .replaceAll("&r", ansi().reset().toString()) + ansi().reset();
     }
 
     /**
