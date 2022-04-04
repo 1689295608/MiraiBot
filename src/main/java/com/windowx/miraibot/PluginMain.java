@@ -57,8 +57,7 @@ public class PluginMain {
                     (language.equals("tw") ? "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021" :
                             "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021"));
         } catch (Exception e) {
-            System.out.println();
-            e.printStackTrace();
+            logger.trace(e);
         }
         try {
             File eula = new File("eula.txt");
@@ -85,7 +84,7 @@ public class PluginMain {
                 System.exit(0);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.trace(e);
             System.exit(-1);
         }
 
@@ -103,8 +102,7 @@ public class PluginMain {
             }
         } catch (IOException e) {
             logger.info(err);
-            System.out.println();
-            e.printStackTrace();
+            logger.trace(e);
             System.exit(-1);
         }
         ConfigUtil.init();
@@ -176,12 +174,12 @@ public class PluginMain {
                     } catch (Exception e) {
                         p.setEnabled(false);
                         logger.error(language("failed.load.plugin"), p.getName(), e.toString());
-                        e.printStackTrace();
+                        logger.trace(e);
                     }
                 }
             } catch (Exception e) {
+                logger.trace(e);
                 logger.error(language("unknown.error"));
-                e.printStackTrace();
                 System.exit(-1);
             }
 
@@ -204,7 +202,7 @@ public class PluginMain {
                 try {
                     p.onFinished();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.trace(e);
                 }
             }
             running = true;
@@ -233,14 +231,14 @@ public class PluginMain {
                 }
             }
         } catch (NumberFormatException e) {
+            logger.trace(e);
             logger.error(language("qq.password.error"));
-            e.printStackTrace();
             System.exit(-1);
         } catch (UserInterruptException | EndOfFileException e) {
             System.exit(0);
         } catch (Exception e) {
+            logger.trace(e);
             logger.error(language("unknown.error"));
-            e.printStackTrace();
             System.exit(-1);
         }
     }
@@ -294,7 +292,7 @@ public class PluginMain {
                         logger.info(language("unloading.plugin"), cmd[1]);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.trace(e);
                 }
             }
             case "stop" -> {
@@ -304,7 +302,7 @@ public class PluginMain {
                     try {
                         p.onDisable();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.trace(e);
                     }
                 }
                 bot.close();
@@ -993,7 +991,7 @@ public class PluginMain {
                         boolean s = p.onCommand(msg);
                         if (!s) isCmd = true;
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.trace(e);
                     }
                 }
                 rt = isCmd;
@@ -1126,8 +1124,7 @@ public class PluginMain {
                 logger.warn(language("please.restart"));
                 System.exit(0);
             } catch (IOException e) {
-                System.out.println();
-                e.printStackTrace();
+                logger.trace(e);
             }
             return false;
         }
