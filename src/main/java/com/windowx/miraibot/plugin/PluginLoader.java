@@ -50,8 +50,7 @@ public class PluginLoader {
                                 className(event.getClass().getName()),
                                 e.toString()
                         );
-                        System.out.println();
-                        e.printStackTrace();
+                        logger.trace(e);
                     }
                 }
             }
@@ -141,7 +140,7 @@ public class PluginLoader {
             try {
                 plugin.onDisable();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.trace(e);
             }
             plugin.setEnabled(false);
             removeClass(plugin.getName());
@@ -257,7 +256,7 @@ public class PluginLoader {
                 plugin.onEnable();
                 completes.addAll(List.of(plugin.getCommands()));
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.trace(e);
             }
             logger.info(language("loaded.plugin"), plugin.getName());
         } else {
@@ -305,8 +304,7 @@ public class PluginLoader {
                     }
                     plugin = init(prop, u);
                 } catch (Exception e) {
-                    System.out.println();
-                    e.printStackTrace();
+                    logger.trace(e);
                 }
                 if (plugin != null) {
                     plugin.setFile(f);
@@ -340,8 +338,7 @@ public class PluginLoader {
                     }
                     plugin = init(prop, u);
                 } catch (Exception e) {
-                    System.out.println();
-                    e.printStackTrace();
+                    logger.trace(e);
                 }
 
                 if (plugin != null) {
@@ -353,8 +350,8 @@ public class PluginLoader {
                 }
             }
         } catch (Exception e) {
+            logger.trace(e);
             logger.error(language("unknown.error"));
-            e.printStackTrace();
             System.exit(-1);
         }
     }
