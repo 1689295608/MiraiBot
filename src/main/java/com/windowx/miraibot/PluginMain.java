@@ -39,7 +39,7 @@ public class PluginMain {
     public static boolean running;
     public static final Logger logger = new Logger();
     public static final Commands commands = new Commands();
-    public static StringsCompleter completer = new StringsCompleter();
+    public static StringsCompleter completer;
     public static LineReader reader;
 
     public static void main(String[] args) {
@@ -179,6 +179,9 @@ public class PluginMain {
                 commands.set(c, new Command(c, de));
             }
             completer = new StringsCompleter(commands.keys());
+            LineReaderBuilder builder = LineReaderBuilder.builder();
+            builder.completer(completer);
+            reader = builder.build();
 
             try {
                 File pluginDir = new File("plugins");
@@ -230,9 +233,6 @@ public class PluginMain {
                 }
             }
             running = true;
-            LineReaderBuilder builder = LineReaderBuilder.builder();
-            builder.completer(completer);
-            reader = builder.build();
             reloadCommands();
             while (running) {
                 if (reader.isReading()) continue;
