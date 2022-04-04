@@ -1,6 +1,6 @@
 package com.windowx.miraibot.plugin;
 
-import com.windowx.miraibot.utils.LogUtil;
+import com.windowx.miraibot.utils.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +21,7 @@ public class Plugin extends PluginBase {
 	private Properties plugin;
 	private String[] commands;
 	private PluginLoader loader;
+	private Logger logger;
 
 	public PluginLoader getPluginLoader() {
 		return loader;
@@ -65,15 +66,30 @@ public class Plugin extends PluginBase {
 	public void setConfig(Properties properties) {
 		this.config = properties;
 	}
-	
+
+	public File getDataFolder() {
+		return new File("plugins" + File.separator + name);
+	}
+
+	public void saveDefaultConfig() {
+		InputStream is = getResourceAsStream("config.ini");
+		if (is == null) return;
+		try {
+			config.load(is);
+			saveConfig();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void saveConfig() throws IOException {
-		File file = new File("plugins/" + name + "/");
+		File file = getDataFolder();
 		if (!file.exists()) {
 			if (!file.mkdirs()) {
 				throw new IOException("Cloud not create dirs: " + config);
 			}
 		}
-		file = new File("plugins/" + name + "/config.ini");
+		file = new File(file, "config.ini");
 		if (!file.exists()) {
 			if (!file.createNewFile()) {
 				throw new IOException("Cloud not create config file: " + config);
@@ -137,40 +153,36 @@ public class Plugin extends PluginBase {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+
 	public void info(String info, Object... args) {
-		LogUtil.log("[" + name + "] " + info, args);
+		logger.info("[" + name + "] " + info, args);
 	}
-	
+
 	public void error(String error, Object... args) {
-		LogUtil.error("[" + name + "] " + error, args);
+		logger.error("[" + name + "] " + error, args);
 	}
-	
+
 	public void warn(String warn, Object... args) {
-		LogUtil.warn("[" + name + "] " + warn, args);
+		logger.warn("[" + name + "] " + warn, args);
 	}
-	
-	public void infop(String prefix, String info, Object... args) {
-		LogUtil.logp(prefix, "[" + name + "] " + info, args);
-	}
-	
-	public void errorp(String prefix, String error, Object... args) {
-		LogUtil.errorp(prefix, "[" + name + "] " + error, args);
-	}
-	
-	public void warnp(String prefix, String warn, Object... args) {
-		LogUtil.warnp(prefix, "[" + name + "] " + warn, args);
-	}
-	
+
 	public void info(String info) {
-		LogUtil.log("[" + name + "] " + info);
+		logger.info("[" + name + "] " + info);
 	}
-	
+
 	public void error(String error) {
-		LogUtil.error("[" + name + "] " + error);
+		logger.error("[" + name + "] " + error);
 	}
-	
+
 	public void warn(String warn) {
-		LogUtil.warn("[" + name + "] " + warn);
+		logger.warn("[" + name + "] " + warn);
 	}
 }
