@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.util.Properties;
 
+import static com.windowx.miraibot.PluginMain.logger;
+
 public class ConfigUtil {
 	public static final Properties config = new Properties();
 	public static final Properties language = new Properties();
@@ -24,7 +26,7 @@ public class ConfigUtil {
 				language.load(new BufferedReader(new FileReader("language.properties")));
 			}
 		} catch (IOException e) {
-			LogUtil.log(ConfigUtil.getLanguage("unknown.error"));
+			logger.info(ConfigUtil.getLanguage("unknown.error"));
 			e.printStackTrace();
 			System.exit(-1);
 		}
