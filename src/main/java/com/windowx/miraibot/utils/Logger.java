@@ -2,6 +2,7 @@ package com.windowx.miraibot.utils;
 
 public class Logger {
     private String prefix = "";
+
     public Logger() {
         LogUtil.init();
     }
@@ -30,8 +31,12 @@ public class Logger {
     public void error(String str, Object... args) {
         LogUtil.error_p(prefix, str, args);
     }
-    
+
     public void clear() {
         LogUtil.clear();
+    }
+
+    public void trace(Exception e) {
+        LogUtil.trace(e);
     }
 }
