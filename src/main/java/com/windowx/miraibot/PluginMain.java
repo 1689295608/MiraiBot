@@ -18,10 +18,7 @@ import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.fusesource.jansi.AnsiConsole;
-import org.jline.reader.EndOfFileException;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.UserInterruptException;
+import org.jline.reader.*;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +39,7 @@ public class PluginMain {
     public static boolean running;
     public static final Logger logger = new Logger();
     public static final Commands commands = new Commands();
+    public static StringsCompleter completer;
     public static LineReader reader;
 
     public static void main(String[] args) {
@@ -231,6 +229,9 @@ public class PluginMain {
                 }
             }
             running = true;
+            LineReaderBuilder builder = LineReaderBuilder.builder();
+            builder.completer(new StringsCompleter(commands.keys()));
+            reader = builder.build();
             reloadCommands();
             while (running) {
                 if (reader.isReading()) continue;
@@ -267,9 +268,8 @@ public class PluginMain {
     }
 
     public static void reloadCommands() {
-        LineReaderBuilder builder = LineReaderBuilder.builder();
-        builder.completer(new StringsCompleter(commands.keys()));
-        reader = builder.build();
+        completer = new StringsCompleter(commands.keys());
+        completer.complete(reader, null, null);
     }
 
     public static String decodeUnicode(final String dataStr) {
