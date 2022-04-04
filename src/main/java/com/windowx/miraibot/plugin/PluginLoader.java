@@ -1,6 +1,7 @@
 package com.windowx.miraibot.plugin;
 
 import com.windowx.miraibot.PluginMain;
+import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.event.EventHandler;
 import com.windowx.miraibot.event.ListenerHost;
 import com.windowx.miraibot.utils.ConfigUtil;
@@ -128,28 +129,23 @@ public class PluginLoader {
      * @param name 插件名
      */
     public void unloadPlugin(String name) {
-        Plugin plugin = null;
-        for (Plugin value : plugins) {
-            if (value.getName().equals(name)) {
-                plugin = value;
-                break;
-            }
-        }
-        if (plugin != null) {
-            logger.info(language("unloading.plugin"), plugin.getName());
-            try {
-                plugin.onDisable();
-            } catch (Exception e) {
-                logger.trace(e);
-            }
-            plugin.setEnabled(false);
-            removeClass(plugin.getName());
-            loaders.remove(plugin);
-            System.gc();
-            logger.info(language("unloaded.plugin"), plugin.getName());
-        } else {
+        Plugin plugin = getPlugin(name);
+        if (plugin == null) {
             logger.error(language("plugin.not.exits"), name);
+            return;
         }
+        logger.info(language("unloading.plugin"), plugin.getName());
+        try {
+            plugin.onDisable();
+        } catch (Exception e) {
+            logger.trace(e);
+        }
+        plugin.setEnabled(false);
+        removeCommands(plugin.getCommands());
+        removeClass(plugin.getName());
+        loaders.remove(plugin);
+        System.gc();
+        logger.info(language("unloaded.plugin"), plugin.getName());
     }
 
     private Plugin init(Properties plugin, PluginClassLoader u) throws Exception {
@@ -160,7 +156,6 @@ public class PluginLoader {
         p.setClassName(plugin.getProperty("main"));
         p.setVersion(plugin.getProperty("version", "1.0.0"));
         p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
-        p.setCommands(plugin.getProperty("commands", "").split(","));
         p.setPluginClassLoader(u);
         p.setPlugin(plugin);
         p.setPluginLoader(PluginMain.loader);
@@ -254,7 +249,8 @@ public class PluginLoader {
             plugins.add(plugin);
             try {
                 plugin.onEnable();
-                completes.addAll(List.of(plugin.getCommands()));
+
+                add2commands(plugin.getCommands());
             } catch (Exception e) {
                 logger.trace(e);
             }
@@ -262,6 +258,20 @@ public class PluginLoader {
         } else {
             logger.error(language("failed.load.plugin"), file.getName(), "unknown error");
         }
+    }
+
+    public void add2commands(Commands commands) {
+        for (String command : commands.keys()) {
+            PluginMain.commands.set(command, commands.get(command));
+        }
+        reloadCommands();
+    }
+
+    public void removeCommands(Commands commands) {
+        for (String command : commands.keys()) {
+            PluginMain.commands.remove(command);
+        }
+        reloadCommands();
     }
 
     /**
