@@ -268,8 +268,11 @@ public class PluginMain {
     }
 
     public static void reloadCommands() {
-        completer = new StringsCompleter(commands.keys());
-        completer.complete(reader, null, null);
+        ArrayList<Candidate> candidates = new ArrayList<>();
+        for (String cmd : commands.keys()) {
+            candidates.add(new Candidate(cmd));
+        }
+        completer.complete(reader, null, candidates);
     }
 
     public static String decodeUnicode(final String dataStr) {
