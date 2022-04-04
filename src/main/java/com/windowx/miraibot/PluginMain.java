@@ -111,8 +111,7 @@ public class PluginMain {
 			System.exit(-1);
 		}
 		ConfigUtil.init();
-		ConfigUtil.getConfig("ansiColor");
-		LogUtil.ansiColor = Boolean.parseBoolean(ConfigUtil.getConfig("ansiColor"));
+		LogUtil.ansiColor = Boolean.parseBoolean(ConfigUtil.getConfig("ansi-console"));
 
 		if (!checkConfig()) {
 			LogUtil.error(language("config.error"));
