@@ -13,11 +13,10 @@ import java.util.Date;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class LogUtil {
-	public static StringBuilder messages = new StringBuilder();
 	static byte[] all = new byte[0];
 	static File file;
 	public static boolean ansiColor;
-	
+
 	/**
 	 * Initialize the log system
 	 */
@@ -59,7 +58,7 @@ public class LogUtil {
 			System.exit(-1);
 		}
 	}
-	
+
 	/**
 	 * 获取多行优化后的内容
 	 * @param str 内容
@@ -80,7 +79,7 @@ public class LogUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 无前缀的优化
 	 * @param str 内容
@@ -89,7 +88,7 @@ public class LogUtil {
 	public static String formatStr(String str) {
 		return formatStr("", str);
 	}
-	
+
 	/**
 	 * 获取格式化后的时间
 	 * @return 格式化后的时间
@@ -129,7 +128,7 @@ public class LogUtil {
 		}
 		return time;
 	}
-	
+
 	/**
 	 * Output a message and record it in the log file
 	 *
@@ -139,17 +138,17 @@ public class LogUtil {
 		if (str == null) return;
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
 	}
-	
+
 	public static void log(String str) {
 		if (str == null) return;
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
-	
-	public static void logp(String prefix, String str, Object... args) {
+
+	public static void log_p(String prefix, String str, Object... args) {
 		if (str == null) return;
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
 	}
-	
+
 	/**
 	 * Output an error message and record it in the log file
 	 *
@@ -169,14 +168,14 @@ public class LogUtil {
 		}
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
-	public static void errorp(String prefix, String str, Object... args) {
+	public static void error_p(String prefix, String str, Object... args) {
 		if (str == null) return;
 		if (ansiColor) {
 			str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
 		}
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
 	}
-	
+
 	/**
 	 * Output an error message and record it in the log file
 	 *
@@ -189,7 +188,7 @@ public class LogUtil {
 		}
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
 	}
-	
+
 	public static void warn(String str) {
 		if (str == null) return;
 		if (ansiColor) {
@@ -197,15 +196,15 @@ public class LogUtil {
 		}
 		AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
 	}
-	
-	public static void warnp(String prefix, String str, Object... args) {
+
+	public static void warn_p(String prefix, String str, Object... args) {
 		if (str == null) return;
 		if (ansiColor) {
 			str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
 		}
 		AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
 	}
-	
+
 	/**
 	 * Combine two byte[] into one byte[]
 	 *
@@ -219,7 +218,7 @@ public class LogUtil {
 		System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
 		return byte3;
 	}
-	
+
 	/**
 	 * Clear the console text
 	 */
