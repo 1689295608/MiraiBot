@@ -166,6 +166,7 @@ public class LanguageUtil {
 					event.error=执行 %s 插件的 %s 事件时出现错误：%s
 					exception.string=问题 %s 描述: %s
 					exception.details=\\t 在 %s.%s（%s 的第 %d 行）
+					page.not.exits=该页并不存在！
 					unknown.error=出现错误！进程即将终止！
 					""").getBytes();
 		} else if (language.equals("tw")) {
@@ -326,6 +327,7 @@ public class LanguageUtil {
 					event.error=執行 %s 插件的 %s 事件時出現錯誤：%s
 					exception.string=問題 %s 描述: %s
 					exception.details=\\t 在 %s.%s（%s 的第 %d 行）
+					page.not.exits=該頁並不存在！
 					unknown.error=出現錯誤！進程即將終止！
 					""").getBytes();
 		} else {
@@ -485,6 +487,7 @@ public class LanguageUtil {
 					"event.error=Error executing %s event for %s plugin: %s\n" +
 					"exception.string=%s: %s\n" +
 					"exception.details=\\t at %s.%s(%s:%d）\n" +
+					"page.not.exits=This page does not exist!\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
