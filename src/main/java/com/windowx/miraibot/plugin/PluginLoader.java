@@ -28,7 +28,7 @@ public class PluginLoader {
             if (!plugin.isEnabled()) continue;
             ArrayList<ListenerHost> listeners = this.listeners.get(plugin);
             for(ListenerHost listener : listeners) {
-                Method[] methods = listener.getClass().getMethods();
+                Method[] methods = listener.getClass().getDeclaredMethods();
                 for(Method method : methods) {
                     if (!method.isAnnotationPresent(EventHandler.class)) {
                         continue;
@@ -42,8 +42,7 @@ public class PluginLoader {
                         continue;
                     }
                     try {
-                        Object instance = listener.getClass().getDeclaredConstructor().newInstance();
-                        method.invoke(instance, event);
+                        method.invoke(listener, event);
                     } catch (Exception e) {
                         logger.error(ConfigUtil.getLanguage("event.error"),
                                 plugin.getName(),
