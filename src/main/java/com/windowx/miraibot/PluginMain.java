@@ -419,10 +419,15 @@ public class PluginMain {
                 if (cmd.length > 1) {
                     page = Integer.parseInt(cmd[1]);
                 }
-                StringBuilder help = new StringBuilder();
                 String[] key = commands.keys();
-                help.append(String.format("· ------====== MiraiBot 第 %d/%d 页 ======------ ·\n", page, (int) Math.floor(key.length / 10F)));
-                for (int i = page * 10 ; i < 10 ; i ++) {
+                int pages = (int) Math.floor(key.length / 10F);
+                if (page > pages) {
+                    logger.warn(language("page.not.exits"));
+                    break;
+                }
+                StringBuilder help = new StringBuilder();
+                help.append(String.format("· ------====== MiraiBot 第 %d/%d 页 ======------ ·\n", page + 1, pages));
+                for (int i = page * 10 ; i < page * 10 + 10 ; i ++) {
                     Command c = commands.get(key[i]);
                     String name = c.getName();
                     help.append(name)
