@@ -420,7 +420,7 @@ public class PluginMain {
                     page = Integer.parseInt(cmd[1]);
                 }
                 String[] key = commands.keys();
-                int pages = (int) Math.floor(key.length / 10F);
+                int pages = (int) Math.floor(key.length / 10F) + 1;
                 if (page > pages) {
                     logger.warn(language("page.not.exits"));
                     break;
