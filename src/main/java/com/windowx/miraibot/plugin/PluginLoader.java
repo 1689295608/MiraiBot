@@ -214,54 +214,54 @@ public class PluginLoader {
      * @throws Exception 报错
      */
     public void loadPlugin(File file, String name) throws Exception {
-        if (file.exists()) {
-            Plugin plugin = null;
-            PluginClassLoader u = new PluginClassLoader(new URL[]{file.toURI().toURL()}, getClass().getClassLoader(), this);
-            InputStream is = u.getResourceAsStream("plugin.ini");
-            if (is != null) {
-                logger.info(language("loading.plugin"), name);
-                Properties prop = new Properties();
-                prop.load(is);
-                if (prop.containsKey("depend")) {
-                    String[] split = prop.getProperty("depend").split(",");
-                    for (String s : split) {
-                        if (hasPlugin(s)) {
-                            continue;
-                        }
-                        logger.error(language("depend.not.exits"), s);
-                        return;
-                    }
-                }
-                plugin = init(prop, u);
-            } else {
-                logger.error(language("failed.load.plugin"), file.getName(), "\"plugin.ini\" not found");
-            }
-            if (plugin != null) {
-                plugin.setFile(file);
-                Plugin p = getPlugin(plugin.getName());
-                if (p != null) {
-                    if (p.isEnabled()) {
-                        logger.warn(language("plugin.already.loaded"), plugin.getName());
-                        plugins.remove(p);
-                        return;
-                    }
-                }
-                plugin.setEnabled(true);
-                plugins.add(plugin);
-                try {
-                    plugin.onEnable();
-                    completes.addAll(List.of(plugin.getCommands()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                logger.info(language("loaded.plugin"), plugin.getName());
-            } else {
-                logger.error(language("failed.load.plugin"), file.getName(), "unknown error");
-            }
-        } else {
+        if (!file.exists()) {
             logger.error(language("plugin.file.not.exits")
                     , name
             );
+            return;
+        }
+        Plugin plugin = null;
+        PluginClassLoader u = new PluginClassLoader(new URL[]{ file.toURI().toURL() }, getClass().getClassLoader(), this);
+        InputStream is = u.getResourceAsStream("plugin.ini");
+        if (is != null) {
+            logger.info(language("loading.plugin"), name);
+            Properties prop = new Properties();
+            prop.load(is);
+            if (prop.containsKey("depend")) {
+                String[] split = prop.getProperty("depend").split(",");
+                for (String s : split) {
+                    if (hasPlugin(s)) {
+                        continue;
+                    }
+                    logger.error(language("depend.not.exits"), s);
+                    return;
+                }
+            }
+            plugin = init(prop, u);
+        } else {
+            logger.error(language("failed.load.plugin"), file.getName(), "\"plugin.ini\" not found");
+        }
+        if (plugin != null) {
+            plugin.setFile(file);
+            Plugin p = getPlugin(plugin.getName());
+            if (p != null) {
+                if (p.isEnabled()) {
+                    logger.warn(language("plugin.already.loaded"), plugin.getName());
+                    plugins.remove(p);
+                    return;
+                }
+            }
+            plugin.setEnabled(true);
+            plugins.add(plugin);
+            try {
+                plugin.onEnable();
+                completes.addAll(List.of(plugin.getCommands()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            logger.info(language("loaded.plugin"), plugin.getName());
+        } else {
+            logger.error(language("failed.load.plugin"), file.getName(), "unknown error");
         }
     }
 
