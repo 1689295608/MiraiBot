@@ -80,18 +80,7 @@ public class ConfigUtil {
 				e.printStackTrace();
 			}
 			if (tmpLanguage.containsKey(key)) {
-				try {
-					File langFile = new File("language.properties");
-					FileInputStream fis = new FileInputStream(langFile);
-					FileOutputStream fos = new FileOutputStream(langFile);
-					String content = new String(fis.readAllBytes());
-					content += (content.endsWith("\n") ? "" : "\n") + key + "=" + tmpLanguage.getProperty(key) + "\n";
-					fos.write(content.getBytes());
-					fos.close();
-					language.load(new BufferedReader(new FileReader(langFile)));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				return tmpLanguage.getProperty(key);
 			} else {
 				return "";
 			}
