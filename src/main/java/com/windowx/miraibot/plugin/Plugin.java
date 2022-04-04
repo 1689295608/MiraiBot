@@ -1,5 +1,6 @@
 package com.windowx.miraibot.plugin;
 
+import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.utils.Logger;
 
 import java.io.File;
@@ -19,7 +20,7 @@ public class Plugin extends PluginBase {
 	private PluginClassLoader classLoader;
 	private boolean isEnabled;
 	private Properties plugin;
-	private String[] commands;
+	private Commands commands;
 	private PluginLoader loader;
 	private Logger logger;
 
@@ -31,11 +32,11 @@ public class Plugin extends PluginBase {
 		this.loader = loader;
 	}
 
-	public String[] getCommands() {
+	public Commands getCommands() {
 		return commands;
 	}
 	
-	public void setCommands(String[] commands) {
+	public void setCommands(Commands commands) {
 		this.commands = commands;
 	}
 	
