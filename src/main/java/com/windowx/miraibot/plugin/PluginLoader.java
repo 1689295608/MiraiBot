@@ -158,6 +158,7 @@ public class PluginLoader {
         p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
         p.setPluginClassLoader(u);
         p.setPlugin(plugin);
+        p.setCommands(new Commands());
         p.setPluginLoader(PluginMain.loader);
         p.setLogger(new Logger("[" + p.getName() + "] "));
         Properties config = new Properties();
