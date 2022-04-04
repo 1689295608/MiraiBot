@@ -421,14 +421,11 @@ public class PluginMain {
                     Command c = commands.get(co);
                     String name = c.getName();
                     help.append(name)
-                            .append("\t");
-                    if (name.length() < 8) {
-                        help.append("\t");
-                    }
+                            .append(" ".repeat(16 - name.length()));
                     help.append(c.getDescription())
                             .append("\n");
                 }
-                help.append("· -------------------------------------- ·\n");
+                help.append("· -------------------------------------- ·");
                 logger.info(help.toString());
             }
             case "send" -> {
