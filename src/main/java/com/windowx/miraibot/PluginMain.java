@@ -178,6 +178,7 @@ public class PluginMain {
                 String de = language("command." + l);
                 commands.set(c, new Command(c, de));
             }
+            completer = new StringsCompleter(commands.keys());
 
             try {
                 File pluginDir = new File("plugins");
@@ -272,7 +273,8 @@ public class PluginMain {
         for (String cmd : commands.keys()) {
             candidates.add(new Candidate(cmd));
         }
-        completer.complete(reader, null, candidates);
+        ParsedLine parsed = reader.getParsedLine();
+        completer.complete(reader, parsed, candidates);
     }
 
     public static String decodeUnicode(final String dataStr) {
@@ -412,96 +414,17 @@ public class PluginMain {
                 logger.info(language("console.cleared"));
             }
             case "help" -> {
-                String help = "· --------====== MiraiBot ======-------- ·\n" +
-                        "accept-invite <" + language("invite.id") + ">\n" +
-                        " - " + language("command.accept.invite") + "\n" +
-
-                        "accept-request <" + language("request.id") + ">\n" +
-                        " - " + language("command.accept.request") + "\n" +
-
-                        "avatar <" + language("qq") + ">\n" +
-                        " - " + language("command.avatar") + "\n" +
-
-                        "checkUpdate \n" +
-                        " - " + language("command.check.update") + "\n" +
-
-                        "del <" + language("qq") + ">\n" +
-                        " - " + language("command.del") + "\n" +
-
-                        "friendList\n" +
-                        " - " + language("command.friend.list") + "\n" +
-
-                        "group\n" +
-                        " - " + language("command.group") + "\n" +
-
-                        "help\n" +
-                        " - " + language("command.help") + "\n" +
-
-                        "image <" + language("file.path") + ">\n" +
-                        " - " + language("command.image") + "\n" +
-
-                        "imageInfo <" + language("image.id") + ">\n" +
-                        " - " + language("command.image.info") + "\n" +
-
-                        "kick <" + language("qq") + "> <" + language("reason") + ">\n" +
-                        " - " + language("command.kick") + "\n" +
-
-                        "language <" + language("language") + ">\n" +
-                        " - " + language("command.language") + "\n" +
-
-                        "load <" + language("file.name") + ">\n" +
-                        " - " + language("command.load") + "\n" +
-
-                        "memberList\n" +
-                        " - " + language("command.member.list") + "\n" +
-
-                        "music <" + language("music.id") + "> [" + language("contact") + "]\n" +
-                        " - " + language("command.music") + "\n" +
-
-                        "mute <" + language("qq") + "> <" + language("time") + ">\n" +
-                        " - " + language("command.mute") + "\n" +
-
-                        "nameCard <" + language("qq") + "> <" + language("name.card") + ">" + ">\n" +
-                        " - " + language("command.name.card") + "\n" +
-
-                        "newImg <" + language("width") + "> <" + language("height") + "> <" +
-                        language("font.size") + "> <" + language("contents") + ">\n" +
-                        " - " + language("command.new.img") + "\n" +
-
-                        "nudge <" + language("qq") + ">\n" +
-                        " - " + language("command.nudge") + "\n" +
-
-                        "plugins\n" +
-                        " - " + language("command.plugins") + "\n" +
-
-                        "reload <" + language("plugin.name") + ">\n" +
-                        " - " + language("command.reload") + "\n" +
-
-                        "reply <" + language("message.id") + "> <" + language("contents") + ">\n" +
-                        " - " + language("command.reply") + "\n" +
-
-                        "recall <" + language("message.id") + ">\n" +
-                        " - " + language("command.recall") + "\n" +
-
-                        "send <" + language("qq") + "> <" + language("contents") + ">\n" +
-                        " - " + language("command.send") + "\n" +
-
-                        "stop\n" +
-                        " - " + language("command.stop") + "\n" +
-
-                        "unload <" + language("plugin.name") + ">\n" +
-                        " - " + language("command.unload") + "\n" +
-
-                        "upClipImg\n" +
-                        " - " + language("command.up.clip.img") + "\n" +
-
-                        "upImg <" + language("file.path") + ">\n" +
-                        " - " + language("command.up.img") + "\n" +
-
-                        "voice <" + language("file.path") + ">\n" +
-                        " - " + language("command.voice") + "\n" +
-                        "· -------------------------------------- ·\n";
-                logger.info(help);
+                StringBuilder help = new StringBuilder();
+                help.append("· --------====== MiraiBot ======-------- ·");
+                for (String co : commands.keys()) {
+                    Command c = commands.get(co);
+                    help.append(c.getName())
+                            .append("\t")
+                            .append(c.getDescription())
+                            .append("\n");
+                }
+                help.append("· -------------------------------------- ·");
+                logger.info(help.toString());
             }
             case "send" -> {
                 if (cmd.length <= 2) {
