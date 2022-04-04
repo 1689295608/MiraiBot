@@ -163,7 +163,7 @@ public class LanguageUtil {
 					depend.not.exits=缺少插件依赖 "%s"
 					event.error=执行 %s 插件的 %s 事件时出现错误：%s
 					exception.string=问题 %s 描述: %s
-					exception.details=\s\s\s\s在 %s.%s（%s 的第 %d 行）
+					exception.details=\\s\\s在 %s.%s（%s 的第 %d 行）
 					unknown.error=出现错误！进程即将终止！
 					""").getBytes();
 		} else if (language.equals("tw")) {
@@ -321,7 +321,7 @@ public class LanguageUtil {
 					depend.not.exits=缺少插件依賴 "%s"
 					event.error=執行 %s 插件的 %s 事件時出現錯誤：%s
 					exception.string=問題 %s 描述: %s
-					exception.details=\s\s在 %s.%s（%s 的第 %d 行）
+					exception.details=\\s\\s在 %s.%s（%s 的第 %d 行）
 					unknown.error=出現錯誤！進程即將終止！
 					""").getBytes();
 		} else {
@@ -478,7 +478,7 @@ public class LanguageUtil {
 					"depend.not.exits=Missing plugin dependency \"%s\"\n" +
 					"event.error=Error executing %s event for %s plugin: %s\n" +
 					"exception.string=%s: %s\n" +
-					"exception.details=\s\sat %s.%s(%s:%d）\n" +
+					"exception.details=\\s\\sat %s.%s(%s:%d）\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
