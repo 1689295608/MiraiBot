@@ -74,7 +74,7 @@ public class LogUtil {
         for (String s : spl) {
             s = s + prefix;
             if (sb.toString().isEmpty()) {
-                sb.append(s.replaceAll("\\\\s", " ")).append("\n");
+                sb.append(s).append("\n");
                 continue;
             }
             sb.append(formatTime()).append(s).append("\n");
