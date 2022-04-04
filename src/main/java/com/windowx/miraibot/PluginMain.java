@@ -33,7 +33,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static com.windowx.miraibot.EventListener.messages;
+import static com.windowx.miraibot.EventListener.*;
 
 public class PluginMain {
     public static final String language = Locale.getDefault().getLanguage();
@@ -728,21 +728,22 @@ public class PluginMain {
                     break;
                 }
                 try {
-                    if (Integer.parseInt(cmd[1]) - 1 >= 0) {
-                        MemberJoinRequestEvent request = EventListener.joinRequest.get(Integer.parseInt(cmd[1]) - 1);
-                        if (request != null) {
-                            try {
-                                request.accept();
-                                logger.info(language("request.accepted"));
-                                EventListener.joinRequest.remove(request);
-                            } catch (Exception e) {
-                                logger.error(language("failed.accept.request"));
-                            }
-                        } else {
-                            logger.error(language("request.not.found"));
-                        }
-                    } else {
+                    int index = Integer.parseInt(cmd[1]) - 1;
+                    if (index < 0 || joinRequest.size() <= index) {
                         logger.error(language("request.not.found"));
+                        break;
+                    }
+                    MemberJoinRequestEvent request = joinRequest.get(Integer.parseInt(cmd[1]) - 1);
+                    if (request == null) {
+                        logger.error(language("request.not.found"));
+                        break;
+                    }
+                    try {
+                        request.accept();
+                        logger.info(language("request.accepted"));
+                        joinRequest.remove(request);
+                    } catch (Exception e) {
+                        logger.error(language("failed.accept.request"));
                     }
                 } catch (NumberFormatException e) {
                     logger.error(language("request.id.error"));
@@ -755,20 +756,21 @@ public class PluginMain {
                     break;
                 }
                 try {
-                    if (Integer.parseInt(cmd[1]) - 1 >= 0) {
-                        BotInvitedJoinGroupRequestEvent request = EventListener.inviteRequest.get(Integer.parseInt(cmd[1]) - 1);
-                        if (request != null) {
-                            try {
-                                request.accept();
-                                logger.info(language("invite.accepted"));
-                            } catch (Exception e) {
-                                logger.error(language("failed.accept.invite"));
-                            }
-                        } else {
-                            logger.error(language("invite.not.found"));
-                        }
-                    } else {
+                    int index = Integer.parseInt(cmd[1]) - 1;
+                    if (index < 0 || inviteRequest.size() <= index) {
                         logger.error(language("invite.not.found"));
+                        break;
+                    }
+                    BotInvitedJoinGroupRequestEvent request = inviteRequest.get(Integer.parseInt(cmd[1]) - 1);
+                    if (request == null) {
+                        logger.error(language("invite.not.found"));
+                        break;
+                    }
+                    try {
+                        request.accept();
+                        logger.info(language("invite.accepted"));
+                    } catch (Exception e) {
+                        logger.error(language("failed.accept.invite"));
                     }
                 } catch (NumberFormatException e) {
                     logger.error(language("invite.id.error"));
@@ -783,19 +785,19 @@ public class PluginMain {
                 }
                 try {
                     NormalMember member = group.get(Long.parseLong(cmd[1]));
-                    if (member != null) {
-                        StringBuilder nameCard = new StringBuilder();
-                        for (int i = 2; i < cmd.length; i++) {
-                            nameCard.append(cmd[i]);
-                            if (i != cmd.length - 1) {
-                                nameCard.append(" ");
-                            }
-                        }
-                        member.setNameCard(nameCard.toString());
-                        logger.info(language("name.card.set"), member.getNick(), nameCard.toString());
-                    } else {
+                    if (member == null) {
                         logger.error(language("not.user"));
+                        break;
                     }
+                    StringBuilder nameCard = new StringBuilder();
+                    for (int i = 2; i < cmd.length; i++) {
+                        nameCard.append(cmd[i]);
+                        if (i != cmd.length - 1) {
+                            nameCard.append(" ");
+                        }
+                    }
+                    member.setNameCard(nameCard.toString());
+                    logger.info(language("name.card.set"), member.getNick(), nameCard.toString());
                 } catch (NumberFormatException e) {
                     logger.error(language("not.qq"), cmd[1]);
                     if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
