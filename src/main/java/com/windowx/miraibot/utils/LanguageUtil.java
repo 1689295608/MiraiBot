@@ -106,6 +106,8 @@ public class LanguageUtil {
 					command.nudge=戳一戳某人
 					command.voice=发送一个语音
 					command.accept.invite=接受一个邀请入群请求
+					command.clear=清空控制台
+					command.dice=发送一个自定义值的骰子
 					name.card.set=已将 %s 的群昵称设置为 %s
 					reloaded=已重新加载配置文件！
 					before.settings=在启动前，您需要完成一些最基础的设置
@@ -263,6 +265,8 @@ public class LanguageUtil {
 					command.music=通過網易云音樂 ID 分享音樂
 					command.nudge=戳一戳某人
 					command.voice=發送一個語音
+					command.clear=清空控制台
+					command.dice=發送一個自定義值的骰子
 					command.accept.invite=接受一個邀請入群請求
 					name.card.set=已将 %s 的群昵称设置为 %s
 					reloaded=已重新加載配置文件！
@@ -421,6 +425,8 @@ public class LanguageUtil {
 					"command.nudge=Nudge a member\n" +
 					"command.voice=Send a voice\n" +
 					"command.accept.invite=Accept an invitation to join the group request\n" +
+					"command.clear=Clear console\n" +
+					"command.dice=Send a custom value for the dice\n" +
 					"name.card.set=The group nickname of %s has been set to %s\n" +
 					"reloaded=Reloaded the configuration file!\n" +
 					"before.settings=Before using the bot, you should set something basically up\n" +
