@@ -12,7 +12,7 @@ public class LanguageUtil {
 			return ("""
 					# 中文（简体）
 					config.error=配置文件出现错误，请检查配置文件后再试！
-					qq.password.not.exits=请填写配置文件的 QQ号 与 密码！
+					qq.password.not.exists=请填写配置文件的 QQ号 与 密码！
 					failed.create.config=创建配置文件失败！
 					failed.check.update=检测更新失败！（%s）
 					found.new.update=发现新版本：%s
@@ -129,11 +129,11 @@ public class LanguageUtil {
 					height=高度
 					plugin.name=插件名
 					font.size=字体大小
-					plugin.not.exits=插件 %s 不存在或已被卸载!
+					plugin.not.exists=插件 %s 不存在或已被卸载!
 					unloading.plugin=正在卸载插件 %s...
 					unloaded.plugin=插件 %s 已成功卸载！
 					file.name=文件名
-					plugin.file.not.exits=未找到插件文件 %s!
+					plugin.file.not.exists=未找到插件文件 %s!
 					loading.plugin=正在加载插件 %s...
 					loaded.plugin=插件 %s 已成功加载！
 					plugin.already.loaded=插件 %s 已经被载入！
@@ -162,18 +162,18 @@ public class LanguageUtil {
 					contact.id.error=联系人 ID 错误！
 					contact=联系人
 					cannot.create.plugin.dir=创建插件目录失败
-					depend.not.exits=缺少插件依赖 "%s"
+					depend.not.exists=缺少插件依赖 "%s"
 					event.error=执行 %s 插件的 %s 事件时出现错误：%s
 					exception.string=问题 %s 描述: %s
 					exception.details=\\t 在 %s.%s（%s 的第 %d 行）
-					page.not.exits=该页并不存在！
+					page.not.exists=该页并不存在！
 					unknown.error=出现错误！进程即将终止！
 					""").getBytes();
 		} else if (language.equals("tw")) {
 			return ("""
 					# 中文（繁體）
 					config.error=配置文件出現錯誤，請檢查配置文件後再試！
-					qq.password.not.exits=請填寫配置文件的 QQ號 與 密碼！
+					qq.password.not.exists=請填寫配置文件的 QQ號 與 密碼！
 					failed.create.config=創建配置文件失敗！
 					failed.check.update=檢測更新失敗！（%s）
 					checking.update=正在檢測更新...
@@ -290,11 +290,11 @@ public class LanguageUtil {
 					height=高度
 					plugin.name=插件名
 					font.size=字體大小
-					plugin.not.exits=插件 %s 不存在或已被卸載!
+					plugin.not.exists=插件 %s 不存在或已被卸載!
 					unloading.plugin=正在卸載插件 %s...
 					unloaded.plugin=插件 %s 已成功卸載！
 					file.name=文件名
-					plugin.file.not.exits=未找到插件文件 %s!
+					plugin.file.not.exists=未找到插件文件 %s!
 					loading.plugin=正在加載插件 %s...
 					loaded.plugin=插件 %s 已成功加載！
 					plugin.already.loaded=插件 %s 已經被載入！
@@ -323,17 +323,17 @@ public class LanguageUtil {
 					contact.id.error=聯係人 ID 錯誤！
 					contact=聯係人
 					cannot.create.plugin.dir=創建插件目錄失敗
-					depend.not.exits=缺少插件依賴 "%s"
+					depend.not.exists=缺少插件依賴 "%s"
 					event.error=執行 %s 插件的 %s 事件時出現錯誤：%s
 					exception.string=問題 %s 描述: %s
 					exception.details=\\t 在 %s.%s（%s 的第 %d 行）
-					page.not.exits=該頁並不存在！
+					page.not.exists=該頁並不存在！
 					unknown.error=出現錯誤！進程即將終止！
 					""").getBytes();
 		} else {
 			return ("# English (" + language + ")\n" +
 					"config.error=An error occurred in the configuration file, please check the configuration file and try again!\n" +
-					"qq.password.not.exits=Please fill in your QQ number and password of the configuration file!\n" +
+					"qq.password.not.exists=Please fill in your QQ number and password of the configuration file!\n" +
 					"failed.create.config=Failed to create configuration file!\n" +
 					"failed.check.update=Failed to check update! (%s)\n" +
 					"checking.update=Checking update...\n" +
@@ -450,11 +450,11 @@ public class LanguageUtil {
 					"height=Height\n" +
 					"plugin.name=Plugin name\n" +
 					"font.size=Font size\n" +
-					"plugin.not.exits=Plugin %s does not exist or has been uninstalled!\n" +
+					"plugin.not.exists=Plugin %s does not exist or has been uninstalled!\n" +
 					"unloading.plugin=Uninstalling plugin %s...\n" +
 					"unloaded.plugin=Plugin %s has been successfully uninstalled!\n" +
 					"file.name=File name\n" +
-					"plugin.file.not.exits=Plugin file not found %s!\n" +
+					"plugin.file.not.exists=Plugin file not found %s!\n" +
 					"loading.plugin=Loading plugin %s...\n" +
 					"loaded.plugin=Plugin %s has been successfully loaded!\n" +
 					"plugin.already.loaded=Plugin %s has been already loaded!\n" +
@@ -483,11 +483,11 @@ public class LanguageUtil {
 					"contact.id.error=Wrong contact ID!\n" +
 					"contact=Contact\n" +
 					"cannot.create.plugin.dir=Failed to create plugin directory\n" +
-					"depend.not.exits=Missing plugin dependency \"%s\"\n" +
+					"depend.not.exists=Missing plugin dependency \"%s\"\n" +
 					"event.error=Error executing %s event for %s plugin: %s\n" +
 					"exception.string=%s: %s\n" +
 					"exception.details=\\t at %s.%s(%s:%d）\n" +
-					"page.not.exits=This page does not exist!\n" +
+					"page.not.exists=This page does not exist!\n" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
