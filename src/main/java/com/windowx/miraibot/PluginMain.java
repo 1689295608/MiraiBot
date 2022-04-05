@@ -129,7 +129,7 @@ public class PluginMain {
         allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
         EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ", "false"));
         if (qq.isEmpty() || password.isEmpty()) {
-            logger.error(language("qq.password.not.exits"));
+            logger.error(language("qq.password.not.exists"));
             System.exit(-1);
             return;
         }
@@ -428,7 +428,7 @@ public class PluginMain {
                 String[] key = commands.keys();
                 int pages = (int) Math.floor(key.length / 10F) + 1;
                 if (page > pages) {
-                    logger.warn(language("page.not.exits"));
+                    logger.warn(language("page.not.exists"));
                     break;
                 }
                 StringBuilder help = new StringBuilder();
