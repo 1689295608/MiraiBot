@@ -423,7 +423,12 @@ public class PluginMain {
             case "help" -> {
                 int page = 1;
                 if (cmd.length > 1) {
-                    page = Integer.parseInt(cmd[1]);
+                    try {
+                        page = Integer.parseInt(cmd[1]);
+                    } catch (NumberFormatException e) {
+                        logger.warn(language("page.not.exists"));
+                        break;
+                    }
                 }
                 String[] key = commands.keys();
                 int pages = (int) Math.floor(key.length / 10F) + 1;
