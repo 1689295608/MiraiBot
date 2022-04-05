@@ -167,6 +167,8 @@ public class LanguageUtil {
 					exception.string=问题 %s 描述: %s
 					exception.details=\\t 在 %s.%s（%s 的第 %d 行）
 					page.not.exists=该页并不存在！
+					help.header=· ------====== MiraiBot 第 %d/%d 页 ======------ ·\\n
+					help.footer=· -------------------------------------------- ·
 					unknown.error=出现错误！进程即将终止！
 					""").getBytes();
 		} else if (language.equals("tw")) {
@@ -328,6 +330,8 @@ public class LanguageUtil {
 					exception.string=問題 %s 描述: %s
 					exception.details=\\t 在 %s.%s（%s 的第 %d 行）
 					page.not.exists=該頁並不存在！
+					help.header=· ------====== MiraiBot 第 %d/%d 頁 ======------ ·\\n
+					help.footer=· -------------------------------------------- ·
 					unknown.error=出現錯誤！進程即將終止！
 					""").getBytes();
 		} else {
@@ -488,6 +492,8 @@ public class LanguageUtil {
 					"exception.string=%s: %s\n" +
 					"exception.details=\\t at %s.%s(%s:%d）\n" +
 					"page.not.exists=This page does not exist!\n" +
+					"help.header=· ------====== MiraiBot Page %d/%d ======------ ·\\n\n" +
+					"help.footer=· -------------------------------------------- ·" +
 					"unknown.error=An error occurred! The process is about to terminate!\n").getBytes();
 		}
 	}
