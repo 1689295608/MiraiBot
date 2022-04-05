@@ -433,7 +433,7 @@ public class PluginMain {
                 }
                 StringBuilder help = new StringBuilder();
                 int index = (page - 1) * 10;
-                help.append(String.format("· ------====== MiraiBot 第 %d/%d 页 ======------ ·\n", page, pages));
+                help.append(String.format(language("help.header"), page, pages));
                 for (int i = index ; i < index + 10 ; i ++) {
                     if(i >= key.length) break;
                     Command c = commands.get(key[i]);
@@ -443,7 +443,7 @@ public class PluginMain {
                     help.append(c.getDescription())
                             .append("\n");
                 }
-                help.append("· -------------------------------------------- ·");
+                help.append(language("help.footer"));
                 logger.info(help.toString());
             }
             case "send" -> {
