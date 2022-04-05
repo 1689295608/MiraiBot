@@ -131,7 +131,7 @@ public class PluginLoader {
     public void unloadPlugin(String name) {
         Plugin plugin = getPlugin(name);
         if (plugin == null) {
-            logger.error(language("plugin.not.exits"), name);
+            logger.error(language("plugin.not.exists"), name);
             return;
         }
         logger.info(language("unloading.plugin"), plugin.getName());
@@ -210,7 +210,7 @@ public class PluginLoader {
      */
     public void loadPlugin(File file, String name) throws Exception {
         if (!file.exists()) {
-            logger.error(language("plugin.file.not.exits")
+            logger.error(language("plugin.file.not.exists")
                     , name
             );
             return;
@@ -228,7 +228,7 @@ public class PluginLoader {
                     if (hasPlugin(s)) {
                         continue;
                     }
-                    logger.error(language("depend.not.exits"), s);
+                    logger.error(language("depend.not.exists"), s);
                     return;
                 }
             }
@@ -343,7 +343,7 @@ public class PluginLoader {
                             if (hasPlugin(s)) {
                                 continue;
                             }
-                            logger.error(language("depend.not.exits"), s);
+                            logger.error(language("depend.not.exists"), s);
                             return;
                         }
                     }
