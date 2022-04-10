@@ -1,4 +1,7 @@
 # MiraiBot
+
+[![Join the chat at https://gitter.im/1689295608/miraibot](https://badges.gitter.im/1689295608/miraibot.svg)](https://gitter.im/1689295608/miraibot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 一个基于 [Mirai](https://github.com/mamoe/mirai) 的控制台机器人。
 
 **使用前请注意：**
