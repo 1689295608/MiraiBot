@@ -1,5 +1,6 @@
 package com.windowx.miraibot.plugin;
 
+import com.windowx.miraibot.command.Command;
 import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.utils.Logger;
 
@@ -38,6 +39,10 @@ public class Plugin extends PluginBase {
 	
 	public void setCommands(Commands commands) {
 		this.commands = commands;
+	}
+	
+	public void registerCommand(String name, Command command) {
+		this.commands.set(name, command);
 	}
 	
 	public PluginClassLoader getPluginClassLoader() {
