@@ -1,7 +1,5 @@
 package com.windowx.miraibot.command;
 
-public class CommandExecutor {
-    public void onCommand(String label, String[] args) {
-
-    }
+public interface CommandExecutor {
+    void onCommand(String label, String[] args);
 }
