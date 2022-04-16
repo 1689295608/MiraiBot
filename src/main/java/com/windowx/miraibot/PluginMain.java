@@ -23,6 +23,9 @@ import org.jline.builtins.Completers;
 import org.jline.reader.*;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.reader.impl.history.DefaultHistory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,6 +36,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -48,10 +52,23 @@ public class PluginMain {
     public static boolean running;
     public static final Logger logger = new Logger();
     public static final Commands commands = new Commands();
-    public static StringsCompleter completer;
+    public static ArgumentCompleter completer;
     public static LineReader reader;
+    public static Terminal terminal;
+    public static History history = new DefaultHistory();
 
     public static void main(String[] args) {
+        TerminalBuilder tb = TerminalBuilder.builder()
+                .encoding(Charset.defaultCharset())
+                .jansi(true)
+                .jna(false);
+        try {
+            terminal = tb.build();
+        } catch (IOException e) {
+            logger.trace(e);
+            logger.error(language("unknown.error"));
+            System.exit(-1);
+        }
         String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
         try {
             URL url = ClassLoader.getSystemResource("Version");
@@ -188,14 +205,6 @@ public class PluginMain {
                 String de = language("command." + l);
                 commands.set(c, new Command(c, de));
             }
-            completer = new StringsCompleter(commands.keys());
-            LineReaderBuilder builder = LineReaderBuilder.builder();
-            builder.completer(new ArgumentCompleter(
-                    completer,
-                    new Completers.FileNameCompleter()
-            ));
-            reader = builder.build();
-
             try {
                 File pluginDir = new File("plugins");
                 if (!pluginDir.exists()) {
@@ -245,8 +254,8 @@ public class PluginMain {
                     logger.trace(e);
                 }
             }
-            running = true;
             reloadCommands();
+            running = true;
             while (running) {
                 if (reader.isReading()) continue;
                 String msg = reader.readLine();
@@ -282,12 +291,16 @@ public class PluginMain {
     }
 
     public static void reloadCommands() {
-        ArrayList<Candidate> candidates = new ArrayList<>();
-        for (String cmd : commands.keys()) {
-            candidates.add(new Candidate(cmd));
-        }
-        ParsedLine parsed = reader.getParsedLine();
-        completer.complete(reader, parsed, candidates);
+        StringsCompleter sc = new StringsCompleter(commands.keys());
+        completer = new ArgumentCompleter(
+                sc,
+                new Completers.FileNameCompleter()
+        );
+        LineReaderBuilder lrb = LineReaderBuilder.builder()
+                .completer(completer)
+                .history(history)
+                .terminal(terminal);
+        reader = lrb.build();
     }
 
     public static String decodeUnicode(final String dataStr) {
