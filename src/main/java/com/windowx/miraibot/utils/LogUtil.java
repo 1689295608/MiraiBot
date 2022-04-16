@@ -2,6 +2,7 @@ package com.windowx.miraibot.utils;
 
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
+import org.jline.utils.AttributedString;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.windowx.miraibot.PluginMain.language;
+import static com.windowx.miraibot.PluginMain.reader;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class LogUtil {
@@ -146,17 +148,32 @@ public class LogUtil {
      */
     public static void log(String str, Object... args) {
         if (str == null) return;
-        AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
+        String opt = String.format(write(str, args) + formatStr(str), args) + "\n";
+        if (reader == null) {
+            AnsiConsole.out().print(opt);
+        } else {
+            reader.printAbove(AttributedString.fromAnsi(opt));
+        }
     }
 
     public static void log(String str) {
         if (str == null) return;
-        AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
+        String opt = write(str) + formatStr(str) + "\n";
+        if (reader == null) {
+            AnsiConsole.out().print(opt);
+        } else {
+            reader.printAbove(AttributedString.fromAnsi(opt));
+        }
     }
 
     public static void log_p(String prefix, String str, Object... args) {
         if (str == null) return;
-        AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
+        String opt = String.format(write(str, args) + formatStr(prefix, str), args) + "\n";
+        if (reader == null) {
+            AnsiConsole.out().print(opt);
+        } else {
+            reader.printAbove(AttributedString.fromAnsi(opt));
+        }
     }
 
     /**
@@ -169,7 +186,7 @@ public class LogUtil {
         if (ansiColor) {
             str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
         }
-        AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
+        log(str, args);
     }
 
     public static void error(String str) {
@@ -177,7 +194,7 @@ public class LogUtil {
         if (ansiColor) {
             str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
         }
-        AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
+        log(str);
     }
 
     public static void error_p(String prefix, String str, Object... args) {
@@ -185,7 +202,7 @@ public class LogUtil {
         if (ansiColor) {
             str = ansi().fgBright(Ansi.Color.RED).a(str).reset().toString();
         }
-        AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
+        log_p(prefix, str, args);
     }
 
     /**
@@ -198,7 +215,7 @@ public class LogUtil {
         if (ansiColor) {
             str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
         }
-        AnsiConsole.out().printf("\r" + write(str, args) + formatStr(str) + "\n> ", args);
+        log(str, args);
     }
 
     public static void warn(String str) {
@@ -206,7 +223,7 @@ public class LogUtil {
         if (ansiColor) {
             str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
         }
-        AnsiConsole.out().print("\r" + write(str) + formatStr(str) + "\n> ");
+        log(str);
     }
 
     public static void warn_p(String prefix, String str, Object... args) {
@@ -214,7 +231,7 @@ public class LogUtil {
         if (ansiColor) {
             str = ansi().fgBright(Ansi.Color.YELLOW).a(str).reset().toString();
         }
-        AnsiConsole.out().printf("\r" + write(str, args) + formatStr(prefix, str) + "\n> ", args);
+        log_p(prefix, str, args);
     }
 
     public static void trace(Exception e) {
