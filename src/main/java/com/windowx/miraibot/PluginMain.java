@@ -258,11 +258,8 @@ public class PluginMain {
             running = true;
             while (running) {
                 if (reader.isReading()) continue;
-                String msg = reader.readLine();
-                if (msg.isEmpty()) {
-                    System.out.print("> ");
-                    continue;
-                }
+                String msg = reader.readLine("> ");
+                if (msg.isEmpty()) continue;
                 try {
                     if (!runCommand(msg)) {
                         String decode;
