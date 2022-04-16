@@ -3,6 +3,7 @@ package com.windowx.miraibot.command;
 public class Command {
     private String name;
     private String description;
+    private CommandExecutor executor = null;
 
     public Command(String name, String description) {
         this.name = name;
@@ -23,5 +24,13 @@ public class Command {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public CommandExecutor getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(CommandExecutor executor) {
+        this.executor = executor;
     }
 }
