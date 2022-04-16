@@ -37,17 +37,31 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 
 请前往 [MiraiCore-Release](https://github.com/1689295608/MiraiCore/releases/tag/v1.0-origin) 下载最新的 MiraiCore 独立包 *（如果使用的版本低于 1.2.1 可以跳过这个步骤）*
 
-然后在 [Release](https://github.com/1689295608/MiraiBot/releases/latest) 下载最新版 MiraiBot 的 .zip 或 .7z 文件
+然后在 [Release](https://github.com/1689295608/MiraiBot/releases/latest) 下载最新版的 MiraiBot.jar 文件
 
 *如需最新的由 Github Action 构建的开发版，请在 [Release](https://github.com/1689295608/MiraiBot/releases) 下载带有 AutoBuild 前缀的版本*
 *开发版并不能确保使用的稳定性，除非你知道你在干什么，否则建议不要使用开发版！*
 
 然后将其解压到任意文件夹内 ( *不推荐包含特殊字符的文件夹及路径* ) 后
 
-将下载好的 MiraiCore 放入该文件夹，需要注意的是**文件名必须为 `MiraiCore.jar`**
+将下载好的 MiraiCore 放入该文件夹，这个文件在启动脚本里需要用到
 
 ### Windows 用户
-**Windows** 用户直接运行 `Start.bat` 即可。
+**Windows** 用户
+
+在解压到的文件夹中新建一个 .bat Windows 批处理文件
+
+以下为示例脚本，仅供参考：
+```bat
+@echo off
+java -classpath MiraiBot.jar;Mirai-Core-All.jar com.windowx.miraibot.PluginMain
+pause
+exit
+```
+
+其中 `MiraiBot.jar` 和 `Mirai-Core-All.jar` 便是你下载的文件了
+
+保存并运行该脚本即可开始使用 MiraiBot！
 
 登录时如果这个 `device.json` 没有登录过这个 QQ 那么一般情况下会进行设备锁验证
 
@@ -62,7 +76,16 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 ### Linux 用户
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
 
-然后运行 `Start.sh` （即在终端输入 `bash Start.sh`）即可。
+然后新建一个 .sh Bash Shell 文件（例如 `touch Start.sh`）
+
+再写入执行脚本内容（例如 `vi Start.sh`），以下为示例脚本，仅供参考：
+```shell
+java -classpath MiraiBot.jar:Mirai-CoreAll.jar com.windowx.miraibot.PluginMain
+```
+
+其中 `MiraiBot.jar` 和 `Mirai-Core-All.jar` 便是你下载的文件了
+
+保存并运行该脚本即可开始使用 MiraiBot！（例如 `bash Start.sh`）
 
 如果您的 Linux 有可视化环境，那么可以按照 Windows 用户方法进行设备锁验证
 
