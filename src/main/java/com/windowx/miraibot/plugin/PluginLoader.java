@@ -141,6 +141,7 @@ public class PluginLoader {
             logger.trace(e);
         }
         plugin.setEnabled(false);
+        listeners.remove(plugin);
         removeCommands(plugin.getCommands());
         removeClass(plugin.getName());
         loaders.remove(plugin);
