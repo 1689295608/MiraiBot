@@ -1,6 +1,7 @@
 package com.windowx.miraibot;
 
 import com.windowx.miraibot.command.Command;
+import com.windowx.miraibot.command.CommandExecutor;
 import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.plugin.PluginLoader;
@@ -18,7 +19,9 @@ import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.fusesource.jansi.AnsiConsole;
+import org.jline.builtins.Completers;
 import org.jline.reader.*;
+import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -187,7 +190,10 @@ public class PluginMain {
             }
             completer = new StringsCompleter(commands.keys());
             LineReaderBuilder builder = LineReaderBuilder.builder();
-            builder.completer(completer);
+            builder.completer(new ArgumentCompleter(
+                    completer,
+                    new Completers.FileNameCompleter()
+            ));
             reader = builder.build();
 
             try {
@@ -316,6 +322,7 @@ public class PluginMain {
             return false;
         }
         String label = cmd[0];
+        String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
         boolean rt = true;
         switch (label) {
             case "reload" -> {
@@ -974,7 +981,32 @@ public class PluginMain {
                         boolean s = p.onCommand(msg);
                         if (!s) isCmd = true;
                     } catch (Exception e) {
+                        logger.error(language("plugin.command.error"),
+                                p.getName(),
+                                label,
+                                e.toString()
+                        );
                         logger.trace(e);
+                    }
+                    Commands cmds = p.getCommands();
+                    for(String name : cmds.keys()) {
+                        Command c = cmds.get(name);
+                        CommandExecutor executor = c.getExecutor();
+                        if (executor == null) continue;
+                        if (!label.equals(c.getName())) {
+                            continue;
+                        }
+                        isCmd = true;
+                        try {
+                            executor.onCommand(label, args);
+                        } catch (Exception e) {
+                            logger.error(language("plugin.command.error"),
+                                    p.getName(),
+                                    c.getName(),
+                                    e.toString()
+                            );
+                            logger.trace(e);
+                        }
                     }
                 }
                 rt = isCmd;
