@@ -143,7 +143,7 @@ public class PluginLoader {
         plugin.setEnabled(false);
         listeners.remove(plugin);
         removeCommands(plugin.getCommands());
-        removeClass(plugin.getName());
+        clearCaches();
         loaders.remove(plugin);
         System.gc();
         logger.info(language("unloaded.plugin"), plugin.getName());
@@ -175,18 +175,17 @@ public class PluginLoader {
 
         if (cachedClass != null) {
             return cachedClass;
-        } else {
-            for (Plugin current : loaders.keySet()) {
-                PluginClassLoader loader = loaders.get(current);
+        }
+        for (Plugin current : loaders.keySet()) {
+            PluginClassLoader loader = loaders.get(current);
 
-                try {
-                    cachedClass = loader.findClass(name, false);
-                } catch (ClassNotFoundException ignored) {
-
-                }
-                if (cachedClass != null) {
-                    return cachedClass;
-                }
+            try {
+                cachedClass = loader.findClass(name, false);
+            } catch (ClassNotFoundException ignored) {
+                return null;
+            }
+            if (cachedClass != null) {
+                return cachedClass;
             }
         }
         return null;
@@ -200,6 +199,10 @@ public class PluginLoader {
 
     void removeClass(final String name) {
         classes.remove(name);
+    }
+
+    void clearCaches() {
+        classes.clear();
     }
 
     /**
