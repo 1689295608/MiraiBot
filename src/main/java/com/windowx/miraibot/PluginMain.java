@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.management.*;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -197,7 +198,7 @@ public class PluginMain {
                     "nameCard", "recall",
                     "group", "unload",
                     "load", "music",
-                    "dice"
+                    "dice", "status"
             };
             for (String c : cmds) {
                 String l = c.replaceAll("([A-Z])", ".$1").toLowerCase();
@@ -982,6 +983,30 @@ public class PluginMain {
                 } else {
                     logger.error(language("dice.value.error"));
                 }
+            }
+            case "status" -> {
+                long MB = 1024 * 1024;
+
+                ClassLoadingMXBean classLoad = ManagementFactory.getClassLoadingMXBean();
+
+                MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
+                MemoryUsage headMemory = memory.getHeapMemoryUsage();
+
+                ThreadMXBean thread = ManagementFactory.getThreadMXBean();
+
+                StringBuilder format = new StringBuilder();
+                int l = 1;
+                while(!language("status.format.l" + l).isEmpty()) {
+                    format.append(language("status.format.l" + l)).append("\n");
+                    l ++;
+                }
+                logger.info(format.toString()
+                        , headMemory.getUsed() / MB
+                        , thread.getThreadCount()
+                        , classLoad.getLoadedClassCount()
+                        , classLoad.getUnloadedClassCount()
+                        , loader.getPlugins().size()
+                );
             }
             default -> {
                 boolean isCmd = false;
