@@ -164,8 +164,9 @@ public class PluginLoader {
         removeCommands(plugin.getCommands());
         clearCaches();
         loaders.remove(plugin);
+        plugins.remove(plugin);
         System.gc();
-        logger.info(language("unloaded.plugin"), plugin.getName());
+        logger.info(language("unloaded.plugin"), name);
     }
 
     private Plugin init(Properties plugin, PluginClassLoader u) throws Exception {
