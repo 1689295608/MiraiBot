@@ -1003,9 +1003,9 @@ public class PluginMain {
                 logger.info(format.toString()
                         , headMemory.getUsed() / MB
                         , thread.getThreadCount()
+                        , loader.getPlugins().size()
                         , classLoad.getLoadedClassCount()
                         , classLoad.getUnloadedClassCount()
-                        , loader.getPlugins().size()
                 );
             }
             default -> {
