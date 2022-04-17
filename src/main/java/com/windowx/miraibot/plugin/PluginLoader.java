@@ -24,6 +24,10 @@ public class PluginLoader {
     public final HashMap<Plugin, PluginClassLoader> loaders = new LinkedHashMap<>();
     public final HashMap<Plugin, ArrayList<ListenerHost>> listeners = new HashMap<>();
 
+    /**
+     * 广播一个事件，使所有 Listener 都可以监听到这个事件
+     * @param event 事件
+     */
     public void broadcastEvent(Event event) {
         for(Plugin plugin : listeners.keySet()) {
             if (!plugin.isEnabled()) continue;
@@ -92,10 +96,16 @@ public class PluginLoader {
         this.listeners.put(plugin, list);
     }
 
+    /**
+     * 获取插件的类名（不是全写）
+     * @param name 全写
+     * @return 类名
+     */
     private String className(String name) {
         String[] split = name.split("\\.");
         return split[split.length - 1];
     }
+
     /**
      * 通过插件名获取插件对象
      *
@@ -121,6 +131,15 @@ public class PluginLoader {
             if (p.getName().equals(name)) return true;
         }
         return false;
+    }
+
+    /**
+     * 获取所有插件列表
+     *
+     * @return 所有插件
+     */
+    public ArrayList<Plugin> getPlugins() {
+        return plugins;
     }
 
     /**
