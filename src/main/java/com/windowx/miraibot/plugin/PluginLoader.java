@@ -241,50 +241,9 @@ public class PluginLoader {
             );
             return;
         }
-        Plugin plugin = null;
-        PluginClassLoader u = new PluginClassLoader(new URL[]{ file.toURI().toURL() }, getClass().getClassLoader(), this);
-        InputStream is = u.getResourceAsStream("plugin.ini");
-        if (is != null) {
-            logger.info(language("loading.plugin"), name);
-            Properties prop = new Properties();
-            prop.load(is);
-            if (prop.containsKey("depend")) {
-                String[] split = prop.getProperty("depend").split(",");
-                for (String s : split) {
-                    if (hasPlugin(s)) {
-                        continue;
-                    }
-                    logger.error(language("depend.not.exists"), s);
-                    return;
-                }
-            }
-            plugin = init(prop, u);
-        } else {
-            logger.error(language("failed.load.plugin"), file.getName(), "\"plugin.ini\" not found");
-        }
-        if (plugin != null) {
-            plugin.setFile(file);
-            Plugin p = getPlugin(plugin.getName());
-            if (p != null) {
-                if (p.isEnabled()) {
-                    logger.warn(language("plugin.already.loaded"), plugin.getName());
-                    plugins.remove(p);
-                    return;
-                }
-            }
-            plugin.setEnabled(true);
-            plugins.add(plugin);
-            try {
-                plugin.onEnable();
-
-                add2commands(plugin.getCommands());
-            } catch (Exception e) {
-                logger.trace(e);
-            }
-            logger.info(language("loaded.plugin"), plugin.getName());
-        } else {
-            logger.error(language("failed.load.plugin"), file.getName(), "unknown error");
-        }
+        ArrayList<File> files = new ArrayList<>();
+        files.add(file);
+        loadPlugins(files.toArray(new File[0]));
     }
 
     public void add2commands(Commands commands) {
@@ -333,6 +292,10 @@ public class PluginLoader {
             }
             try {
                 Properties info = getPluginInfo(u);
+                if (info == null) {
+                    logger.error(language("failed.load.plugin"), f.getName(), "'plugin.ini' does not exist");
+                    continue;
+                }
                 String[] depends = getDepends(info);
                 boolean con = false;
                 for (String s : depends) {
@@ -353,6 +316,13 @@ public class PluginLoader {
                 plugin.setFile(f);
                 plugin.setEnabled(true);
                 plugins.add(plugin);
+                try {
+                    plugin.onEnable();
+                    add2commands(plugin.getCommands());
+                } catch (Exception e) {
+                    logger.trace(e);
+                }
+                logger.info(language("loaded.plugin"), plugin.getName());
             } else {
                 logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
             }
