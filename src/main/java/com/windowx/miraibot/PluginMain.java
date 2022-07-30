@@ -75,7 +75,9 @@ public class PluginMain {
             URL url = ClassLoader.getSystemResource("Version");
             String version = "";
             if (url != null) {
-                version = new String(url.openStream().readAllBytes()).replaceAll("[^0-9.]", "");
+                try (InputStream is = url.openStream()) {
+                    version = new String(is.readAllBytes()).replaceAll("[^0-9.]", "");
+                }
             }
             System.out.println(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
                     (language.equals("tw") ? "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021" :
@@ -87,15 +89,16 @@ public class PluginMain {
             File eula = new File("eula.txt");
             if (!eula.exists()) {
                 if (eula.createNewFile()) {
-                    FileOutputStream fos = new FileOutputStream(eula);
-                    fos.write((
-                            """
-                                    # 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须在项目明显位置准确提及来自 MiraiBot，不得扭曲或隐藏免费且开源的事实。
-                                    # To use this software, you must abide by our agreement. All plug-ins developed based on this software must accurately mention MiraiBot in the obvious place of the project, and must not distort or hide the fact that it is free and open source
-                                    # 详情请查看：https://github.com/1689295608/MiraiBot/blob/main/LICENSE
-                                    # Details: https://github.com/1689295608/MiraiBot/blob/main/LICENSE
-                                    eula=false"""
-                    ).getBytes());
+                    try (FileOutputStream fos = new FileOutputStream(eula)) {
+                        fos.write((
+                                """
+                                        # 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须在项目明显位置准确提及来自 MiraiBot，不得扭曲或隐藏免费且开源的事实。
+                                        # To use this software, you must abide by our agreement. All plug-ins developed based on this software must accurately mention MiraiBot in the obvious place of the project, and must not distort or hide the fact that it is free and open source
+                                        # 详情请查看：https://github.com/1689295608/MiraiBot/blob/main/LICENSE
+                                        # Details: https://github.com/1689295608/MiraiBot/blob/main/LICENSE
+                                        eula=false"""
+                        ).getBytes());
+                    }
                 }
             }
             Properties prop = new Properties();
@@ -408,7 +411,7 @@ public class PluginMain {
                 logger.info(out.toString());
             }
             case "language" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": language <" + language("language") + ">");
                     break;
                 }
@@ -422,9 +425,11 @@ public class PluginMain {
                     }
                     if (bak.createNewFile()) {
                         FileOutputStream fos = new FileOutputStream(bak);
-                        fos.write(new FileInputStream(now).readAllBytes());
-                        fos.flush();
-                        fos.close();
+                        try (FileInputStream fis = new FileInputStream(now)) {
+                            fos.write(fis.readAllBytes());
+                            fos.flush();
+                            fos.close();
+                        }
                     }
                 }
                 FileOutputStream fos = new FileOutputStream(now);
@@ -514,7 +519,7 @@ public class PluginMain {
                 }
             }
             case "nudge" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": nudge <" + language("qq") + ">");
                     break;
                 }
@@ -561,7 +566,7 @@ public class PluginMain {
                 }
             }
             case "avatar" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": avatar <" + language("qq") + ">");
                     break;
                 }
@@ -591,7 +596,7 @@ public class PluginMain {
                 }
             }
             case "voice" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": voice <" +
                             language("file.path") + ">");
                     break;
@@ -612,7 +617,7 @@ public class PluginMain {
                 upVoice.start();
             }
             case "image" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": image <" +
                             language("file.path") + ">");
                     break;
@@ -634,7 +639,7 @@ public class PluginMain {
                 upImg.start();
             }
             case "imageInfo" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": imageInfo <" +
                             language("image.id") + ">");
                     break;
@@ -647,7 +652,7 @@ public class PluginMain {
                 }
             }
             case "upImg" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": upImg <" +
                             language("file.path") + ">");
                     break;
@@ -701,7 +706,7 @@ public class PluginMain {
                 }
             }
             case "del" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": del <QQ>");
                     break;
                 }
@@ -746,7 +751,7 @@ public class PluginMain {
                 checkUpdate(null);
             }
             case "accept-request" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": accept-request <" + language("request.id") + ">");
                     break;
                 }
@@ -774,7 +779,7 @@ public class PluginMain {
                 }
             }
             case "accept-invite" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": accept-invite <" + language("invite.id") + ">");
                     break;
                 }
@@ -830,7 +835,7 @@ public class PluginMain {
                 }
             }
             case "recall" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": recall <" +
                             language("message.id") + ">");
                     break;
@@ -870,7 +875,7 @@ public class PluginMain {
                 }
             }
             case "group" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": group <" +
                             language("group") + language("id") + ">");
                     break;
@@ -897,7 +902,7 @@ public class PluginMain {
                 }
             }
             case "unload" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": unload <" +
                             language("plugin.name") + ">");
                     break;
@@ -905,7 +910,7 @@ public class PluginMain {
                 loader.unloadPlugin(cmd[1]);
             }
             case "load" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": load <" +
                             language("file.name") + ">");
                     break;
@@ -914,15 +919,17 @@ public class PluginMain {
                 loader.loadPlugin(f, cmd[1]);
             }
             case "music" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": music <" + language("music.id") + "> [" + language("contact") + "]");
                     break;
                 }
                 try {
                     long l = Long.parseLong(cmd[1]);
                     URL url = new URL("http://music.163.com/api/song/detail/?id=" + l + "&ids=[" + l + "]");
-                    InputStream is = url.openStream();
-                    JSONObject json = new JSONObject(new String(is.readAllBytes(), StandardCharsets.UTF_8));
+                    JSONObject json;
+                    try (InputStream is = url.openStream()) {
+                        json = new JSONObject(new String(is.readAllBytes(), StandardCharsets.UTF_8));
+                    }
                     JSONArray songs = json.getJSONArray("songs");
                     StringBuilder artists = new StringBuilder();
                     JSONArray artistsA = songs.getJSONObject(0).getJSONArray("artists");
@@ -966,7 +973,7 @@ public class PluginMain {
                 }
             }
             case "dice" -> {
-                if (cmd.length <= 1) {
+                if (cmd.length < 2) {
                     logger.warn(language("usage") + ": dice <" + language("dice.value") + ">");
                     break;
                 }
@@ -1074,7 +1081,9 @@ public class PluginMain {
             URL url = ClassLoader.getSystemResource("Version");
             String version = "0.0.0";
             if (url != null) {
-                version = new String(url.openStream().readAllBytes());
+                try (InputStream is = url.openStream()) {
+                    version = new String(is.readAllBytes());
+                }
             }
             try {
                 String nowV = version.replaceAll("[^0-9.]", "");
