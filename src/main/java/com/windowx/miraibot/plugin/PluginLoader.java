@@ -11,8 +11,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -302,92 +304,118 @@ public class PluginLoader {
     /**
      * 初始化插件，将所有 plugins 文件夹内的 .jar 文件加载到插件列表
      */
-    public void initPlugins() {
+    public void initPlugins() throws IOException {
         File pluginsDir = new File("plugins");
         plugins = new ArrayList<>();
-        try {
-            File[] pluginsFile = pluginsDir.listFiles();
-            if (pluginsFile == null) {
-                return;
+        File[] pluginsFile = pluginsDir.listFiles();
+        if (pluginsFile == null) {
+            return;
+        }
+        loadPlugins(pluginsFile);
+    }
+
+    /**
+     * 通过文件数组加载插件，返回缺失前置插件的文件数组
+     * @param files 插件文件数组
+     * @return 缺失前置插件的插件文件数组
+     */
+    public ArrayList<File> loadPluginFiles(File[] files) {
+        ArrayList<File> after = new ArrayList<>();
+        for (File f : files) {
+            if (!f.getName().endsWith(".jar")) continue;
+            Plugin plugin = null;
+            PluginClassLoader u;
+            try {
+                u = getLoader(f);
+            } catch (IOException e) {
+                logger.error(language("failed.load.plugin"), f.getName(), e.toString());
+                continue;
             }
-            ArrayList<File> after = new ArrayList<>();
-            for (File f : pluginsFile) {
-                if (!f.getName().endsWith(".jar")) continue;
-                Plugin plugin = null;
-                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader(), this);
-                InputStream is = u.getResourceAsStream("plugin.ini");
-                if (is == null) {
-                    logger.error(language("failed.load.plugin"), f.getName(), "\"plugin.ini\" not found");
+            try {
+                Properties info = getPluginInfo(u);
+                String[] depends = getDepends(info);
+                boolean con = false;
+                for (String s : depends) {
+                    if (getPlugin(s) == null) {
+                        after.add(f);
+                        con = true;
+                        break;
+                    }
+                }
+                if (con) {
                     continue;
                 }
-                try {
-                    Properties prop = new Properties();
-                    prop.load(is);
-                    if (prop.containsKey("depend")) {
-                        String[] split = prop.getProperty("depend").split(",");
-                        boolean con = false;
-                        for (String s : split) {
-                            if (getPlugin(s) == null) {
-                                after.add(f);
-                                con = true;
-                                break;
-                            }
-                        }
-                        if (con) {
-                            continue;
-                        }
-                    }
-                    plugin = init(prop, u);
-                } catch (Exception e) {
-                    logger.trace(e);
-                }
-                if (plugin != null) {
-                    plugin.setFile(f);
-                    plugin.setEnabled(true);
-                    plugins.add(plugin);
-                } else {
-                    logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
-                }
+                plugin = init(info, u);
+            } catch (Exception e) {
+                logger.trace(e);
             }
-            if (after.size() < 1) {
-                return;
+            if (plugin != null) {
+                plugin.setFile(f);
+                plugin.setEnabled(true);
+                plugins.add(plugin);
+            } else {
+                logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
             }
-            for (File f : after) {
-                Plugin plugin = null;
-                PluginClassLoader u = new PluginClassLoader(new URL[]{f.toURI().toURL()}, getClass().getClassLoader(), this);
-                InputStream is = u.getResourceAsStream("plugin.ini");
-                assert is != null;
-
-                try {
-                    Properties prop = new Properties();
-                    prop.load(is);
-                    if (prop.containsKey("depend")) {
-                        String[] split = prop.getProperty("depend").split(",");
-                        for (String s : split) {
-                            if (hasPlugin(s)) {
-                                continue;
-                            }
-                            logger.error(language("depend.not.exists"), s);
-                            return;
-                        }
-                    }
-                    plugin = init(prop, u);
-                } catch (Exception e) {
-                    logger.trace(e);
-                }
-
-                if (plugin != null) {
-                    plugin.setFile(f);
-                    plugin.setEnabled(true);
-                    plugins.add(plugin);
-                } else {
-                    logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
-                }
-            }
-        } catch (Exception e) {
-            logger.trace(e);
-            logger.error(language("unknown.error"));
-            System.exit(-1);
         }
+        return after;
+    }
+
+    /**
+     * 通过文件数组加载插件
+     * @param files 文件数组
+     */
+    public void loadPlugins(File[] files) throws IOException {
+        ArrayList<File> after = loadPluginFiles(files);
+        if (after.size() > 0) {
+            ArrayList<String> names = getNames(after.toArray(new File[0]));
+            for (File f : after) {
+                PluginClassLoader u = getLoader(f);
+                Properties info = getPluginInfo(u);
+                String[] depends = getDepends(info);
+                for (String s : depends) {
+                    if (!names.contains(s)) {
+                        logger.error(language("failed.load.plugin"),
+                                f.getName(),
+                                "missing depend plugin '" + s + "'"
+                        );
+                        // 缺失前置插件时报错并移除该插件
+                        after.remove(f);
+                    }
+                }
+            }
+            // 递归加载插件
+            loadPlugins(after.toArray(new File[0]));
+        }
+    }
+
+    public Properties getPluginInfo(PluginClassLoader loader) throws IOException {
+        InputStream is = loader.getResourceAsStream("plugin.ini");
+        if (is == null) return null;
+        Properties properties = new Properties();
+        properties.load(is);
+        return properties;
+    }
+
+    public PluginClassLoader getLoader(File file) throws IOException {
+        URL[] urls = new URL[]{
+                file.toURI().toURL()
+        };
+        return new PluginClassLoader(urls, getClass().getClassLoader(), this);
+    }
+
+    public String[] getDepends(Properties info) {
+        String depends = info.getProperty("depend", "");
+        return depends.split(",");
+    }
+
+    public ArrayList<String> getNames(File[] files) throws IOException {
+        ArrayList<String> back = new ArrayList<>();
+        for (File f : files) {
+            PluginClassLoader u = getLoader(f);
+            Properties info = getPluginInfo(u);
+            if (!info.containsKey("name")) continue;
+            back.add(info.getProperty("name"));
+        }
+        return back;
     }
 }
