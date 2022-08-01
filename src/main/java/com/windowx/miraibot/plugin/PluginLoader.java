@@ -343,7 +343,7 @@ public class PluginLoader {
                 Properties info = getPluginInfo(u);
                 String[] depends = getDepends(info);
                 for (String s : depends) {
-                    if (!names.contains(s)) {
+                    if (!names.contains(s) && !s.isEmpty()) {
                         logger.error(language("failed.load.plugin"),
                                 f.getName(),
                                 "missing depend plugin '" + s + "'"
