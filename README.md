@@ -124,11 +124,11 @@ java -classpath MiraiBot.jar:Mirai-CoreAll.jar com.windowx.miraibot.PluginMain
 
 ## 常见问题疑难解答
 
-  Q：Error: A JNI error has occurred, please check your installation and try again
+    Q：Error: A JNI error has occurred, please check your installation and try again
 A：请使用 OpenJDK，而不是 Oracle Java
 
-  Q：QQ 账号安全性有保障吗
+    Q：QQ 账号安全性有保障吗
 A：不相信的话可以直接查源代码的说
 
-  Q：会被封号吗
+    Q：会被封号吗
 A：MiraiBot 的行为和正常 QQ 十分相似，不发布违规内容等理论不会被封
