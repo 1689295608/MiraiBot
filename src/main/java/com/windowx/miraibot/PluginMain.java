@@ -1167,16 +1167,16 @@ public class PluginMain {
                 if (!file.createNewFile()) {
                     return false;
                 }
-                Scanner scanner = new Scanner(System.in);
+                Console console = System.console();
                 logger.info(language("before.settings"));
                 logger.info(language("please.input.qq"));
-                String qq = scanner.nextLine();
+                String qq = console.readLine();
                 logger.info(language("please.input.password"));
-                String password = scanner.nextLine();
+                String password = String.valueOf(console.readPassword());
                 logger.info(language("please.input.group.id"));
-                String groups = scanner.nextLine();
+                String groups = console.readLine();
                 logger.info(language("please.input.check.update.on.setup"));
-                String checkUpdate = scanner.nextLine();
+                String checkUpdate = console.readLine();
 
                 FileOutputStream fos = new FileOutputStream(file);
                 InputStream is = ClassLoader.getSystemResourceAsStream("config.properties");
