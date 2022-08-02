@@ -50,19 +50,18 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 将下载好的 MiraiCore 放入该文件夹，这个文件在启动脚本里需要用到
 
 ### Windows 用户
-**Windows** 用户
 
 在解压到的文件夹中新建一个 .bat Windows 批处理文件
 
 以下为示例脚本，仅供参考：
 ```bat
 @echo off
-java -classpath MiraiBot.jar;Mirai-Core-All.jar com.windowx.miraibot.PluginMain
+java -classpath MiraiBot.jar;MiraiCore.jar com.windowx.miraibot.PluginMain
 pause
 exit
 ```
 
-其中 `MiraiBot.jar` 和 `Mirai-Core-All.jar` 便是你下载的文件了
+其中 `MiraiBot.jar` 和 `MiraiCore.jar` 便是你下载的文件了
 
 保存并运行该脚本即可开始使用 MiraiBot！
 
@@ -79,14 +78,14 @@ exit
 ### Linux 用户
 **Linux** 用户首先需要在 `MiraiBot` 目录运行一个终端
 
-然后新建一个 .sh Bash Shell 文件（例如 `touch Start.sh`）
+然后新建一个 .sh 的 Bash Shell 文件（例如 `touch Start.sh`）
 
 再写入执行脚本内容（例如 `vi Start.sh`），以下为示例脚本，仅供参考：
 ```shell
-java -classpath MiraiBot.jar:Mirai-CoreAll.jar com.windowx.miraibot.PluginMain
+java -classpath MiraiBot.jar:MiraiCore.jar com.windowx.miraibot.PluginMain
 ```
 
-其中 `MiraiBot.jar` 和 `Mirai-Core-All.jar` 便是你下载的文件了
+其中 `MiraiBot.jar` 和 `MiraiCore.jar` 便是你下载的文件了
 
 保存并运行该脚本即可开始使用 MiraiBot！（例如 `bash Start.sh`）
 
@@ -128,10 +127,10 @@ java -classpath MiraiBot.jar:Mirai-CoreAll.jar com.windowx.miraibot.PluginMain
 ## 常见问题疑难解答
 
     Q：Error: A JNI error has occurred, please check your installation and try again
-A：请使用 OpenJDK，而不是 Oracle Java
+    A：请使用 OpenJDK，而不是 Oracle Java
 
     Q：QQ 账号安全性有保障吗
-A：不相信的话可以直接查源代码的说
+    A：不相信的话可以直接查源代码的说
 
     Q：会被封号吗
-A：MiraiBot 的行为和正常 QQ 十分相似，不发布违规内容等理论不会被封
+    A：MiraiBot 的行为和正常 QQ 十分相似，不发布违规内容等理论不会被封
