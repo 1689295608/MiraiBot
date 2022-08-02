@@ -201,7 +201,8 @@ public class PluginMain {
                     "nameCard", "recall",
                     "group", "unload",
                     "load", "music",
-                    "dice", "status"
+                    "dice", "status",
+                    "unmute"
             };
             for (String c : cmds) {
                 String l = c.replaceAll("([A-Z])", ".$1").toLowerCase();
@@ -551,6 +552,30 @@ public class PluginMain {
                     if (member != null) {
                         try {
                             member.mute(Integer.parseInt(cmd[2]));
+                        } catch (NumberFormatException e) {
+                            logger.warn(language("time.too.long"), cmd[2]);
+                        }
+                    } else {
+                        logger.error(language("not.user"));
+                    }
+                } catch (NumberFormatException e) {
+                    logger.error(language("not.qq"), cmd[1]);
+                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                } catch (PermissionDeniedException e) {
+                    logger.error(language("no.permission"));
+                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                }
+            }
+            case "unmute" -> {
+                if (cmd.length < 2) {logger.warn(language("usage") + ": mute <" + language("qq") + ">");
+                    break;
+                }
+                try {
+                    long qq = Long.parseLong(cmd[1]);
+                    NormalMember member = group.get(qq);
+                    if (member != null) {
+                        try {
+                            member.unmute();
                         } catch (NumberFormatException e) {
                             logger.warn(language("time.too.long"), cmd[2]);
                         }

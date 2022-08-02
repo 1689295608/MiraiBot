@@ -109,6 +109,7 @@ public class LanguageUtil {
 					command.clear=清空控制台
 					command.dice=发送一个自定义值的骰子
 					command.status=查看 MiraiBot 当前状态
+					command.unmute=解除一个成员的禁言状态
 					name.card.set=已将 %s 的群昵称设置为 %s
 					reloaded=已重新加载配置文件！
 					before.settings=在启动前，您需要完成一些最基础的设置
@@ -280,6 +281,7 @@ public class LanguageUtil {
 					command.dice=發送一個自定義值的骰子
 					command.status=查看 MiraiBot 當前狀態
 					command.accept.invite=接受一個邀請入群請求
+					command.unmute=解除一個成員的禁言狀態
 					name.card.set=已将 %s 的群昵称设置为 %s
 					reloaded=已重新加載配置文件！
 					before.settings=在啟動前，您需要完成一些最基礎的設置
@@ -451,6 +453,7 @@ public class LanguageUtil {
 					command.clear=Clear console
 					command.dice=Send a custom value for the dice
 					command.status=View MiraiBot Current Status
+					command.unmute=Unblocks a member
 					name.card.set=The group nickname of %s has been set to %s
 					reloaded=Reloaded the configuration file!
 					before.settings=Before using the bot, you should set something basically up
