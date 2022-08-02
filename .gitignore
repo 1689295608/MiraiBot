@@ -1,2 +1,3 @@
 
-out/artifacts/MiraiBot/MiraiBot.jar
+target/
+out/
