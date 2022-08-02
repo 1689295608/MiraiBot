@@ -28,15 +28,16 @@ public class PluginLoader {
 
     /**
      * 广播一个事件，使所有 Listener 都可以监听到这个事件
+     *
      * @param event 事件
      */
     public void broadcastEvent(Event event) {
-        for(Plugin plugin : listeners.keySet()) {
+        for (Plugin plugin : listeners.keySet()) {
             if (!plugin.isEnabled()) continue;
             ArrayList<ListenerHost> listeners = this.listeners.get(plugin);
-            for(ListenerHost listener : listeners) {
+            for (ListenerHost listener : listeners) {
                 Method[] methods = listener.getClass().getDeclaredMethods();
-                for(Method method : methods) {
+                for (Method method : methods) {
                     if (!method.isAnnotationPresent(EventHandler.class)) {
                         continue;
                     }
@@ -63,9 +64,11 @@ public class PluginLoader {
             }
         }
     }
+
     /**
      * 注册事件监听器
-     * @param plugin 插件
+     *
+     * @param plugin   插件
      * @param listener 监听器
      */
     public void registerListener(Plugin plugin, ListenerHost listener) {
@@ -81,7 +84,8 @@ public class PluginLoader {
 
     /**
      * 注册多个事件监听器
-     * @param plugin 插件
+     *
+     * @param plugin    插件
      * @param listeners 监听器数组
      */
     public void registerListeners(Plugin plugin, ListenerHost[] listeners) {
@@ -89,7 +93,7 @@ public class PluginLoader {
         if (list == null) {
             list = new ArrayList<>();
         }
-        for(ListenerHost l : listeners) {
+        for (ListenerHost l : listeners) {
             if (list.contains(l)) {
                 continue;
             }
@@ -100,6 +104,7 @@ public class PluginLoader {
 
     /**
      * 获取插件的类名（不是全写）
+     *
      * @param name 全写
      * @return 类名
      */
@@ -275,6 +280,7 @@ public class PluginLoader {
 
     /**
      * 通过文件数组加载插件，返回缺失前置插件的文件数组
+     *
      * @param files 插件文件数组
      * @return 缺失前置插件的插件文件数组
      */
@@ -297,16 +303,18 @@ public class PluginLoader {
                     continue;
                 }
                 String[] depends = getDepends(info);
-                boolean con = false;
-                for (String s : depends) {
-                    if (getPlugin(s) == null && !s.isEmpty()) {
-                        after.add(f);
-                        con = true;
-                        break;
+                if (depends.length > 0) {
+                    boolean con = false;
+                    for (String s : depends) {
+                        if (getPlugin(s) == null && !s.isEmpty()) {
+                            after.add(f);
+                            con = true;
+                            break;
+                        }
                     }
-                }
-                if (con) {
-                    continue;
+                    if (con) {
+                        continue;
+                    }
                 }
                 plugin = init(info, u);
             } catch (Exception e) {
@@ -316,12 +324,6 @@ public class PluginLoader {
                 plugin.setFile(f);
                 plugin.setEnabled(true);
                 plugins.add(plugin);
-                try {
-                    plugin.onEnable();
-                    add2commands(plugin.getCommands());
-                } catch (Exception e) {
-                    logger.trace(e);
-                }
                 logger.info(language("loaded.plugin"), plugin.getName());
             } else {
                 logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
@@ -330,12 +332,18 @@ public class PluginLoader {
         return after;
     }
 
+    public void initPlugin(Plugin plugin) {
+
+    }
+
     /**
      * 通过文件数组加载插件
+     *
      * @param files 文件数组
      */
     public void loadPlugins(File[] files) throws IOException {
         ArrayList<File> after = loadPluginFiles(files);
+        logger.info("first after: %s", after);
         if (after.size() > 0) {
             ArrayList<String> names = getNames(after.toArray(new File[0]));
             for (File f : after) {
