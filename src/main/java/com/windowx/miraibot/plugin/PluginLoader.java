@@ -343,7 +343,6 @@ public class PluginLoader {
      */
     public void loadPlugins(File[] files) throws IOException {
         ArrayList<File> after = loadPluginFiles(files);
-        logger.info("first after: %s", after);
         if (after.size() > 0) {
             ArrayList<String> names = getNames(after.toArray(new File[0]));
             for (File f : after) {
