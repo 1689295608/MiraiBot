@@ -134,3 +134,6 @@ java -classpath MiraiBot.jar:MiraiCore.jar com.windowx.miraibot.MiraiBot
 
     Q：会被封号吗
     A：MiraiBot 的行为和正常 QQ 十分相似，不发布违规内容等理论不会被封
+
+    Q：This class is moved, please use 'com.windowx.miraibot.MiraiBot'!
+    A：请将启动脚本中的 `com.windowx.miraibot.PluginMain` 改为 `com.windowx.miraibot.MiraiBot`
