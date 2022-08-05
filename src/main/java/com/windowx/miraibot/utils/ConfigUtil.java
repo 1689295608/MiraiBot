@@ -1,12 +1,12 @@
 package com.windowx.miraibot.utils;
 
-import com.windowx.miraibot.PluginMain;
+import com.windowx.miraibot.MiraiBot;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.Properties;
 
-import static com.windowx.miraibot.PluginMain.logger;
+import static com.windowx.miraibot.MiraiBot.logger;
 
 public class ConfigUtil {
 	public static final Properties config = new Properties();
@@ -75,7 +75,7 @@ public class ConfigUtil {
 		if (lang == null) {
 			Properties tmpLanguage = new Properties();
 			try {
-				tmpLanguage.load(new StringReader(new String(LanguageUtil.languageFile(PluginMain.language))));
+				tmpLanguage.load(new StringReader(new String(LanguageUtil.languageFile(MiraiBot.language))));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

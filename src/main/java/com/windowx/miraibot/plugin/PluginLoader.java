@@ -1,6 +1,6 @@
 package com.windowx.miraibot.plugin;
 
-import com.windowx.miraibot.PluginMain;
+import com.windowx.miraibot.MiraiBot;
 import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.event.EventHandler;
 import com.windowx.miraibot.event.ListenerHost;
@@ -14,11 +14,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import static com.windowx.miraibot.PluginMain.*;
+import static com.windowx.miraibot.MiraiBot.*;
 
 public class PluginLoader {
     public ArrayList<Plugin> plugins;
@@ -187,7 +186,7 @@ public class PluginLoader {
         p.setPluginClassLoader(u);
         p.setPlugin(plugin);
         p.setCommands(new Commands());
-        p.setPluginLoader(PluginMain.loader);
+        p.setPluginLoader(MiraiBot.loader);
         p.setLogger(new Logger("[" + p.getName() + "] "));
         Properties config = new Properties();
         File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
@@ -253,14 +252,14 @@ public class PluginLoader {
 
     public void add2commands(Commands commands) {
         for (String command : commands.keys()) {
-            PluginMain.commands.set(command, commands.get(command));
+            MiraiBot.commands.set(command, commands.get(command));
         }
         reloadCommands();
     }
 
     public void removeCommands(Commands commands) {
         for (String command : commands.keys()) {
-            PluginMain.commands.remove(command);
+            MiraiBot.commands.remove(command);
         }
         reloadCommands();
     }

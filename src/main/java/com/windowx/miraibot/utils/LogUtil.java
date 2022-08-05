@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.windowx.miraibot.PluginMain.language;
-import static com.windowx.miraibot.PluginMain.reader;
+import static com.windowx.miraibot.MiraiBot.language;
+import static com.windowx.miraibot.MiraiBot.reader;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class LogUtil {

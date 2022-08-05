@@ -15,7 +15,7 @@ import net.mamoe.mirai.message.data.MessageSource;
 
 import java.util.ArrayList;
 
-import static com.windowx.miraibot.PluginMain.*;
+import static com.windowx.miraibot.MiraiBot.*;
 
 public class EventListener implements ListenerHost {
 	public static final ArrayList<MemberJoinRequestEvent> joinRequest = new ArrayList<>();
@@ -30,11 +30,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupJoin(MemberJoinEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		logger.info(language("joined.group")
@@ -47,11 +47,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupLeave(MemberLeaveEvent.Quit event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		logger.info(language("left.group")
@@ -64,11 +64,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupKick(MemberLeaveEvent.Kick event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -83,11 +83,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onJoinRequest(MemberJoinRequestEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId()) || event.getGroup() == null) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId()) || event.getGroup() == null) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		if (event.getGroup() != null) {
@@ -104,7 +104,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBotInvitedJoinGroupRequest(BotInvitedJoinGroupRequestEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
@@ -120,11 +120,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupRecall(MessageRecallEvent.GroupRecall event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroup().getId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		Member operator = event.getOperator();
@@ -190,7 +190,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBotLeave(BotLeaveEvent.Active event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
@@ -204,7 +204,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBotKick(BotLeaveEvent.Kick event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
@@ -220,7 +220,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBotPermissionChange(BotGroupPermissionChangeEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
@@ -234,7 +234,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupNameChange(GroupNameChangeEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
@@ -247,7 +247,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMemberNameCardChange(MemberCardChangeEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
@@ -261,7 +261,7 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onMemberPermissionChange(MemberPermissionChangeEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
@@ -275,11 +275,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupPostSend(GroupMessagePostSendEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getTarget().getId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getTarget().getId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getTarget()) {
+		if (MiraiBot.group != event.getTarget()) {
 			return;
 		}
 		MessageReceipt<Group> receipt = event.getReceipt();
@@ -328,15 +328,15 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onNudge(NudgeEvent event) {
-		if (event.getSubject() == PluginMain.group) {
-			Member from = PluginMain.group.get(event.getFrom().getId());
-			Member target = PluginMain.group.get(event.getTarget().getId());
+		if (event.getSubject() == MiraiBot.group) {
+			Member from = MiraiBot.group.get(event.getFrom().getId());
+			Member target = MiraiBot.group.get(event.getTarget().getId());
 			if (from != null && target != null) {
 				logger.info(language("nudge.message")
-						, from != PluginMain.group.getBotAsMember() ? from.getNameCard() + showQQ(from.getId()) : language("you")
+						, from != MiraiBot.group.getBotAsMember() ? from.getNameCard() + showQQ(from.getId()) : language("you")
 						, event.getAction()
 						, target != from ? target.getNameCard() + showQQ(target.getId()) :
-								target != PluginMain.group.getBotAsMember() ? language("itself") : language("yourself")
+								target != MiraiBot.group.getBotAsMember() ? language("itself") : language("yourself")
 						, event.getSuffix()
 				);
 			}
@@ -391,11 +391,11 @@ public class EventListener implements ListenerHost {
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMemberUnmute(MemberUnmuteEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		logUnmute(event.getOperator(), event.getMember(), event.getGroup());
@@ -403,11 +403,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBotUnmute(BotUnmuteEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		logUnmute(event.getOperator(), null, event.getGroup());
@@ -415,11 +415,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMemberMute(MemberMuteEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		logMute(event.getOperator(), event.getMember(), event.getGroup(), event.getDurationSeconds());
@@ -427,11 +427,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBotMute(BotMuteEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		logMute(event.getOperator(), null, event.getGroup(), event.getDurationSeconds());
@@ -439,11 +439,11 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onMuteAll(GroupMuteAllEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroupId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroupId())) {
 			event.cancel();
 			return;
 		}
-		if (PluginMain.group != event.getGroup()) {
+		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
 		logger.info(language("mute.all") +
@@ -452,13 +452,13 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupMessage(GroupMessageEvent event) {
-		if (PluginMain.isNotAllowedGroup(event.getGroup().getId())) {
+		if (MiraiBot.isNotAllowedGroup(event.getGroup().getId())) {
 			event.cancel();
 			return;
 		}
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
-		if (PluginMain.group == event.getGroup()) {
+		if (MiraiBot.group == event.getGroup()) {
 			messages.add(event.getSource());
 			logger.info(language("format.group.message")
 					, String.valueOf(messages.size())

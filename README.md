@@ -56,7 +56,7 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 以下为示例脚本，仅供参考：
 ```bat
 @echo off
-java -classpath MiraiBot.jar;MiraiCore.jar com.windowx.miraibot.PluginMain
+java -classpath MiraiBot.jar;MiraiCore.jar com.windowx.miraibot.MiraiBot
 pause
 exit
 ```
@@ -82,7 +82,7 @@ exit
 
 再写入执行脚本内容（例如 `vi Start.sh`），以下为示例脚本，仅供参考：
 ```shell
-java -classpath MiraiBot.jar:MiraiCore.jar com.windowx.miraibot.PluginMain
+java -classpath MiraiBot.jar:MiraiCore.jar com.windowx.miraibot.MiraiBot
 ```
 
 其中 `MiraiBot.jar` 和 `MiraiCore.jar` 便是你下载的文件了
