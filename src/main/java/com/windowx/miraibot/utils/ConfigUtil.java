@@ -57,7 +57,7 @@ public class ConfigUtil {
 		for (StackTraceElement ste : stack) {
 			if (!ste.getClassName().equals("java.lang.Thread") &&
 					!ste.getClassName().equals("com.windowx.miraibot.utils.ConfigUtil") &&
-					!ste.getClassName().equals("com.windowx.miraibot.PluginMain")) {
+					!ste.getClassName().equals("com.windowx.miraibot.MiraiBot")) {
 				return true;
 			}
 		}
