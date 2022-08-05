@@ -331,15 +331,22 @@ public class EventListener implements ListenerHost {
 		if (event.getSubject() == MiraiBot.group) {
 			Member from = MiraiBot.group.get(event.getFrom().getId());
 			Member target = MiraiBot.group.get(event.getTarget().getId());
-			if (from != null && target != null) {
-				logger.info(language("nudge.message")
-						, from != MiraiBot.group.getBotAsMember() ? from.getNameCard() + showQQ(from.getId()) : language("you")
-						, event.getAction()
-						, target != from ? target.getNameCard() + showQQ(target.getId()) :
-								target != MiraiBot.group.getBotAsMember() ? language("itself") : language("yourself")
-						, event.getSuffix()
-				);
+			if (from == null || target == null) return;
+			String fnick = from.getNameCard();
+			if (fnick.isEmpty()) {
+				fnick = from.getNick();
 			}
+			String tnick = target.getNameCard();
+			if (tnick.isEmpty()) {
+				tnick = target.getNick();
+			}
+			logger.info(language("nudge.message")
+					, from != MiraiBot.group.getBotAsMember() ? fnick + showQQ(from.getId()) : language("you")
+					, event.getAction()
+					, target != from ? tnick + showQQ(target.getId()) :
+							target != MiraiBot.group.getBotAsMember() ? language("itself") : language("yourself")
+					, event.getSuffix()
+			);
 		} else {
 			if (!(ConfigUtil.getConfig("friend").equals("*") || event.getFrom().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 				event.cancel();
