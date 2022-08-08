@@ -299,7 +299,6 @@ public class MiraiBot {
             Member[] mbs = group.getMembers().toArray(new Member[0]);
             for (Member m : mbs) {
                 names.add(String.valueOf(m.getId()));
-                names.add(m.getNameCard());
                 names.add(m.getNick());
             }
         }
