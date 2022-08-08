@@ -39,4 +39,7 @@ public class Logger {
     public void trace(Exception e) {
         LogUtil.trace(e);
     }
+    public void trace(Throwable e) {
+        LogUtil.trace(e);
+    }
 }

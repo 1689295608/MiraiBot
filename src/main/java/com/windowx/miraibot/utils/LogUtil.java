@@ -235,12 +235,17 @@ public class LogUtil {
     }
 
     public static void trace(Exception e) {
-        String name = e.toString().split(":")[0];
+        trace(e.toString(), e.getMessage(), e.getStackTrace());
+    }
+    public static void trace(Throwable t) {
+        trace(t.toString(), t.getMessage(), t.getStackTrace());
+    }
+    public static void trace(String str, String msg, StackTraceElement[] ste) {
+        String name = str.toString().split(":")[0];
         error(language("exception.string"),
                 name,
-                e.getMessage()
+                msg
         );
-        StackTraceElement[] ste = e.getStackTrace();
         for (StackTraceElement s : ste) {
             String className = s.getClassName();
             String methodName = s.getMethodName();

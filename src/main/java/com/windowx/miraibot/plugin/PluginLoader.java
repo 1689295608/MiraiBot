@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
@@ -58,6 +59,9 @@ public class PluginLoader {
                                 e.toString()
                         );
                         logger.trace(e);
+                        if (e instanceof InvocationTargetException ie) {
+                            logger.trace(ie.getTargetException());
+                        }
                     }
                 }
             }
