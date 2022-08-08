@@ -295,11 +295,13 @@ public class MiraiBot {
     public static void reloadCommands() {
         StringsCompleter sc = new StringsCompleter(commands.keys());
         ArrayList<String> names = new ArrayList<>();
-        Member[] mbs = group.getMembers().toArray(new Member[0]);
-        for (Member m : mbs) {
-            names.add(String.valueOf(m.getId()));
-            names.add(m.getNameCard());
-            names.add(m.getNick());
+        if (group != null) {
+            Member[] mbs = group.getMembers().toArray(new Member[0]);
+            for (Member m : mbs) {
+                names.add(String.valueOf(m.getId()));
+                names.add(m.getNameCard());
+                names.add(m.getNick());
+            }
         }
         StringsCompleter members = new StringsCompleter(names);
         completer = new ArgumentCompleter(
