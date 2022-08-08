@@ -294,8 +294,17 @@ public class MiraiBot {
 
     public static void reloadCommands() {
         StringsCompleter sc = new StringsCompleter(commands.keys());
+        ArrayList<String> names = new ArrayList<>();
+        Member[] mbs = group.getMembers().toArray(new Member[0]);
+        for (Member m : mbs) {
+            names.add(String.valueOf(m.getId()));
+            names.add(m.getNameCard());
+            names.add(m.getNick());
+        }
+        StringsCompleter members = new StringsCompleter(names);
         completer = new ArgumentCompleter(
                 sc,
+                members,
                 new Completers.FileNameCompleter()
         );
         LineReaderBuilder lrb = LineReaderBuilder.builder()
@@ -920,6 +929,7 @@ public class MiraiBot {
                 if (!g.isEmpty()) {
                     if (bot.getGroups().contains(Long.parseLong(g))) {
                         group = bot.getGroup(Long.parseLong(groups[id]));
+                        reloadCommands();
                         logger.info(language("now.group"), group.getName(), String.valueOf(group.getId()));
                     } else {
                         logger.error(language("not.entered.group"), g);
