@@ -9,10 +9,7 @@ import com.windowx.miraibot.utils.Logger;
 import net.mamoe.mirai.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -192,10 +189,8 @@ public class PluginLoader {
         p.setCommands(new Commands());
         p.setPluginLoader(MiraiBot.loader);
         p.setLogger(new Logger("[" + p.getName() + "] "));
-        Properties config = new Properties();
-        File file = new File("plugins/" + plugin.getProperty("name") + "/config.ini");
-        if (file.exists()) config.load(new FileReader(file));
-        p.setConfig(config);
+        File file = new File(p.getDataFolder(), "/config.json");
+        p.loadConfig(new FileInputStream(file));
         loaders.put(p, u);
         return p;
     }

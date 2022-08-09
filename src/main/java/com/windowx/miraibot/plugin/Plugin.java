@@ -1,5 +1,9 @@
 package com.windowx.miraibot.plugin;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.bind.JsonTreeReader;
 import com.windowx.miraibot.command.Command;
 import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.utils.Logger;
@@ -8,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class Plugin extends PluginBase {
@@ -17,7 +22,7 @@ public class Plugin extends PluginBase {
 	private String className;
 	private String version;
 	private String description;
-	private Properties config;
+	private JsonObject config;
 	private PluginClassLoader classLoader;
 	private boolean isEnabled;
 	private Properties plugin;
@@ -64,27 +69,39 @@ public class Plugin extends PluginBase {
 	public void setPlugin(Properties plugin) {
 		this.plugin = plugin;
 	}
-	
+
+	@Deprecated
 	public Properties getConfig() {
-		return this.config;
+		Properties oldconfig = new Properties();
+		for (String key : config.keySet()) {
+			oldconfig.put(key, config.get(key).getAsString());
+		}
+		return oldconfig;
 	}
-	
+
+	@Deprecated
 	public void setConfig(Properties properties) {
-		this.config = properties;
+		config = new JsonObject();
+		for (Object key : properties.keySet()) {
+			String k = String.valueOf(key);
+			config.addProperty(k, properties.getProperty(k));
+		}
+	}
+
+	public void loadConfig(InputStream is) throws IOException {
+		Gson gson = new Gson();
+		String s = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+		config = gson.fromJson(s, config.getClass());
 	}
 
 	public File getDataFolder() {
 		return new File("plugins" + File.separator + name);
 	}
 
-	public void saveDefaultConfig() {
-		InputStream is = getResourceAsStream("config.ini");
-		if (is == null) return;
-		try {
-			config.load(is);
-			saveConfig();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void saveDefaultConfig() throws IOException {
+		try (InputStream is = getResourceAsStream("config.json")) {
+			if (is == null) return;
+			loadConfig(is);
 		}
 	}
 
@@ -95,13 +112,19 @@ public class Plugin extends PluginBase {
 				throw new IOException("Cloud not create dirs: " + config);
 			}
 		}
-		file = new File(file, "config.ini");
+		file = new File(file, "config.json");
 		if (!file.exists()) {
 			if (!file.createNewFile()) {
 				throw new IOException("Cloud not create config file: " + config);
 			}
 		}
-		config.store(new FileOutputStream(file), null);
+		Gson gson = new GsonBuilder()
+				.setPrettyPrinting()
+				.create();
+		String str = gson.toJson(config);
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			fos.write(str.getBytes(StandardCharsets.UTF_8));
+		}
 	}
 	
 	public File getFile() {

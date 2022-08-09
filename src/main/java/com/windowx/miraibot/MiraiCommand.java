@@ -1,5 +1,8 @@
 package com.windowx.miraibot;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.windowx.miraibot.command.Command;
 import com.windowx.miraibot.command.CommandExecutor;
 import com.windowx.miraibot.command.Commands;
@@ -17,8 +20,6 @@ import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.fusesource.jansi.AnsiConsole;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
@@ -662,24 +663,37 @@ public class MiraiCommand {
                 try {
                     long l = Long.parseLong(cmd[1]);
                     URL url = new URL("http://music.163.com/api/song/detail/?id=" + l + "&ids=[" + l + "]");
-                    JSONObject json;
+                    JsonObject json;
                     try (InputStream is = url.openStream()) {
-                        json = new JSONObject(new String(is.readAllBytes(), StandardCharsets.UTF_8));
+                        json = new Gson().fromJson(
+                                new String(is.readAllBytes(), StandardCharsets.UTF_8),
+                                JsonObject.class
+                        );
                     }
-                    JSONArray songs = json.getJSONArray("songs");
+                    JsonArray songs = json.get("songs").getAsJsonArray();
                     StringBuilder artists = new StringBuilder();
-                    JSONArray artistsA = songs.getJSONObject(0).getJSONArray("artists");
-                    for (int i = 0; i < artistsA.length(); i++) {
-                        artists.append(artistsA.getJSONObject(i).getString("name")).append(i != artistsA.length() - 1 ? " / " : "");
+                    JsonArray artistsA = songs.get(0).getAsJsonObject()
+                            .get("artists").getAsJsonArray();
+                    for (int i = 0; i < artistsA.size(); i++) {
+                        artists.append(
+                                artistsA.get(i).getAsJsonObject()
+                                    .get("name").getAsString()
+                        ).append(
+                            i != artistsA.size() - 1 ? " / " : ""
+                        );
                     }
-                    if (json.getInt("code") == 200) {
+                    if (json.get("code").getAsInt() == 200) {
                         MusicShare share = new MusicShare(MusicKind.NeteaseCloudMusic,
-                                songs.getJSONObject(0).getString("name"),
+                                songs.get(0).getAsJsonObject()
+                                        .get("name").getAsString(),
                                 artists.toString(),
                                 "http://music.163.com/song/" + l,
-                                songs.getJSONObject(0).getJSONObject("album").getString("picUrl"),
+                                songs.get(0).getAsJsonObject()
+                                        .get("album").getAsJsonObject()
+                                        .get("picUrl").getAsString(),
                                 "http://music.163.com/song/media/outer/url?id=" + l,
-                                "[音乐] " + songs.getJSONObject(0).getString("name") + " - " + artists
+                                "[音乐] " + songs.get(0).getAsJsonObject()
+                                        .get("name").getAsString() + " - " + artists
                         );
                         if (cmd.length < 3) {
                             group.sendMessage(share);

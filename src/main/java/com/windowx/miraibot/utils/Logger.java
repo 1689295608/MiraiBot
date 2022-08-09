@@ -170,11 +170,11 @@ public class Logger {
     }
 
     public void warn(String str, Object... args) {
-        print(formatStr(prefix + ansi().fgYellow().toString(), str), args);
+        print(formatStr(prefix + ansi().fgBrightYellow().toString(), str), args);
     }
 
     public void error(String str, Object... args) {
-        print(formatStr(prefix + ansi().fgRed().toString(), str), args);
+        print(formatStr(prefix + ansi().fgBrightRed().toString(), str), args);
     }
 
     /**
