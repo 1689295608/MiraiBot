@@ -2,12 +2,8 @@ package com.windowx.miraibot.utils;
 
 import org.fusesource.jansi.AnsiConsole;
 import org.jline.utils.AttributedString;
-import org.jline.utils.Log;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,55 +14,14 @@ import static org.fusesource.jansi.Ansi.ansi;
 public class Logger {
     private String prefix = "";
     public boolean ansiColor;
-    byte[] all = new byte[0];
-    File file;
 
     public Logger() {
-        init();
+
     }
 
     public Logger(String prefix) {
-        init();
-        this.prefix = prefix;
-    }
 
-    public void init() {
-        AnsiConsole.systemInstall();
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date(System.currentTimeMillis());
-            String time = formatter.format(date);
-            File dir = new File("logs");
-            if (!dir.exists()) {
-                if (!dir.mkdirs()) {
-                    System.out.println(time + ConfigUtil.getLanguage("failed.create.config"));
-                    System.exit(-1);
-                    return;
-                }
-            }
-            int i = 1;
-            while (new File("logs" + File.separator + time + "-" + i + ".log").exists()) {
-                i++;
-            }
-            file = new File("logs" + File.separator + time + "-" + i + ".log");
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    System.out.println(time + ConfigUtil.getLanguage("failed.create.config"));
-                    System.exit(-1);
-                    return;
-                }
-            }
-            FileInputStream fis = new FileInputStream(file);
-            all = fis.readAllBytes();
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(all);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            System.out.println(ConfigUtil.getLanguage("unknown.error"));
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        this.prefix = prefix;
     }
 
     /**
@@ -105,59 +60,20 @@ public class Logger {
         }
         return sb.toString();
     }
-    /**
-     * 获取格式化后的时间并将内容写入日志
-     *
-     * @param str  内容
-     * @param args 参数
-     * @return 格式化后的时间
-     */
-    public String write(String str, Object... args) {
-        if (str == null) return null;
-        str = String.format(str, args);
-        String time = formatTime();
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            all = fis.readAllBytes();
-            FileOutputStream fos = new FileOutputStream(file);
-            String[] allLine = str.split("\n");
-            byte[] add = new byte[0];
-            for (String s : allLine) {
-                add = byteMerger(add, (time + s + "\n").getBytes());
-            }
-            fos.write(byteMerger(all, add));
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            System.out.println(ConfigUtil.getLanguage("unknown.error"));
-            System.out.println("(" + e.getCause() + " : " + e.getMessage() + ")");
-            System.exit(-1);
-        }
-        return time;
-    }
 
     /**
-     * Combine two byte[] into one byte[]
+     * 输出文本到控制台并记录到日志
      *
-     * @param byte1 Byte[] to be merged at the beginning
-     * @param byte2 Byte[] to be merged to the end
-     * @return Merged result
-     */
-    public byte[] byteMerger(byte[] byte1, byte[] byte2) {
-        byte[] byte3 = new byte[byte1.length + byte2.length];
-        System.arraycopy(byte1, 0, byte3, 0, byte1.length);
-        System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
-        return byte3;
-    }
-
-    /**
-     * Output a message and record it in the log file
-     *
-     * @param str What to output
+     * @param str 输出的内容
      */
     public void print(String str, Object... args) {
         if (str == null) str = "";
         String opt = String.format(formatStr(formatTime(), str), args) + "\n";
+        try {
+            LogUtil.write(opt.substring(0, opt.length() - 1));
+        } catch (IOException e) {
+            trace(e);
+        }
         if (reader == null) {
             AnsiConsole.out().print(opt);
         } else {

@@ -1,5 +1,7 @@
 package com.windowx.miraibot.utils;
 
+import java.util.HashMap;
+
 public class ColorFormatter {
     public static final char ESCAPE = '§';
     public static final String BLACK = ESCAPE + "0";
