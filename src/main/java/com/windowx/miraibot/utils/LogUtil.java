@@ -14,7 +14,7 @@ import static com.windowx.miraibot.MiraiBot.logger;
 public class LogUtil {
     public static File file;
 
-    public void init() {
+    public static void init() {
         AnsiConsole.systemInstall();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

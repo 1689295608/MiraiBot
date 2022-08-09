@@ -6,6 +6,7 @@ import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.plugin.PluginLoader;
 import com.windowx.miraibot.utils.ConfigUtil;
 import com.windowx.miraibot.utils.LanguageUtil;
+import com.windowx.miraibot.utils.LogUtil;
 import com.windowx.miraibot.utils.Logger;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
@@ -60,6 +61,7 @@ public class MiraiBot {
                 .encoding(Charset.defaultCharset())
                 .jansi(true)
                 .jna(false);
+        LogUtil.init();
         try {
             terminal = tb.build();
         } catch (IOException e) {
