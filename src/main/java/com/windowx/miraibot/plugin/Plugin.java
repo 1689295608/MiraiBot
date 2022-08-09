@@ -7,11 +7,9 @@ import com.google.gson.internal.bind.JsonTreeReader;
 import com.windowx.miraibot.command.Command;
 import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.utils.Logger;
+import kotlinx.serialization.json.Json;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -22,7 +20,7 @@ public class Plugin extends PluginBase {
 	private String className;
 	private String version;
 	private String description;
-	private JsonObject config;
+	private JsonObject config = new JsonObject();
 	private PluginClassLoader classLoader;
 	private boolean isEnabled;
 	private Properties plugin;
@@ -77,6 +75,14 @@ public class Plugin extends PluginBase {
 			oldconfig.put(key, config.get(key).getAsString());
 		}
 		return oldconfig;
+	}
+
+	public JsonObject config() {
+		return config;
+	}
+
+	public void config(JsonObject c) {
+		this.config = c;
 	}
 
 	@Deprecated
