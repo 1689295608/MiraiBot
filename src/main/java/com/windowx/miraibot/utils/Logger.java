@@ -116,7 +116,7 @@ public class Logger {
         trace(t.toString(), t.getMessage(), t.getStackTrace());
     }
     public void trace(String str, String msg, StackTraceElement[] ste) {
-        String name = str.toString().split(":")[0];
+        String name = str.split(":")[0];
         error(language("exception.string"),
                 name,
                 msg
