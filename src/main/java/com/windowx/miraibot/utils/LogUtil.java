@@ -53,12 +53,11 @@ public class LogUtil {
      */
     public static void write(String str) throws IOException {
         if (str == null) return;
-        String time = logger.formatTime();
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] all = fis.readAllBytes();
             try (FileOutputStream fos = new FileOutputStream(file)) {
                 byte[] add = new byte[0];
-                add = byteMerger(add, (time + str + "\n").getBytes());
+                add = byteMerger(add, (str + "\n").getBytes());
                 fos.write(byteMerger(all, add));
             }
         }
