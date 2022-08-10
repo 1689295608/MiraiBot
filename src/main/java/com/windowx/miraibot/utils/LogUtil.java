@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.windowx.miraibot.MiraiBot.logger;
+import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class LogUtil {
     public static File file;
@@ -23,7 +23,7 @@ public class LogUtil {
             File dir = new File("logs");
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
-                    System.out.println(time + ConfigUtil.getLanguage("failed.create.config"));
+                    System.out.println(time + language("failed.create.config"));
                     System.exit(-1);
                     return;
                 }
@@ -35,12 +35,12 @@ public class LogUtil {
             file = new File("logs" + File.separator + time + "-" + i + ".log");
             if (!file.exists()) {
                 if (!file.createNewFile()) {
-                    System.out.println(time + ConfigUtil.getLanguage("failed.create.config"));
+                    System.out.println(time + language("failed.create.config"));
                     System.exit(-1);
                 }
             }
         } catch (IOException e) {
-            System.out.println(ConfigUtil.getLanguage("unknown.error"));
+            System.out.println(language("unknown.error"));
             e.printStackTrace();
             System.exit(-1);
         }

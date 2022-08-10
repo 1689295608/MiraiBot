@@ -32,6 +32,7 @@ import java.util.Arrays;
 import static com.windowx.miraibot.EventListener.*;
 import static com.windowx.miraibot.EventListener.messages;
 import static com.windowx.miraibot.MiraiBot.*;
+import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class MiraiCommand {
 
@@ -54,6 +55,7 @@ public class MiraiCommand {
             case "reload" -> {
                 if (cmd.length == 1) {
                     ConfigUtil.init();
+                    LanguageUtil.init();
                     logger.info(language("reloaded"));
                     break;
                 }
@@ -144,10 +146,10 @@ public class MiraiCommand {
                         }
                     }
                 }
-                FileOutputStream fos = new FileOutputStream(now);
-                fos.write(LanguageUtil.languageFile(cmd[1]));
-                fos.close();
-                ConfigUtil.init();
+                try (FileOutputStream fos = new FileOutputStream(now)) {
+                    fos.write(LanguageUtil.languageFile(cmd[1]).getBytes());
+                }
+                LanguageUtil.init();
                 logger.info(language("success.change.language"));
             }
             case "clear" -> {

@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.windowx.miraibot.MiraiBot.*;
+import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class PluginLoader {
     public ArrayList<Plugin> plugins;
@@ -50,7 +51,7 @@ public class PluginLoader {
                     try {
                         method.invoke(listener, event);
                     } catch (Exception e) {
-                        logger.error(ConfigUtil.getLanguage("event.error"),
+                        logger.error(language("event.error"),
                                 plugin.getName(),
                                 className(event.getClass().getName()),
                                 e.toString()

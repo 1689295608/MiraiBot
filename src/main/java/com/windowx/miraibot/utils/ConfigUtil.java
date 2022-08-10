@@ -1,16 +1,18 @@
 package com.windowx.miraibot.utils;
 
-import com.windowx.miraibot.MiraiBot;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Properties;
 
 import static com.windowx.miraibot.MiraiBot.logger;
+import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class ConfigUtil {
 	public static final Properties config = new Properties();
-	public static final Properties language = new Properties();
 	
 	/**
 	 * Initialize the config system
@@ -21,12 +23,8 @@ public class ConfigUtil {
 			if (tmpFile.exists()) {
 				config.load(new BufferedReader(new FileReader("config.properties")));
 			}
-			tmpFile = new File("language.properties");
-			if (tmpFile.exists()) {
-				language.load(new BufferedReader(new FileReader("language.properties")));
-			}
 		} catch (IOException e) {
-			logger.info(ConfigUtil.getLanguage("unknown.error"));
+			logger.info(language("unknown.error"));
 			e.printStackTrace();
 			System.exit(-1);
 		}
@@ -62,29 +60,5 @@ public class ConfigUtil {
 			}
 		}
 		return false;
-	}
-	
-	/**
-	 * Get the value of key in the language file
-	 *
-	 * @param key Key
-	 * @return Language value
-	 */
-	@NotNull public static String getLanguage(String key) {
-		String lang = language.getProperty(key);
-		if (lang == null) {
-			Properties tmpLanguage = new Properties();
-			try {
-				tmpLanguage.load(new StringReader(new String(LanguageUtil.languageFile(MiraiBot.language))));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (tmpLanguage.containsKey(key)) {
-				return tmpLanguage.getProperty(key);
-			} else {
-				return "";
-			}
-		}
-		return language.getProperty(key);
 	}
 }

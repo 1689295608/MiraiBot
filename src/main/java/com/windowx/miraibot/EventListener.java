@@ -1,6 +1,5 @@
 package com.windowx.miraibot;
 
-import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.utils.ConfigUtil;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;
@@ -15,7 +14,9 @@ import net.mamoe.mirai.message.data.MessageSource;
 
 import java.util.ArrayList;
 
-import static com.windowx.miraibot.MiraiBot.*;
+import static com.windowx.miraibot.MiraiBot.loader;
+import static com.windowx.miraibot.MiraiBot.logger;
+import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class EventListener implements ListenerHost {
 	public static final ArrayList<MemberJoinRequestEvent> joinRequest = new ArrayList<>();

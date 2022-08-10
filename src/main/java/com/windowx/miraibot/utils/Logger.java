@@ -9,6 +9,7 @@ import java.util.Date;
 
 import static com.windowx.miraibot.MiraiBot.language;
 import static com.windowx.miraibot.MiraiBot.reader;
+import static com.windowx.miraibot.utils.LanguageUtil.*;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class Logger {
@@ -30,7 +31,7 @@ public class Logger {
      * @return 格式化后的时间
      */
     public String formatTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat(ConfigUtil.getLanguage("format.time"));
+        SimpleDateFormat formatter = new SimpleDateFormat(language("format.time"));
         Date date = new Date(System.currentTimeMillis());
         return formatter.format(date);
     }

@@ -40,6 +40,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import static com.windowx.miraibot.EventListener.messages;
+import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class MiraiBot {
     public static final String language = Locale.getDefault().getLanguage();
@@ -57,6 +58,7 @@ public class MiraiBot {
     public static History history = new DefaultHistory();
 
     public static void main(String[] args) {
+        String err = language.equals("zh") ? "出现错误！进程即将终止！" : "Unable to create configuration file!";
         TerminalBuilder tb = TerminalBuilder.builder()
                 .encoding(Charset.defaultCharset())
                 .jansi(true)
@@ -66,10 +68,9 @@ public class MiraiBot {
             terminal = tb.build();
         } catch (IOException e) {
             logger.trace(e);
-            logger.error(language("unknown.error"));
+            logger.error(err);
             System.exit(-1);
         }
-        String err = language.equals("zh") ? "出现错误！进程即将终止！" : (language.equals("tw") ? "出現錯誤！進程即將終止！" : "Unable to create configuration file!");
         try {
             URL url = ClassLoader.getSystemResource("Version");
             String version = "";
@@ -78,9 +79,8 @@ public class MiraiBot {
                     version = new String(is.readAllBytes()).replaceAll("[^0-9.]", "");
                 }
             }
-            System.out.println(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
-                    (language.equals("tw") ? "MiraiBot " + version + " 基於 Mirai-Core. 版權所有 (C) WindowX 2021" :
-                            "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021"));
+            logger.info(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
+                    "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021");
         } catch (Exception e) {
             logger.trace(e);
         }
@@ -105,8 +105,7 @@ public class MiraiBot {
             boolean e = Boolean.parseBoolean(prop.getProperty("eula", "false"));
             if (!e) {
                 System.out.println(language.equals("zh") ? "使用本软件，您必须遵守我们的协议，请修改 eula.txt 来同意协议！" :
-                        (language.equals("tw") ? "使用本軟件，您必須遵守我們的協議，請修改 eula.txt 來同意協議！" :
-                                "To use this software, you must abide by our agreement, please modify eula.txt to agree to the agreement!"));
+                        "To use this software, you must abide by our agreement, please modify eula.txt to agree to the agreement!");
                 System.exit(0);
             }
         } catch (IOException e) {
@@ -114,23 +113,27 @@ public class MiraiBot {
             System.exit(-1);
         }
 
-        File languageFile = new File("language.properties");
         try {
+            LanguageUtil.init();
+
+            File languageFile = new File("language.json");
             if (!languageFile.exists()) {
                 if (!languageFile.createNewFile()) {
-                    logger.error(language.equals("zh") ? "无法创建配置文件！" : (language.equals("tw") ? "無法創建配置文件！" : "Unable to create configuration file!"));
+                    logger.error(language.equals("zh") ? "无法创建配置文件！" : "Unable to create configuration file!");
                 } else {
-                    FileOutputStream fos = new FileOutputStream(languageFile);
-                    fos.write(LanguageUtil.languageFile(language));
-                    fos.flush();
-                    fos.close();
+                    try (FileOutputStream fos = new FileOutputStream(languageFile)) {
+                        fos.write(LanguageUtil.languageFile(language).getBytes(StandardCharsets.UTF_8));
+                    }
                 }
             }
+
+            LanguageUtil.load();
         } catch (IOException e) {
             logger.info(err);
             logger.trace(e);
             System.exit(-1);
         }
+
         ConfigUtil.init();
         logger.ansiColor = Boolean.parseBoolean(ConfigUtil.getConfig("ansi-console"));
 
@@ -408,16 +411,6 @@ public class MiraiBot {
         logger.info("URL: " + Mirai.getInstance().queryImageUrl(bot, image));
         logger.info("MiraiCode: " + image.serializeToMiraiCode());
         logger.info("· -------------------------------- ·");
-    }
-
-    /**
-     * Fast to language()
-     *
-     * @param key key
-     * @return language value
-     */
-    public static String language(String key) {
-        return ConfigUtil.getLanguage(key);
     }
 
     /**
