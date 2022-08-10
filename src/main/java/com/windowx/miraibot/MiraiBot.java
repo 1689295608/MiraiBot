@@ -468,7 +468,7 @@ public class MiraiBot {
                 config = config.replaceAll("%qq%", qq);
                 config = config.replaceAll("%password%", password);
                 config = config.replaceAll("%groups%", groups);
-                config = config.replaceAll("%check.as.setup%", checkUpdate);
+                config = config.replaceAll("%check\\.as\\.setup%", checkUpdate);
                 fos.write(config.getBytes());
                 fos.close();
                 logger.warn(language("please.restart"));
