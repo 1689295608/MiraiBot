@@ -662,61 +662,32 @@ public class MiraiCommand {
                 }
                 try {
                     long l = Long.parseLong(cmd[1]);
-                    URL url = new URL("http://music.163.com/api/song/detail/?id=" + l + "&ids=[" + l + "]");
-                    JsonObject json;
-                    try (InputStream is = url.openStream()) {
-                        json = new Gson().fromJson(
-                                new String(is.readAllBytes(), StandardCharsets.UTF_8),
-                                JsonObject.class
-                        );
+                    MusicShare share;
+                    try {
+                        share = neteaseMusic(l);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
+                        return true;
                     }
-                    JsonArray songs = json.get("songs").getAsJsonArray();
-                    StringBuilder artists = new StringBuilder();
-                    JsonArray artistsA = songs.get(0).getAsJsonObject()
-                            .get("artists").getAsJsonArray();
-                    for (int i = 0; i < artistsA.size(); i++) {
-                        artists.append(
-                                artistsA.get(i).getAsJsonObject()
-                                    .get("name").getAsString()
-                        ).append(
-                            i != artistsA.size() - 1 ? " / " : ""
-                        );
+                    if (cmd.length < 3) {
+                        group.sendMessage(share);
+                        return true;
                     }
-                    if (json.get("code").getAsInt() == 200) {
-                        MusicShare share = new MusicShare(MusicKind.NeteaseCloudMusic,
-                                songs.get(0).getAsJsonObject()
-                                        .get("name").getAsString(),
-                                artists.toString(),
-                                "http://music.163.com/song/" + l,
-                                songs.get(0).getAsJsonObject()
-                                        .get("album").getAsJsonObject()
-                                        .get("picUrl").getAsString(),
-                                "http://music.163.com/song/media/outer/url?id=" + l,
-                                "[音乐] " + songs.get(0).getAsJsonObject()
-                                        .get("name").getAsString() + " - " + artists
-                        );
-                        if (cmd.length < 3) {
+                    try {
+                        long tid = Long.parseLong(cmd[2]);
+                        Group group = bot.getGroup(tid);
+                        if (group != null) {
                             group.sendMessage(share);
                         } else {
-                            try {
-                                long tid = Long.parseLong(cmd[2]);
-                                Group group = bot.getGroup(tid);
-                                if (group != null) {
-                                    group.sendMessage(share);
-                                } else {
-                                    Friend friend = bot.getFriend(tid);
-                                    if (friend != null) {
-                                        friend.sendMessage(share);
-                                    }
-                                }
-                            } catch (NumberFormatException e) {
-                                logger.error(language("contact.id.error"));
-                            } catch (Exception e) {
-                                logger.error(e.toString());
+                            Friend friend = bot.getFriend(tid);
+                            if (friend != null) {
+                                friend.sendMessage(share);
                             }
                         }
-                    } else {
-                        logger.error(language("music.code.error"));
+                    } catch (NumberFormatException e) {
+                        logger.error(language("contact.id.error"));
+                    } catch (Exception e) {
+                        logger.error(e.toString());
                     }
                 } catch (NumberFormatException e) {
                     logger.error(language("music.id.error"));
@@ -805,5 +776,43 @@ public class MiraiCommand {
             }
         }
         return rt;
+    }
+
+    public static MusicShare neteaseMusic(long id) throws Exception {
+        URL url = new URL("http://music.163.com/api/song/detail/?id=" + id + "&ids=[" + id + "]");
+        JsonObject json;
+        try (InputStream is = url.openStream()) {
+            json = new Gson().fromJson(
+                    new String(is.readAllBytes(), StandardCharsets.UTF_8),
+                    JsonObject.class
+            );
+        }
+        JsonArray songs = json.get("songs").getAsJsonArray();
+        StringBuilder artists = new StringBuilder();
+        JsonArray artistsA = songs.get(0).getAsJsonObject()
+                .get("artists").getAsJsonArray();
+        for (int i = 0; i < artistsA.size(); i++) {
+            artists.append(
+                    artistsA.get(i).getAsJsonObject()
+                            .get("name").getAsString()
+            ).append(
+                    i != artistsA.size() - 1 ? " / " : ""
+            );
+        }
+        if (json.get("code").getAsInt() != 200) {
+            throw new Exception(language("music.code.error"));
+        }
+        return new MusicShare(MusicKind.NeteaseCloudMusic,
+                songs.get(0).getAsJsonObject()
+                        .get("name").getAsString(),
+                artists.toString(),
+                "http://music.163.com/song/" + id,
+                songs.get(0).getAsJsonObject()
+                        .get("album").getAsJsonObject()
+                        .get("picUrl").getAsString(),
+                "http://music.163.com/song/media/outer/url?id=" + id,
+                "[音乐] " + songs.get(0).getAsJsonObject()
+                        .get("name").getAsString() + " - " + artists
+        );
     }
 }
