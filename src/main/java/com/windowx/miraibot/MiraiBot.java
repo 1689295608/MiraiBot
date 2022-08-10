@@ -452,7 +452,7 @@ public class MiraiBot {
                 logger.info(language("please.input.qq"));
                 String qq = console.readLine();
                 logger.info(language("please.input.password"));
-                String password = String.valueOf(console.readPassword());
+                String password = new String(console.readPassword());
                 logger.info(language("please.input.group.id"));
                 String groups = console.readLine();
                 logger.info(language("please.input.check.update.on.setup"));
