@@ -474,15 +474,6 @@ public class EventListener implements ListenerHost {
 					, msg
 			);
 		}
-
-		for (Plugin p : loader.plugins) {
-			if (!p.isEnabled() && msg.trim().isEmpty()) continue;
-			try {
-				p.onGroupMessage(event);
-			} catch (Exception e) {
-				logger.trace(e);
-			}
-		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

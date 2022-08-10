@@ -26,10 +26,4 @@ abstract class PluginBase {
      * 插件禁用时触发，也会在关闭机器人时触发
      */
     public void onDisable() { }
-
-    /**
-     * 在已允许的群中有新消息时触发
-     * @param event 新消息事件
-     */
-    public void onGroupMessage(GroupMessageEvent event) { }
 }
