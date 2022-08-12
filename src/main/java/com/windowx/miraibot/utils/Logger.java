@@ -3,13 +3,12 @@ package com.windowx.miraibot.utils;
 import org.fusesource.jansi.AnsiConsole;
 import org.jline.utils.AttributedString;
 
-import java.io.*;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.windowx.miraibot.MiraiBot.language;
 import static com.windowx.miraibot.MiraiBot.reader;
-import static com.windowx.miraibot.utils.LanguageUtil.*;
+import static com.windowx.miraibot.utils.LanguageUtil.language;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class Logger {
@@ -54,7 +53,7 @@ public class Logger {
                         .append("\n");
                 continue;
             }
-            sb.append(formatTime())
+            sb /*.append(formatTime()) */
                     .append(s)
                     .append(ansi().reset().toString())
                     .append("\n");
