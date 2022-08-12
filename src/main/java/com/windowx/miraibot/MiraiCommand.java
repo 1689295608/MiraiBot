@@ -47,6 +47,7 @@ public class MiraiCommand {
                 ConfigUtil.init();
                 try {
                     LanguageUtil.init();
+                    LanguageUtil.load();
                 } catch (IOException e) {
                     logger.trace(e);
                     return;
