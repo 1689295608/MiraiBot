@@ -337,6 +337,6 @@
     "nudged": "Nudge the member successfully!",
     "joined.group": "%s (%s) joined the chat group %s (%s)",
     "dice.value.error": "The value of the dice cannot be greater than six and less than one！",
-    "send": "send"
+    "send": "Send"
   }
 }
