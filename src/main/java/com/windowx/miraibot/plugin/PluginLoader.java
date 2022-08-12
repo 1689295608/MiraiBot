@@ -4,7 +4,7 @@ import com.windowx.miraibot.MiraiBot;
 import com.windowx.miraibot.command.Commands;
 import com.windowx.miraibot.event.EventHandler;
 import com.windowx.miraibot.event.ListenerHost;
-import com.windowx.miraibot.utils.ConfigUtil;
+import com.windowx.miraibot.utils.LanguageUtil;
 import com.windowx.miraibot.utils.Logger;
 import net.mamoe.mirai.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +16,6 @@ import java.net.URL;
 import java.util.*;
 
 import static com.windowx.miraibot.MiraiBot.*;
-import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class PluginLoader {
     public ArrayList<Plugin> plugins;
@@ -51,7 +50,7 @@ public class PluginLoader {
                     try {
                         method.invoke(listener, event);
                     } catch (Exception e) {
-                        logger.error(language("event.error"),
+                        logger.error(LanguageUtil.l("event.error"),
                                 plugin.getName(),
                                 className(event.getClass().getName()),
                                 e.toString()
@@ -158,10 +157,10 @@ public class PluginLoader {
     public void unloadPlugin(String name) {
         Plugin plugin = getPlugin(name);
         if (plugin == null) {
-            logger.error(language("plugin.not.exists"), name);
+            logger.error(LanguageUtil.l("plugin.not.exists"), name);
             return;
         }
-        logger.info(language("unloading.plugin"), plugin.getName());
+        logger.info(LanguageUtil.l("unloading.plugin"), plugin.getName());
         try {
             plugin.onDisable();
         } catch (Exception e) {
@@ -174,7 +173,7 @@ public class PluginLoader {
         loaders.remove(plugin);
         plugins.remove(plugin);
         System.gc();
-        logger.info(language("unloaded.plugin"), name);
+        logger.info(LanguageUtil.l("unloaded.plugin"), name);
     }
 
     private Plugin init(Properties plugin, PluginClassLoader u) throws Exception {
@@ -240,7 +239,7 @@ public class PluginLoader {
      */
     public void loadPlugin(File file, String name) throws Exception {
         if (!file.exists()) {
-            logger.error(language("plugin.file.not.exists")
+            logger.error(LanguageUtil.l("plugin.file.not.exists")
                     , name
             );
             return;
@@ -292,13 +291,13 @@ public class PluginLoader {
             try {
                 u = getLoader(f);
             } catch (IOException e) {
-                logger.error(language("failed.load.plugin"), f.getName(), e.toString());
+                logger.error(LanguageUtil.l("failed.load.plugin"), f.getName(), e.toString());
                 continue;
             }
             try {
                 Properties info = getPluginInfo(u);
                 if (info == null) {
-                    logger.error(language("failed.load.plugin"), f.getName(), "'plugin.ini' does not exist");
+                    logger.error(LanguageUtil.l("failed.load.plugin"), f.getName(), "'plugin.ini' does not exist");
                     continue;
                 }
                 String[] depends = getDepends(info);
@@ -323,9 +322,9 @@ public class PluginLoader {
                 plugin.setFile(f);
                 plugin.setEnabled(true);
                 plugins.add(plugin);
-                logger.info(language("loaded.plugin"), plugin.getName());
+                logger.info(LanguageUtil.l("loaded.plugin"), plugin.getName());
             } else {
-                logger.error(language("failed.load.plugin"), f.getName(), "unknown error");
+                logger.error(LanguageUtil.l("failed.load.plugin"), f.getName(), "unknown error");
             }
         }
         return after;
@@ -350,7 +349,7 @@ public class PluginLoader {
                 String[] depends = getDepends(info);
                 for (String s : depends) {
                     if (!names.contains(s)) {
-                        logger.error(language("failed.load.plugin"),
+                        logger.error(LanguageUtil.l("failed.load.plugin"),
                                 f.getName(),
                                 "missing depend plugin '" + s + "'"
                         );

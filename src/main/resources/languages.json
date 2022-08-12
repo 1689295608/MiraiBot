@@ -166,7 +166,8 @@
     "mute.all": "全员禁言",
     "nudged": "成功戳一戳该成员！",
     "joined.group": "%s (%s) 加入了聊群 %s (%s)",
-    "dice.value.error": "骰子的值不能大于六和小于一！"
+    "dice.value.error": "骰子的值不能大于六和小于一！",
+    "send": "发送"
   },
   "en": {
     "command.status": "View MiraiBot Current Status",
@@ -335,6 +336,7 @@
     "mute.all": "Mute all ",
     "nudged": "Nudge the member successfully!",
     "joined.group": "%s (%s) joined the chat group %s (%s)",
-    "dice.value.error": "The value of the dice cannot be greater than six and less than one！"
+    "dice.value.error": "The value of the dice cannot be greater than six and less than one！",
+    "send": "send"
   }
 }

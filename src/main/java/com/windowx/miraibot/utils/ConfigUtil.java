@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static com.windowx.miraibot.MiraiBot.logger;
-import static com.windowx.miraibot.utils.LanguageUtil.language;
 
 public class ConfigUtil {
 	public static final Properties config = new Properties();
@@ -24,7 +23,7 @@ public class ConfigUtil {
 				config.load(new BufferedReader(new FileReader("config.properties")));
 			}
 		} catch (IOException e) {
-			logger.info(language("unknown.error"));
+			logger.info(LanguageUtil.l("unknown.error"));
 			e.printStackTrace();
 			System.exit(-1);
 		}

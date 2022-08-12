@@ -34,18 +34,18 @@ public class LanguageUtil {
 	}
 
 	@NotNull
-	public static String language(String key) {
+	public static String l(String key) {
 		JsonElement el = language.get(key);
 		if (el == null) {
 			JsonObject obj = getLanguage(MiraiBot.language);
 			if (obj == null) return "";
-			return language(key, obj);
+			return l(key, obj);
 		}
 		return el.getAsString();
 	}
 
 	@NotNull
-	public static String language(String key, JsonObject obj) {
+	public static String l(String key, JsonObject obj) {
 		JsonElement el = obj.get(key);
 		if (el == null) return "";
 		return el.getAsString();
