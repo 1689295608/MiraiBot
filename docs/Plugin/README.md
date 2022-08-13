@@ -130,8 +130,9 @@ public class MyDemo extends Plugin {
 
 ## 第四步：监听事件
 
-一般情况下，你无需使用 Mirai 内置的事件监听器，因为 MiraiBot
-内置部分事件方法（详见 [`JavaPlugin.java`](/src/com/windowx/miraibot/plugin/JavaPlugin.java)）
+若要监听 Mirai 相关方法，请参考 [ListenerHost 篇](Listener.md)
+
+在此处仅介绍如何使用插件事件（详见 [`JavaPlugin.java`](/src/com/windowx/miraibot/plugin/JavaPlugin.java)）
 
 接下来你需要简单的监听一个事件：`onEnable` （插件启动事件）
 
@@ -154,7 +155,10 @@ public void onEnable() {
 - `public void onEnable() {` 表示重写的方法是 `onEnable()` 方法
 - `this.info()` 表示调用 `this` 对象（因为 `extends` 了 `Plugin`，所以可以调用 `Plugin` 的方法）的 `info()` 方法进行输出
 
-另外，MiraiBot 的 `Plugin` 的方法还是蛮多的，可以借助 IDEA 的代码提示功能来进一步了解
+注意，此处的 `Plugin.info()` 间接调用了 `Logger.info()`，你可以在 
+[Logger 篇](Logging.md) 查看相关文档
+
+另外，MiraiBot 的 `Plugin` 的方法还是有挺多的，可以借助 IDEA 的代码提示功能来进一步了解
 
 也可以翻阅 MiraiBot 的源代码来进行了解：[`Plugin.java`](/src/com/windowx/miraibot/plugin/Plugin.java)
 
@@ -199,7 +203,6 @@ public void onEnable() {
 |**main**   |插件主类|miraibot.example       |
 |owner      |插件作者|WindowX                |
 |version    |插件版本|1.0.0                  |
-|commands   |插件指令|demo                   |
 |depend     |插件依赖|                       |
 |description|插件描述|一个标准 MiraiBot 插件。  |
 
@@ -216,8 +219,6 @@ main=miraibot.example
 owner=WindowX
 # 插件版本，默认为 1.0.0
 version=1.0.0
-# 插件指令，在按下 Tab 键后会出现的命令提示，用 “,” 分隔
-commands=demo
 # 插件依赖，默认为空，以 “,” 分隔
 depend=DemoAPI
 # 插件描述，默认为 A Plugin For MiraiBot.
