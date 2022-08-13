@@ -3,13 +3,16 @@ package com.windowx.miraibot.plugin;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.bind.JsonTreeReader;
 import com.windowx.miraibot.command.Command;
 import com.windowx.miraibot.command.Commands;
+import com.windowx.miraibot.config.ConfigElement;
+import com.windowx.miraibot.config.ConfigSection;
 import com.windowx.miraibot.utils.Logger;
-import kotlinx.serialization.json.Json;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -20,7 +23,7 @@ public class Plugin extends PluginBase {
 	private String className;
 	private String version;
 	private String description;
-	private JsonObject config = new JsonObject();
+	private ConfigSection config = new ConfigSection();
 	private PluginClassLoader classLoader;
 	private boolean isEnabled;
 	private Properties plugin;
@@ -68,36 +71,30 @@ public class Plugin extends PluginBase {
 		this.plugin = plugin;
 	}
 
-	@Deprecated
-	public Properties getConfig() {
-		Properties oldconfig = new Properties();
-		for (String key : config.keySet()) {
-			oldconfig.put(key, config.get(key).getAsString());
-		}
-		return oldconfig;
-	}
-
-	public JsonObject config() {
+	public ConfigSection config() {
 		return config;
 	}
 
-	public void config(JsonObject c) {
-		this.config = c;
+	public ConfigElement config(String key) {
+		return config.get(key);
 	}
 
-	@Deprecated
-	public void setConfig(Properties properties) {
-		config = new JsonObject();
-		for (Object key : properties.keySet()) {
-			String k = String.valueOf(key);
-			config.addProperty(k, properties.getProperty(k));
-		}
+	public ConfigElement config(String key, ConfigElement def) {
+		return config.getOrDefault(key, def);
+	}
+
+	public String config(String key, String def) {
+		return config.getOrDefault(key, def).toString();
+	}
+
+	public void config(ConfigSection c) {
+		this.config = c;
 	}
 
 	public void loadConfig(InputStream is) throws IOException {
 		Gson gson = new Gson();
 		String s = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-		config = gson.fromJson(s, config.getClass());
+		config = new ConfigSection(gson.fromJson(s, JsonObject.class));
 	}
 
 	public File getDataFolder() {

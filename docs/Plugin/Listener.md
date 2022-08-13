@@ -6,11 +6,11 @@
 注册事件监听器的方法和 Bukkit 或是 Spigot 十分类似，你也可以了解相关的教程，在此不多讲
 
 ## 目录
-> [第一步：创建监听类](#第一步创建监听类)
+> [第一步：创建监听类](#第一步：创建监听类)
 > 
-> [第二步：注册监听器](#第二步注册监听器)
+> [第二步：注册监听器](#第二步：注册监听器)
 > 
-> [第三步：编写代码](#第三步编写代码)
+> [第三步：编写代码](#第三步：编写代码)
 > 
 > [示例效果](#示例效果)
 
@@ -115,7 +115,7 @@ public class DemoListener implements ListenerHost {
 
 该实例的效果就是在群发送消息后在控制台输出 info 消息
 
-与本系统有关的源文件：
+你可以查看以下源代码文件来得知更多的用法：
 - [PluginLoader.java](https://github.com/1689295608/MiraiBot/blob/main/src/main/java/com/windowx/miraibot/plugin/PluginLoader.java)
 - [EventHandler.java](https://github.com/1689295608/MiraiBot/blob/main/src/main/java/com/windowx/miraibot/event/EventHandler.java)
 - [ListenerHost.java](https://github.com/1689295608/MiraiBot/blob/main/src/main/java/com/windowx/miraibot/event/ListenerHost.java)

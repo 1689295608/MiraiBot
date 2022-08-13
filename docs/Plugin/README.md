@@ -3,11 +3,14 @@
 本文档使用到 [IntelliJ IDEA](https://www.jetbrains.com/idea/) 来编辑及构建您的插件
 
 ## 基础准备
+
 你需要以下软件/环境:
- - Open JDK 11+ 
- - IntelliJ IDEA
+
+- Open JDK 17 及以上
+- IntelliJ IDEA
 
 ## 预先准备
+
 ### 你需要一定的编程基础
 
 如果你根本没有编程基础和 Java 基础的话，我们不推荐您直接上手进行编写 MiraiBot 的插件
@@ -15,6 +18,7 @@
 你需要了解并储备一定的编程基础和 Java 基础，推荐使用 [Practie-It](https://practiceit.cs.washington.edu/) 学习 Java。
 
 ### 安装相关编译环境
+
 请前往 [Open JDK](https://jdk.java.net/) 下载**不低于 JDK 17**的 `Open JDK`
 
 > 本项目基于 JDK 17 开发, 所以请使用 JDK 17 及以上的 Java 运行本程序!
@@ -25,21 +29,22 @@
 
 ## 目录
 
-> [第一步：创建项目](#第一步创建项目)
-> 
-> [第二步：创建主类](#第二步创建主类)
-> 
-> [第三步：编写插件](#第三步编写插件)
-> 
-> [第四步：监听事件](#第四步监听事件)
-> 
-> [第五步：配置文件](#第五步配置文件)
-> 
-> [第六步：插件配置](#第六步插件配置)
-> 
-> [第七步：编译插件](#第七步编译插件)
+> [第一步：创建项目](#第一步：创建项目)
+>
+> [第二步：创建主类](#第二步：创建主类)
+>
+> [第三步：编写插件](#第三步：编写插件)
+>
+> [第四步：监听事件](#第四步：监听事件)
+>
+> [第五步：配置文件](#第五步：配置文件)
+>
+> [第六步：插件配置](#第六步：插件配置)
+>
+> [第七步：编译插件](#第七步：编译插件)
 
 ## 第一步：创建项目
+
 ### 梦开始的地方
 
 首先打开你的 IDEA，新建一个 Java 项目：
@@ -64,7 +69,6 @@
 
 最后，点击 `Finish` 按钮，开始新建项目！
 
-
 ### 引用依赖库
 
 首先你需要下载 MiraiBot 以及 Mirai-Core-All，你需要在 [Release](https://github.com/1689295608/MiraiBot/releases) 下载它们
@@ -84,12 +88,15 @@
 一般情况下，新建一个项目后，会有一个 `src` 目录 用于储存源代码
 
 首先，创建一个目录用于区分你的类：
+
 - 右键 `src` 目录
 - 选择 `New`
 - 选择 `Package`
-- 输入你的目录名即可，不推荐包含中文字符 (`.` 就相当于 Windows 的 `/`, 例如要创建 `com/plugin` 文件夹, 则需输入 `com.plugin`
+- 输入你的目录名即可，不推荐包含中文字符 (`.` 就相当于 Windows 的 `/`, 例如要创建 `com/plugin` 文件夹,
+  则需输入 `com.plugin`
 
 接下来，创建一个 Java 类吧：
+
 - 右键你刚才创建的目录
 - 选择 `New`
 - 选择 `Java Class`
@@ -110,19 +117,21 @@
 然后将 `public class xxx {` 改为 `public class xxx extends Plugin {`。（其中 `xxx` 表示你的类名）
 
 到了现在，你的代码应该是如下所示：
+
 ```Java
 package demo;
 
 import com.windowx.miraibot.plugin.Plugin; /* 导入 Plugin 类 */
 
 public class MyDemo extends Plugin {
-  // ......
+    // ......
 }
 ```
 
 ## 第四步：监听事件
 
-一般情况下，你无需使用 Mirai 内置的事件监听器，因为 MiraiBot 内置部分事件方法（详见 [`JavaPlugin.java`](/src/com/windowx/miraibot/plugin/JavaPlugin.java)）
+一般情况下，你无需使用 Mirai 内置的事件监听器，因为 MiraiBot
+内置部分事件方法（详见 [`JavaPlugin.java`](/src/com/windowx/miraibot/plugin/JavaPlugin.java)）
 
 接下来你需要简单的监听一个事件：`onEnable` （插件启动事件）
 
@@ -131,13 +140,16 @@ public class MyDemo extends Plugin {
 在这个阶段时，机器人已经登录成功了，也就代表你可以对机器人进行操作
 
 我们来简单的输出一个 `info` ，其内容为 `Hello world!`。
+
 ```Java
 @Override
 public void onEnable() {
-  this.info("Hello world!");
+    this.info("Hello world!");
 }
 ```
+
 让我们来逐行解析一下吧：
+
 - `@Override` 表示重写某个方法
 - `public void onEnable() {` 表示重写的方法是 `onEnable()` 方法
 - `this.info()` 表示调用 `this` 对象（因为 `extends` 了 `Plugin`，所以可以调用 `Plugin` 的方法）的 `info()` 方法进行输出
@@ -151,25 +163,22 @@ public void onEnable() {
 一个应用程序，最少不了的就是配置文件了吧，接下来我们将要了解，MiraiBot 插件的配置文件系统
 
 接下来我来演示一段代码，它将简单的表达插件系统的调用方法：
+
 ```Java
 @Override
 public void onEnable() {
-  String name = this.getConfig().getProperty("name", "WindowX");
-  this.getConfig().setProperty("time", String.valueOf(System.currentTimeMillis()));
-  try {
-    this.saveConfig();
-  } catch (IOException e) {
-    e.printStackTrace();
-  }
-  this.info("Your name:" + name);
+    String name = this.config("name", "NekoW").getAsString();
+    // 调用 Plugin 类的 config(String key, String def) 方法
+    this.config().set("name", name);
+    try{
+        this.saveConfig();
+        // 调用 Plugin 类的 saveConfig() 方法，保存配置文件
+    } catch (IOException e){
+        this.getLogger().trace(e);
+    }
+    this.info("Your name: " + name);
 }
 ```
-一如既往，我们来分析一下每一行都干了些什么：
-- `this.getConfig()` 获取本插件的配置文件 `Properties`，该文件的具体位置在 `/plugins/[插件名]/config.ini`
-- `...getConfig().getProperty()` 通过调用 `Properties` 类，获取其 `Property` 项，返回值为其内容
-- `...getConfig().setProperty()` 通过调用 `Properties` 类，设置其 `Property` 项
-- `this.saveConfig()` 保存本插件配置文件，会抛出 `IOException`，所以需要使用 `try` 来抓取该错误
-- `this.info(/* ... */ + name)` 因为在前面获取配置项时，将其内容赋值在字符串变量 `name` 上，所以可以在这里调用
 
 ## 第六步：插件配置
 
@@ -177,25 +186,27 @@ public void onEnable() {
 
 接下来让我们创建一个 `plugin.ini` 吧！
 
-首先，在项目根目录创建一个 `资源根目录`，也就是先创建一个 `Directory`，然后右键它，选择 `Mark Directory as` 然后选择 `Resource Root` 即可
+首先，在项目根目录创建一个 `资源根目录`，也就是先创建一个 `Directory`，然后右键它，选择 `Mark Directory as`
+然后选择 `Resource Root` 即可
 
 然后右键这个目录，选择 `New` 然后选择 `File`，再在新出现的窗口里输入 `plugin.ini` 后按下回车键即可
 
 再打开新建的文件 `plugin.ini`，开始配置你的插件：
 
-|配置项     |描述    |示例                   |
-|--         |--     |--                     |
+|配置项     |描述    |示例                    |
+|--         |--     |--                    |
 |**name**   |插件名称|Demo                   |
 |**main**   |插件主类|miraibot.example       |
 |owner      |插件作者|WindowX                |
 |version    |插件版本|1.0.0                  |
 |commands   |插件指令|demo                   |
-|depend     |插件依赖|-                      |
-|description|插件描述|一个标准 MiraiBot 插件。|
+|depend     |插件依赖|                       |
+|description|插件描述|一个标准 MiraiBot 插件。  |
 
 其中粗体的为必填项，若为空即无法加载该插件！
 
 以下为示例
+
 ```Properties
 # 插件名
 name=Demo
@@ -223,7 +234,8 @@ description=一个标准 MiraiBot 插件。
 
 然后你就新建了一个 `Artifacts` 了，接下来把 `Name` 和 `Output Directory` 改成你想要的内容
 
-再在右侧的 `Avail Elements` 中展开你的项目，双击 `'xxx' compile output` （其中 `xxx` 表示你的项目名） 或者右键 -> `Put into Output Root`
+再在右侧的 `Avail Elements` 中展开你的项目，双击 `'xxx' compile output` （其中 `xxx` 表示你的项目名） 或者右键
+-> `Put into Output Root`
 
 这样这个 `Artifacts` 就配置完成了！点击 `Apply` 或 `OK` 即可保存配置。
 

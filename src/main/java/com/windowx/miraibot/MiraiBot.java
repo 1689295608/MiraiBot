@@ -43,14 +43,14 @@ import static com.windowx.miraibot.EventListener.messages;
 
 public class MiraiBot {
     public static final String language = Locale.getDefault().getLanguage();
+    public static final PluginLoader loader = new PluginLoader();
+    public static final Logger logger = new Logger();
+    public static final Commands commands = new Commands();
     public static Group group;
     public static String[] groups;
     public static String[] allowedGroups;
     public static Bot bot;
-    public static final PluginLoader loader = new PluginLoader();
     public static boolean running;
-    public static final Logger logger = new Logger();
-    public static final Commands commands = new Commands();
     public static ArgumentCompleter completer;
     public static LineReader reader;
     public static Terminal terminal;
@@ -58,10 +58,7 @@ public class MiraiBot {
 
     public static void main(String[] args) {
         String err = language.equals("zh") ? "出现错误！进程即将终止！" : "Unable to create configuration file!";
-        TerminalBuilder tb = TerminalBuilder.builder()
-                .encoding(Charset.defaultCharset())
-                .jansi(true)
-                .jna(false);
+        TerminalBuilder tb = TerminalBuilder.builder().encoding(Charset.defaultCharset()).jansi(true).jna(false);
         LogUtil.init();
         try {
             terminal = tb.build();
@@ -78,8 +75,7 @@ public class MiraiBot {
                     version = new String(is.readAllBytes()).replaceAll("[^0-9.]", "");
                 }
             }
-            logger.info(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" :
-                    "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021");
+            logger.info(language.equals("zh") ? "MiraiBot " + version + " 基于 Mirai-Core. 版权所有 (C) WindowX 2021" : "MiraiBot " + version + " based Mirai-Core. Copyright (C) WindowX 2021");
         } catch (Exception e) {
             logger.trace(e);
         }
@@ -88,14 +84,12 @@ public class MiraiBot {
             if (!eula.exists()) {
                 if (eula.createNewFile()) {
                     try (FileOutputStream fos = new FileOutputStream(eula)) {
-                        fos.write((
-                                """
-                                        # 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须在项目明显位置准确提及来自 MiraiBot，不得扭曲或隐藏免费且开源的事实。
-                                        # To use this software, you must abide by our agreement. All plug-ins developed based on this software must accurately mention MiraiBot in the obvious place of the project, and must not distort or hide the fact that it is free and open source
-                                        # 详情请查看：https://github.com/1689295608/MiraiBot/blob/main/LICENSE
-                                        # Details: https://github.com/1689295608/MiraiBot/blob/main/LICENSE
-                                        eula=false"""
-                        ).getBytes());
+                        fos.write(("""
+                                # 使用本软件，您必须遵守我们的协议，一切基于本软件开发的插件都必须在项目明显位置准确提及来自 MiraiBot，不得扭曲或隐藏免费且开源的事实。
+                                # To use this software, you must abide by our agreement. All plug-ins developed based on this software must accurately mention MiraiBot in the obvious place of the project, and must not distort or hide the fact that it is free and open source
+                                # 详情请查看：https://github.com/1689295608/MiraiBot/blob/main/LICENSE
+                                # Details: https://github.com/1689295608/MiraiBot/blob/main/LICENSE
+                                eula=false""").getBytes());
                     }
                 }
             }
@@ -103,8 +97,7 @@ public class MiraiBot {
             prop.load(new FileInputStream(eula));
             boolean e = Boolean.parseBoolean(prop.getProperty("eula", "false"));
             if (!e) {
-                System.out.println(language.equals("zh") ? "使用本软件，您必须遵守我们的协议，请修改 eula.txt 来同意协议！" :
-                        "To use this software, you must abide by our agreement, please modify eula.txt to agree to the agreement!");
+                System.out.println(language.equals("zh") ? "使用本软件，您必须遵守我们的协议，请修改 eula.txt 来同意协议！" : "To use this software, you must abide by our agreement, please modify eula.txt to agree to the agreement!");
                 System.exit(0);
             }
         } catch (IOException e) {
@@ -287,15 +280,8 @@ public class MiraiBot {
             }
         }
         StringsCompleter members = new StringsCompleter(names);
-        completer = new ArgumentCompleter(
-                sc,
-                members,
-                new Completers.FileNameCompleter()
-        );
-        LineReaderBuilder lrb = LineReaderBuilder.builder()
-                .completer(completer)
-                .history(history)
-                .terminal(terminal);
+        completer = new ArgumentCompleter(sc, members, new Completers.FileNameCompleter());
+        LineReaderBuilder lrb = LineReaderBuilder.builder().completer(completer).history(history).terminal(terminal);
         reader = lrb.build();
     }
 
@@ -328,10 +314,7 @@ public class MiraiBot {
      */
     public static void checkUpdate(String u) {
         try {
-            HttpClient client = HttpClient.newBuilder()
-                    .version(HttpClient.Version.HTTP_1_1)
-                    .followRedirects(HttpClient.Redirect.NORMAL)
-                    .build();
+            HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).followRedirects(HttpClient.Redirect.NORMAL).build();
 
             String def = "https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion";
             URI uri = new URI(u == null ? def : u);

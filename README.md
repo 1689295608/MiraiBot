@@ -123,6 +123,12 @@ java -classpath MiraiBot.jar:MiraiCore.jar com.windowx.miraibot.MiraiBot
 
 再次登录即可成功登录
 
+## 开发
+若您有意愿开发属于自己的 MiraiBot 插件，可到 [MiraiBot Docs](/docs/README.md) 查看并学习
+
+我们强烈建议基于 MiraiBot 开发的插件使用相同的协议开放源代码交流学习
+
+感谢支持！
 
 ## 常见问题疑难解答
 

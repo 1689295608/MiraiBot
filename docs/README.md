@@ -5,12 +5,8 @@ MiraiBot 的文档，暂未编写完全。
 
 也可以一起参与 MiraiBot 的开发！
 
-详情联系 QQ: `1689295608`。
+欢迎大家一起提出 Issues 和提交 Pull requests！
 
-### 目前尚未编写完全的文档：
-
-[构建最新的 MiraiBot](Compile/README.md)
+### 你可以查看目前已有的文档：
 
 [MiraiBot 插件开发教程](Plugin/README.md)
-
-[MiraiBot AutoRespond 教程](AutoRespond/README.md)
