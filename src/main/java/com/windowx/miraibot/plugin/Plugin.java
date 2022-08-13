@@ -2,11 +2,10 @@ package com.windowx.miraibot.plugin;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.windowx.miraibot.command.Command;
 import com.windowx.miraibot.command.Commands;
-import com.windowx.miraibot.config.ConfigElement;
-import com.windowx.miraibot.config.ConfigSection;
 import com.windowx.miraibot.utils.Logger;
 
 import java.io.File;
@@ -23,7 +22,7 @@ public class Plugin extends PluginBase {
 	private String className;
 	private String version;
 	private String description;
-	private ConfigSection config = new ConfigSection();
+	private JsonObject config = new JsonObject();
 	private PluginClassLoader classLoader;
 	private boolean isEnabled;
 	private Properties plugin;
@@ -71,30 +70,29 @@ public class Plugin extends PluginBase {
 		this.plugin = plugin;
 	}
 
-	public ConfigSection config() {
+	public JsonObject config() {
 		return config;
 	}
 
-	public ConfigElement config(String key) {
+	public JsonElement config(String key) {
 		return config.get(key);
 	}
 
-	public ConfigElement config(String key, ConfigElement def) {
-		return config.getOrDefault(key, def);
+	public JsonElement config(String key, JsonElement def) {
+		if (!config.has(key)) {
+			return def;
+		}
+		return config.get(key);
 	}
 
-	public String config(String key, String def) {
-		return config.getOrDefault(key, def).toString();
-	}
-
-	public void config(ConfigSection c) {
+	public void config(JsonObject c) {
 		this.config = c;
 	}
 
 	public void loadConfig(InputStream is) throws IOException {
 		Gson gson = new Gson();
 		String s = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-		config = new ConfigSection(gson.fromJson(s, JsonObject.class));
+		config = gson.fromJson(s, JsonObject.class);
 	}
 
 	public File getDataFolder() {
