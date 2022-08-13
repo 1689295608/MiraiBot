@@ -167,7 +167,12 @@
     "nudged": "成功戳一戳该成员！",
     "joined.group": "%s (%s) 加入了聊群 %s (%s)",
     "dice.value.error": "骰子的值不能大于六和小于一！",
-    "send": "发送"
+    "send": "发送",
+    "not.extends.plugin": "插件 %s 并未依赖 Plugin 类！",
+    "force.offline": "机器人被强制下线，正在尝试重新登录... (%s)",
+    "cannot.re.login": "重新登录失败，正在停止 MiraiBot... (%s)",
+    "bot.online": "机器人 %s 已上线！",
+    "bot.offline": "机器人 %s 已下线！"
   },
   "en": {
     "command.status": "View MiraiBot Current Status",
@@ -337,6 +342,11 @@
     "nudged": "Nudge the member successfully!",
     "joined.group": "%s (%s) joined the chat group %s (%s)",
     "dice.value.error": "The value of the dice cannot be greater than six and less than one！",
-    "send": "Send"
+    "send": "Send",
+    "not.extends.plugin": "Plugin %s does not depends the Plugin class!",
+    "force.offline": "The bot was forcibly offline, trying to re-login... (%s)",
+    "cannot.re.login": "Re-login failed, stopping MiraiBot... (%s)",
+    "bot.online": "Bot %s is online!",
+    "bot.offline": "Bot %s is offline!"
   }
 }

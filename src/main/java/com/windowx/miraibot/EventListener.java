@@ -1,7 +1,6 @@
 package com.windowx.miraibot;
 
 import com.windowx.miraibot.utils.ConfigUtil;
-import com.windowx.miraibot.utils.LanguageUtil;
 import net.mamoe.mirai.contact.Friend;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
@@ -15,8 +14,8 @@ import net.mamoe.mirai.message.data.MessageSource;
 
 import java.util.ArrayList;
 
-import static com.windowx.miraibot.MiraiBot.loader;
-import static com.windowx.miraibot.MiraiBot.logger;
+import static com.windowx.miraibot.MiraiBot.*;
+import static com.windowx.miraibot.utils.LanguageUtil.l;
 
 public class EventListener implements ListenerHost {
 	public static final ArrayList<MemberJoinRequestEvent> joinRequest = new ArrayList<>();
@@ -38,7 +37,7 @@ public class EventListener implements ListenerHost {
 		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
-		logger.info(LanguageUtil.l("joined.group")
+		logger.info(l("joined.group")
 				, event.getMember().getNameCard()
 				, String.valueOf(event.getMember().getId())
 				, event.getGroup().getName()
@@ -55,7 +54,7 @@ public class EventListener implements ListenerHost {
 		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
-		logger.info(LanguageUtil.l("left.group")
+		logger.info(l("left.group")
 				, event.getMember().getNick()
 				, String.valueOf(event.getMember().getId())
 				, event.getGroup().getName()
@@ -73,7 +72,7 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		Member operator = event.getOperator();
-		logger.info(LanguageUtil.l("kick.group")
+		logger.info(l("kick.group")
 				, event.getMember().getNick()
 				, String.valueOf(event.getMember().getId())
 				, operator != null ? operator.getNameCard() : event.getBot().getNick()
@@ -93,7 +92,7 @@ public class EventListener implements ListenerHost {
 		}
 		if (event.getGroup() != null) {
 			joinRequest.add(event);
-			logger.info(LanguageUtil.l("join.request.group")
+			logger.info(l("join.request.group")
 					, String.valueOf(joinRequest.size())
 					, event.getFromNick()
 					, String.valueOf(event.getFromId())
@@ -110,7 +109,7 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		inviteRequest.add(event);
-		logger.info(LanguageUtil.l("invite.request.group")
+		logger.info(l("invite.request.group")
 			, String.valueOf(inviteRequest.size())
 			, event.getInvitorNick()
 			, String.valueOf(event.getInvitorId())
@@ -139,19 +138,19 @@ public class EventListener implements ListenerHost {
 		if (operator != null) {
 			if (operator.getId() == sender.getId()) {
 				if (id != -1) {
-					logger.info(LanguageUtil.l("recall.message"), operator.getNameCard() + showQQ(operator.getId()), String.valueOf(id));
+					logger.info(l("recall.message"), operator.getNameCard() + showQQ(operator.getId()), String.valueOf(id));
 				} else {
-					logger.info(LanguageUtil.l("recall.unknown.message"), operator.getNameCard() + showQQ(operator.getId()));
+					logger.info(l("recall.unknown.message"), operator.getNameCard() + showQQ(operator.getId()));
 				}
 			} else {
 				if (id != -1) {
-					logger.info(LanguageUtil.l("recall.others.message")
+					logger.info(l("recall.others.message")
 							, operator.getNameCard() + showQQ(operator.getId())
 							, sender.getNameCard() + showQQ(sender.getId())
 							, String.valueOf(id)
 					);
 				} else {
-					logger.info(LanguageUtil.l("recall.others.unknown.message")
+					logger.info(l("recall.others.unknown.message")
 							, operator.getNameCard() + showQQ(operator.getId())
 							, String.valueOf(id)
 					);
@@ -159,12 +158,12 @@ public class EventListener implements ListenerHost {
 			}
 		} else {
 			if (id != -1) {
-				logger.info(LanguageUtil.l("recall.message")
+				logger.info(l("recall.message")
 						, event.getBot().getNick() + showQQ(event.getBot().getId())
 						, String.valueOf(id)
 				);
 			} else {
-				logger.info(LanguageUtil.l("recall.unknown.message"), event.getBot().getNick() + showQQ(event.getBot().getId()));
+				logger.info(l("recall.unknown.message"), event.getBot().getNick() + showQQ(event.getBot().getId()));
 			}
 		}
 	}
@@ -183,9 +182,9 @@ public class EventListener implements ListenerHost {
 		}
 		Friend operator = event.getOperator();
 		if (id != -1) {
-			logger.info(LanguageUtil.l("recall.message"), operator.getNick() + showQQ(operator.getId()), String.valueOf(id));
+			logger.info(l("recall.message"), operator.getNick() + showQQ(operator.getId()), String.valueOf(id));
 		} else {
-			logger.info(LanguageUtil.l("recall.unknown.message"), operator.getNick() + showQQ(operator.getId()));
+			logger.info(l("recall.unknown.message"), operator.getNick() + showQQ(operator.getId()));
 		}
 	}
 	
@@ -195,7 +194,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		logger.info(LanguageUtil.l("bot.leave.group")
+		logger.info(l("bot.leave.group")
 				, event.getBot().getNick()
 				, String.valueOf(event.getBot().getId())
 				, event.getGroup().getName()
@@ -209,7 +208,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		logger.info(LanguageUtil.l("bot.leave.group")
+		logger.info(l("bot.leave.group")
 				, event.getBot().getNick()
 				, String.valueOf(event.getBot().getId())
 				, event.getOperator().getNameCard()
@@ -225,7 +224,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		logger.info(LanguageUtil.l("bot.permission.change")
+		logger.info(l("bot.permission.change")
 				, event.getBot().getNick()
 				, String.valueOf(event.getBot().getId())
 				, event.getOrigin().name()
@@ -239,7 +238,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		logger.info(LanguageUtil.l("group.name.change")
+		logger.info(l("group.name.change")
 				, String.valueOf(event.getGroupId())
 				, event.getOrigin()
 				, event.getNew()
@@ -252,7 +251,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		logger.info(LanguageUtil.l("member.name.card.change")
+		logger.info(l("member.name.card.change")
 				, event.getMember().getNick()
 				, String.valueOf(event.getMember().getId())
 				, event.getOrigin()
@@ -266,7 +265,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		logger.info(LanguageUtil.l("member.permission.change")
+		logger.info(l("member.permission.change")
 				, event.getMember().getNick()
 				, String.valueOf(event.getMember().getId())
 				, event.getOrigin().name()
@@ -287,14 +286,14 @@ public class EventListener implements ListenerHost {
 		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
 		if (receipt != null) {
 			messages.add(receipt.getSource());
-			logger.info(LanguageUtil.l("format.group.recallable.message")
+			logger.info(l("format.group.recallable.message")
 					, String.valueOf(messages.size())
 					, event.getBot().getNick()
 					, String.valueOf(event.getBot().getId())
 					, msg
 			);
 		} else {
-			logger.info(LanguageUtil.l("format.group.message")
+			logger.info(l("format.group.message")
 					, event.getBot().getNick()
 					, String.valueOf(event.getBot().getId())
 					, msg
@@ -308,7 +307,7 @@ public class EventListener implements ListenerHost {
 		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
 		if (receipt != null) {
 			messages.add(receipt.getSource());
-			logger.info(LanguageUtil.l("format.user.recallable.message")
+			logger.info(l("format.user.recallable.message")
 					, String.valueOf(messages.size())
 					, event.getBot().getNick()
 					, String.valueOf(event.getBot().getId())
@@ -317,7 +316,7 @@ public class EventListener implements ListenerHost {
 					, msg
 			);
 		} else {
-			logger.info(LanguageUtil.l("format.user.recallable.message")
+			logger.info(l("format.user.recallable.message")
 					, event.getBot().getNick()
 					, String.valueOf(event.getBot().getId())
 					, event.getTarget().getNick()
@@ -341,11 +340,11 @@ public class EventListener implements ListenerHost {
 			if (tnick.isEmpty()) {
 				tnick = target.getNick();
 			}
-			logger.info(LanguageUtil.l("nudge.message")
-					, from != MiraiBot.group.getBotAsMember() ? fnick + showQQ(from.getId()) : LanguageUtil.l("you")
+			logger.info(l("nudge.message")
+					, from != MiraiBot.group.getBotAsMember() ? fnick + showQQ(from.getId()) : l("you")
 					, event.getAction()
 					, target != from ? tnick + showQQ(target.getId()) :
-							target != MiraiBot.group.getBotAsMember() ? LanguageUtil.l("itself") : LanguageUtil.l("yourself")
+							target != MiraiBot.group.getBotAsMember() ? l("itself") : l("yourself")
 					, event.getSuffix()
 			);
 		} else {
@@ -356,11 +355,11 @@ public class EventListener implements ListenerHost {
 			Friend from = event.getBot().getFriend(event.getFrom().getId());
 			Friend target = event.getBot().getFriend(event.getTarget().getId());
 			if (from != null && target != null) {
-				logger.info(LanguageUtil.l("nudge.message")
-						, from != event.getBot().getAsFriend() ? from.getNick() + showQQ(from.getId()) : LanguageUtil.l("you")
+				logger.info(l("nudge.message")
+						, from != event.getBot().getAsFriend() ? from.getNick() + showQQ(from.getId()) : l("you")
 						, event.getAction()
 						, target != from ? target.getNick() + showQQ(target.getId()) :
-								target != event.getBot().getAsFriend() ? LanguageUtil.l("itself") : LanguageUtil.l("yourself")
+								target != event.getBot().getAsFriend() ? l("itself") : l("yourself")
 						, event.getSuffix()
 				);
 			}
@@ -374,7 +373,7 @@ public class EventListener implements ListenerHost {
 		if (member == null) {
 			member = group.getBotAsMember();
 		}
-		logger.info(LanguageUtil.l("member.mute")
+		logger.info(l("member.mute")
 				, member.getNameCard()
 				, String.valueOf(member.getId())
 				, op.getNameCard()
@@ -390,7 +389,7 @@ public class EventListener implements ListenerHost {
 		if (member == null) {
 			member = group.getBotAsMember();
 		}
-		logger.info(LanguageUtil.l("member.unmute")
+		logger.info(l("member.unmute")
 				, member.getNameCard()
 				, String.valueOf(member.getId())
 				, op.getNameCard()
@@ -454,8 +453,8 @@ public class EventListener implements ListenerHost {
 		if (MiraiBot.group != event.getGroup()) {
 			return;
 		}
-		logger.info(LanguageUtil.l("mute.all") +
-				(event.getNew() ? LanguageUtil.l("open") : LanguageUtil.l("off")));
+		logger.info(l("mute.all") +
+				(event.getNew() ? l("open") : l("off")));
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -468,7 +467,7 @@ public class EventListener implements ListenerHost {
 				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
 		if (MiraiBot.group == event.getGroup()) {
 			messages.add(event.getSource());
-			logger.info(LanguageUtil.l("format.group.message")
+			logger.info(l("format.group.message")
 					, String.valueOf(messages.size())
 					, event.getSenderName()
 					, String.valueOf(event.getSender().getId())
@@ -508,6 +507,27 @@ public class EventListener implements ListenerHost {
 		String msg = ConfigUtil.getConfig("debug").equals("true") ?
 				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
 		logger.info(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onForceOffline(BotOfflineEvent.Force event) {
+		logger.warn(l("force.offline"), event.getMessage());
+		try {
+			bot.login();
+		} catch (Exception e) {
+			logger.error(l("cannot.re.login"), e.getMessage());
+			logger.trace(e);
+			try {
+				MiraiCommand.cmds.get("stop").start();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onOnline(BotOnlineEvent event) {
+		logger.info(l("bot.online"), bot.getNick());
 	}
 	
 	/**
