@@ -1,5 +1,6 @@
 package com.windowx.miraibot.config;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.Set;
@@ -50,6 +51,9 @@ public class ConfigSection extends ConfigElement {
     }
 
     public void set(String key, ConfigElement element) {
+        config.add(key, element);
+    }
+    public void set(String key, JsonElement element) {
         config.add(key, element);
     }
 
