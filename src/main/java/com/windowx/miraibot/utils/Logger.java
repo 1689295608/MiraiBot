@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.windowx.miraibot.MiraiBot.reader;
+import static com.windowx.miraibot.utils.LanguageUtil.l;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class Logger {
@@ -28,8 +29,9 @@ public class Logger {
      *
      * @return 格式化后的时间
      */
-    public String formatTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat(LanguageUtil.l("format.time"));
+    public String formatTime(String level) {
+        String f = String.format(l("format.time"), level);
+        SimpleDateFormat formatter = new SimpleDateFormat(f);
         Date date = new Date(System.currentTimeMillis());
         return formatter.format(date);
     }
@@ -65,9 +67,9 @@ public class Logger {
      *
      * @param str 输出的内容
      */
-    public void print(String str, Object... args) {
+    public void print(String str, String level, Object... args) {
         if (str == null) str = "";
-        String opt = String.format(formatStr(formatTime(), str), args) + "\n";
+        String opt = String.format(formatStr(formatTime(level), str), args) + "\n";
         try {
             LogUtil.write(opt.substring(0, opt.length() - 1));
         } catch (IOException e) {
@@ -81,15 +83,15 @@ public class Logger {
     }
 
     public void info(String str, Object... args) {
-        print(formatStr(prefix, str), args);
+        print(formatStr(prefix, str), "I", args);
     }
 
     public void warn(String str, Object... args) {
-        print(formatStr(prefix + ansi().fgBrightYellow().toString(), str), args);
+        print(formatStr(ansi().fgBrightYellow().toString() + prefix, str), "W", args);
     }
 
     public void error(String str, Object... args) {
-        print(formatStr(prefix + ansi().fgBrightRed().toString(), str), args);
+        print(formatStr(ansi().fgBrightRed().toString() + prefix, str), "E", args);
     }
 
     /**
@@ -116,7 +118,7 @@ public class Logger {
     }
     public void trace(String str, String msg, StackTraceElement[] ste) {
         String name = str.split(":")[0];
-        error(LanguageUtil.l("exception.string"),
+        error(l("exception.string"),
                 name,
                 msg
         );
@@ -125,7 +127,7 @@ public class Logger {
             String methodName = s.getMethodName();
             String fileName = s.getFileName();
             int lineNum = s.getLineNumber();
-            error(LanguageUtil.l("exception.details"),
+            error(l("exception.details"),
                     className,
                     methodName,
                     fileName,
