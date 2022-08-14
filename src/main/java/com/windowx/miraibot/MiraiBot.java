@@ -160,6 +160,8 @@ public class MiraiBot {
             BotConfiguration.MiraiProtocol miraiProtocol = switch (protocol) {
                 case "PAD" -> BotConfiguration.MiraiProtocol.ANDROID_PAD;
                 case "WATCH" -> BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+                case "IPAD" -> BotConfiguration.MiraiProtocol.IPAD;
+                case "MACOS" -> BotConfiguration.MiraiProtocol.MACOS;
                 default -> BotConfiguration.MiraiProtocol.ANDROID_PHONE;
             };
             bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq), password, new BotConfiguration() {{
