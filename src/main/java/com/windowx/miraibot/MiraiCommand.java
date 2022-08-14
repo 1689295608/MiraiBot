@@ -288,10 +288,10 @@ public class MiraiCommand {
                     }
                 } catch (NumberFormatException e) {
                     logger.error(l("not.qq"), args(0));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 } catch (PermissionDeniedException e) {
                     logger.error(l("no.permission"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
             }
         });
@@ -312,10 +312,10 @@ public class MiraiCommand {
                     }
                 } catch (NumberFormatException e) {
                     logger.error(l("not.qq"), args(0));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 } catch (PermissionDeniedException e) {
                     logger.error(l("no.permission"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
             }
         });
@@ -331,7 +331,7 @@ public class MiraiCommand {
                     stranger = bot.getStranger(Long.parseLong(args(0)));
                 } catch (NumberFormatException e) {
                     logger.error(l("not.qq"), args(0));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
                 for (Member m : group.getMembers()) {
                     if (String.valueOf(m.getId()).equals(args(0))) {
@@ -381,7 +381,7 @@ public class MiraiCommand {
                         externalResource.close();
                     } catch (IOException e) {
                         logger.error(l("file.error"));
-                        if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                        logger.trace(e);
                     }
                 });
                 upVoice.start();
@@ -405,7 +405,7 @@ public class MiraiCommand {
                         imageInfo(bot, img);
                     } catch (IOException e) {
                         logger.error(l("file.error"));
-                        if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                        logger.trace(e);
                     }
                 });
                 upImg.start();
@@ -476,7 +476,7 @@ public class MiraiCommand {
                     size = Integer.parseInt(args(2));
                 } catch (NumberFormatException e) {
                     logger.warn(l("width.height.error"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.warn(e.toString());
+                    logger.trace(e);
                     return;
                 }
                 StringBuilder content = new StringBuilder();
@@ -513,7 +513,7 @@ public class MiraiCommand {
                     }
                 } catch (NumberFormatException e) {
                     logger.error(l("not.qq"), args(0));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
             }
         });
@@ -529,7 +529,7 @@ public class MiraiCommand {
                     message = getMessageById(Integer.parseInt(args(0)));
                 } catch (NumberFormatException e) {
                     logger.error(l("message.id.error"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
                 StringBuilder content = new StringBuilder();
                 for (int i = 2; i < args().length; i++) {
@@ -561,7 +561,7 @@ public class MiraiCommand {
                     index = Integer.parseInt(args(0)) - 1;
                 } catch (NumberFormatException e) {
                     logger.error(l("request.id.error"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
                 if (index < 0 || joinRequest.size() <= index) {
                     logger.error(l("request.not.found"));
@@ -593,7 +593,7 @@ public class MiraiCommand {
                     index = Integer.parseInt(args(0)) - 1;
                 } catch (NumberFormatException e) {
                     logger.error(l("invite.id.error"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
                 if (index < 0 || inviteRequest.size() <= index) {
                     logger.error(l("invite.not.found"));
@@ -636,10 +636,10 @@ public class MiraiCommand {
                     logger.info(l("name.card.set"), member.getNick(), nameCard.toString());
                 } catch (NumberFormatException e) {
                     logger.error(l("not.qq"), args(0));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 } catch (PermissionDeniedException e) {
                     logger.error(l("no.permission"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
             }
         });
@@ -655,7 +655,7 @@ public class MiraiCommand {
                     index = Integer.parseInt(args(0)) - 1;
                 } catch (NumberFormatException e) {
                     logger.error(l("message.id.error"));
-                    if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                    logger.trace(e);
                 }
                 if (index < 0 || messages.size() <= index) {
                     logger.error(l("message.not.found"));
@@ -679,7 +679,7 @@ public class MiraiCommand {
                         logger.info(l("recalled"));
                     } catch (PermissionDeniedException e) {
                         logger.error(l("no.permission"));
-                        if (ConfigUtil.getConfig("debug").equals("true")) logger.error(e.toString());
+                        logger.trace(e);
                     } catch (Exception e) {
                         logger.error(l("failed.recall"));
                     }

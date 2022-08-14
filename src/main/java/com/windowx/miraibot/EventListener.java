@@ -10,6 +10,7 @@ import net.mamoe.mirai.event.EventPriority;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.message.MessageReceipt;
+import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageSource;
 
 import java.util.ArrayList;
@@ -283,7 +284,7 @@ public class EventListener implements ListenerHost {
 			return;
 		}
 		MessageReceipt<Group> receipt = event.getReceipt();
-		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
+		String msg = msg2str(event.getMessage());
 		if (receipt != null) {
 			messages.add(receipt.getSource());
 			logger.info(l("format.group.recallable.message")
@@ -304,7 +305,7 @@ public class EventListener implements ListenerHost {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendPostSend(FriendMessagePostSendEvent event) {
 		MessageReceipt<Friend> receipt = event.getReceipt();
-		String msg = (ConfigUtil.getConfig("debug").equals("true") ? event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString());
+		String msg = msg2str(event.getMessage());
 		if (receipt != null) {
 			messages.add(receipt.getSource());
 			logger.info(l("format.user.recallable.message")
@@ -463,8 +464,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
-				event.getMessage().serializeToMiraiCode() : event.getMessage().contentToString();
+		String msg = msg2str(event.getMessage());
 		if (MiraiBot.group == event.getGroup()) {
 			messages.add(event.getSource());
 			logger.info(l("format.group.message")
@@ -482,8 +482,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
-				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
+		String msg = msg2str(event.getMessage());
 		logger.info(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
@@ -493,8 +492,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
-				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
+		String msg = msg2str(event.getMessage());
 		logger.info(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 	
@@ -504,8 +502,7 @@ public class EventListener implements ListenerHost {
 			event.cancel();
 			return;
 		}
-		String msg = ConfigUtil.getConfig("debug").equals("true") ?
-				event.getMessage().plus("").serializeToMiraiCode() : event.getMessage().contentToString();
+		String msg = msg2str(event.getMessage());
 		logger.info(event.getSender().getNick() + showQQ(event.getSender().getId()) + "-> " + event.getBot().getNick() + " " + msg);
 	}
 
@@ -538,5 +535,12 @@ public class EventListener implements ListenerHost {
 	 */
 	public String showQQ(Long qq) {
 		return showQQ ? "(" + qq + ")" : "";
+	}
+
+	public String msg2str(MessageChain chain) {
+		if (Boolean.parseBoolean(ConfigUtil.getConfig("debug"))) {
+			return chain.serializeToMiraiCode();
+		}
+		return chain.contentToString();
 	}
 }
