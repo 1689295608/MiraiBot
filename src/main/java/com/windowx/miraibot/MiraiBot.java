@@ -263,7 +263,7 @@ public class MiraiBot {
                         continue;
                     }
                 } catch (Exception e) {
-                    logger.error(l("unknown.error"));
+                    logger.error(l("some.error"));
                     logger.trace(e);
                     continue;
                 }
