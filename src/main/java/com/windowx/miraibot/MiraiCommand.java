@@ -188,14 +188,18 @@ public class MiraiCommand {
                     logger.warn("%s: send <%s> <%s...>", l("usage"), l("qq"), l("contents"));
                     return;
                 }
-                StringBuilder tmp = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
                 for (int i = 1; i < args().length; i++) {
-                    tmp.append(args(i)).append(i == args().length - 1 ? "" : " ");
+                    sb.append(args(i)).append(i == args().length - 1 ? "" : " ");
+                }
+                String msgs = sb.toString();
+                if (msgs.matches("\\\\u")) {
+                    msgs = decodeUnicode(msgs);
                 }
                 try {
                     Friend friend = bot.getFriend(Long.parseLong(args(0)));
                     if (friend != null) {
-                        friend.sendMessage(MiraiCode.deserializeMiraiCode(tmp.toString()));
+                        friend.sendMessage(MiraiCode.deserializeMiraiCode(msgs));
                     } else {
                         logger.info(l("not.friend"));
                     }
