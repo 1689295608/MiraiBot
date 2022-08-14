@@ -189,7 +189,7 @@ public class MiraiCommand {
                     return;
                 }
                 StringBuilder tmp = new StringBuilder();
-                for (int i = 2; i < args().length; i++) {
+                for (int i = 1; i < args().length; i++) {
                     tmp.append(args(i)).append(i == args().length - 1 ? "" : " ");
                 }
                 try {
