@@ -193,9 +193,6 @@ public class MiraiCommand {
                     sb.append(args(i)).append(i == args().length - 1 ? "" : " ");
                 }
                 String msgs = sb.toString();
-                if (msgs.matches("\\\\u")) {
-                    msgs = decodeUnicode(msgs);
-                }
                 try {
                     Friend friend = bot.getFriend(Long.parseLong(args(0)));
                     if (friend != null) {

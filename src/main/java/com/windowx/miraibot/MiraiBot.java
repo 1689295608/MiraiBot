@@ -271,14 +271,8 @@ public class MiraiBot {
                     logger.warn(l("not.group.set"));
                     continue;
                 }
-                String decode;
                 try {
-                    decode = decodeUnicode(msg);
-                } catch (Exception e) {
-                    decode = msg;
-                }
-                try {
-                    group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
+                    group.sendMessage(MiraiCode.deserializeMiraiCode(msg));
                 } catch (BotIsBeingMutedException e) {
                     logger.error(l("bot.is.being.muted"));
                 }
@@ -316,25 +310,6 @@ public class MiraiBot {
         completer = new ArgumentCompleter(sc, members, new Completers.FileNameCompleter());
         LineReaderBuilder lrb = LineReaderBuilder.builder().completer(completer).history(history).terminal(terminal);
         reader = lrb.build();
-    }
-
-    public static String decodeUnicode(final String dataStr) {
-        int start = 0;
-        int end;
-        final StringBuilder buffer = new StringBuilder();
-        while (start > -1) {
-            end = dataStr.indexOf("\\u", start + 2);
-            String charStr;
-            if (end == -1) {
-                charStr = dataStr.substring(start + 2);
-            } else {
-                charStr = dataStr.substring(start + 2, end);
-            }
-            char letter = (char) Integer.parseInt(charStr, 16);
-            buffer.append(letter);
-            start = end;
-        }
-        return buffer.toString();
     }
 
     @Deprecated
