@@ -30,10 +30,9 @@ public class Logger {
      * @return 格式化后的时间
      */
     public String formatTime(String level) {
-        String f = String.format(l("format.time"), level);
-        SimpleDateFormat formatter = new SimpleDateFormat(f);
+        SimpleDateFormat formatter = new SimpleDateFormat(l("format.time"));
         Date date = new Date(System.currentTimeMillis());
-        return formatter.format(date);
+        return String.format(formatter.format(date), level);
     }
     /**
      * 获取多行优化后的内容
