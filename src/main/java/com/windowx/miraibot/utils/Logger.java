@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.windowx.miraibot.MiraiBot.decodeUnicode;
 import static com.windowx.miraibot.MiraiBot.reader;
 import static com.windowx.miraibot.utils.LanguageUtil.l;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -30,9 +31,12 @@ public class Logger {
      * @return 格式化后的时间
      */
     public String formatTime(String level) {
-        SimpleDateFormat formatter = new SimpleDateFormat(l("format.time"));
+        String rp = decodeUnicode("\\u0001");
+        String ft = l("format.time").replaceAll("%s", rp);
+        SimpleDateFormat formatter = new SimpleDateFormat(ft);
         Date date = new Date(System.currentTimeMillis());
-        return String.format(formatter.format(date), level);
+        ft = formatter.format(date).replaceAll(rp, "%s");
+        return String.format(ft, level);
     }
     /**
      * 获取多行优化后的内容
