@@ -14,7 +14,6 @@ import net.mamoe.mirai.Mirai;
 import net.mamoe.mirai.contact.BotIsBeingMutedException;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageSource;
@@ -173,7 +172,7 @@ public class MiraiBot {
             bot.login();
 
             logger.info(l("registering.event"));
-            GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
+            bot.getEventChannel().registerListenerHost(new EventListener());
 
             logger.info(l("login.success"), bot.getNick());
             String os = System.getProperty("os.name").toLowerCase();
