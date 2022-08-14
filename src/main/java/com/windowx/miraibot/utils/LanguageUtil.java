@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class LanguageUtil {
 	public static JsonObject languages = new JsonObject();
 	public static JsonObject language = new JsonObject();
-	static Gson gson = new GsonBuilder()
+	static final Gson gson = new GsonBuilder()
 			.setPrettyPrinting()
 			.create();
 

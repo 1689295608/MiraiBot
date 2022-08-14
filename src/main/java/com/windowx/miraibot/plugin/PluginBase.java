@@ -1,7 +1,5 @@
 package com.windowx.miraibot.plugin;
 
-import net.mamoe.mirai.event.events.GroupMessageEvent;
-
 abstract class PluginBase {
     /**
      * 用户输入内容并回车时触发

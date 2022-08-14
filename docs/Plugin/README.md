@@ -246,4 +246,4 @@ description=一个标准 MiraiBot 插件。
 
 在新出现的 `Build Artifacts` 窗口中选择你刚才创建好的 `Artifacts`，点击 `Build` 即可！
 
-然后 IDEA 就会开始编译插件，编译完成后 在你输入的 `Output Directory` 中就可以找到刚编译好的插件！
+然后 IDEA 就会开始编译插件，编译完成后 在你输入的 `Output Directory` 中就可以找到刚编译好地插件！

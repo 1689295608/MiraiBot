@@ -19,6 +19,7 @@ import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageSource;
 import net.mamoe.mirai.utils.BotConfiguration;
+import org.fusesource.jansi.AnsiConsole;
 import org.jline.builtins.Completers;
 import org.jline.reader.*;
 import org.jline.reader.impl.completer.ArgumentCompleter;
@@ -40,6 +41,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import static com.windowx.miraibot.EventListener.messages;
+import static com.windowx.miraibot.utils.LanguageUtil.l;
 
 public class MiraiBot {
     public static final String language = Locale.getDefault().getLanguage();
@@ -50,11 +52,11 @@ public class MiraiBot {
     public static String[] groups;
     public static String[] allowedGroups;
     public static Bot bot;
-    public static boolean running;
     public static ArgumentCompleter completer;
     public static LineReader reader;
     public static Terminal terminal;
-    public static History history = new DefaultHistory();
+    public static final History history = new DefaultHistory();
+    public static Thread lineThread;
 
     public static void main(String[] args) {
         String err = language.equals("zh") ? "出现错误！进程即将终止！" : "Unable to create configuration file!";
@@ -130,13 +132,13 @@ public class MiraiBot {
         logger.ansiColor = Boolean.parseBoolean(ConfigUtil.getConfig("ansi-console"));
 
         if (!checkConfig()) {
-            logger.error(LanguageUtil.l("config.error"));
+            logger.error(l("config.error"));
             System.exit(-1);
             return;
         }
         ConfigUtil.getConfig("checkUpdate");
         if (ConfigUtil.getConfig("checkUpdate").equals("true")) {
-            logger.info(LanguageUtil.l("checking.update"));
+            logger.info(l("checking.update"));
             Thread thread = new Thread(() -> checkUpdate(null));
             thread.start();
         }
@@ -147,13 +149,13 @@ public class MiraiBot {
         allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
         EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ", "false"));
         if (qq.isEmpty() || password.isEmpty()) {
-            logger.error(LanguageUtil.l("qq.password.not.exists"));
+            logger.error(l("qq.password.not.exists"));
             System.exit(-1);
             return;
         }
 
         String protocol = !ConfigUtil.getConfig("protocol").isEmpty() ? ConfigUtil.getConfig("protocol") : "";
-        logger.info(LanguageUtil.l("trying.login"), protocol);
+        logger.info(l("trying.login"), protocol);
         try {
             BotConfiguration.MiraiProtocol miraiProtocol = switch (protocol) {
                 case "PAD" -> BotConfiguration.MiraiProtocol.ANDROID_PAD;
@@ -168,10 +170,10 @@ public class MiraiBot {
             }});
             bot.login();
 
-            logger.info(LanguageUtil.l("registering.event"));
+            logger.info(l("registering.event"));
             GlobalEventChannel.INSTANCE.registerListenerHost(new EventListener());
 
-            logger.info(LanguageUtil.l("login.success"), bot.getNick());
+            logger.info(l("login.success"), bot.getNick());
             String os = System.getProperty("os.name").toLowerCase();
             if (os.contains("windows")) {
                 new ProcessBuilder("cmd", "/c", "title " + bot.getNick() + " (" + bot.getId() + ")").inheritIO().start().waitFor();
@@ -184,48 +186,44 @@ public class MiraiBot {
             for (String c : cmds) {
                 String l = c.replaceAll("([A-Z])", ".$1").toLowerCase();
                 l = l.replaceAll("-", ".");
-                String de = LanguageUtil.l("command." + l);
+                String de = l("command." + l);
                 commands.set(c, new Command(c, de));
             }
             try {
                 File pluginDir = new File("plugins");
                 if (!pluginDir.exists()) {
                     if (!pluginDir.mkdirs()) {
-                        logger.info(LanguageUtil.l("cannot.create.plugin.dir"));
+                        logger.info(l("cannot.create.plugin.dir"));
                         System.exit(-1);
                     }
                 }
                 loader.initPlugins();
                 for (Plugin p : loader.plugins) {
                     try {
-                        logger.info(LanguageUtil.l("enabling.plugin"), p.getName());
+                        logger.info(l("enabling.plugin"), p.getName());
                         p.onEnable();
 
                         loader.add2commands(p.getCommands());
                     } catch (Exception e) {
                         p.setEnabled(false);
-                        logger.error(LanguageUtil.l("failed.load.plugin"), p.getName(), e.toString());
+                        logger.error(l("failed.load.plugin"), p.getName(), e.toString());
                         logger.trace(e);
                     }
                 }
             } catch (Exception e) {
                 logger.trace(e);
-                logger.error(LanguageUtil.l("unknown.error"));
+                logger.error(l("unknown.error"));
                 System.exit(-1);
             }
 
             if (groups.length < 1) {
-                logger.info(LanguageUtil.l("not.group.set"));
+                logger.info(l("not.group.set"));
             } else if (!bot.getGroups().contains(Long.parseLong(groups[0]))) {
-                logger.info(LanguageUtil.l("not.entered.group"), groups[0]);
+                logger.info(l("not.entered.group"), groups[0]);
             } else {
                 for (int i = 0; i < groups.length; i++) groups[i] = groups[i].trim();
                 group = bot.getGroupOrFail(Long.parseLong(groups[0]));
-                logger.info(LanguageUtil.l("now.group"), group.getName(), String.valueOf(group.getId()));
-            }
-            if (group == null) {
-                logger.error(LanguageUtil.l("unknown.error"));
-                System.exit(-1);
+                logger.info(l("now.group"), group.getName(), String.valueOf(group.getId()));
             }
 
             for (Plugin p : loader.plugins) {
@@ -237,36 +235,71 @@ public class MiraiBot {
                 }
             }
             reloadCommands();
-            running = true;
-            while (running) {
-                if (reader.isReading()) continue;
-                String msg = reader.readLine("> ");
-                if (msg.isEmpty()) continue;
-                try {
-                    if (!MiraiCommand.runCommand(msg)) {
-                        String decode;
-                        try {
-                            decode = decodeUnicode(msg);
-                        } catch (Exception e) {
-                            decode = msg;
-                        }
-                        group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
-                    }
-                } catch (BotIsBeingMutedException e) {
-                    logger.error(LanguageUtil.l("bot.is.being.muted"));
-                }
-            }
+
+            lineThread = runLinerReader();
         } catch (NumberFormatException e) {
             logger.trace(e);
-            logger.error(LanguageUtil.l("qq.password.error"));
+            logger.error(l("qq.password.error"));
             System.exit(-1);
         } catch (UserInterruptException | EndOfFileException e) {
             System.exit(0);
         } catch (Exception e) {
             logger.trace(e);
-            logger.error(LanguageUtil.l("unknown.error"));
+            logger.error(l("unknown.error"));
             System.exit(-1);
         }
+    }
+
+    public static Thread runLinerReader() {
+        Thread thread = new Thread(() -> {
+            while (!Thread.interrupted()) {
+                if (reader.isReading()) continue;
+                String msg = reader.readLine("> ");
+                if (msg.isEmpty()) continue;
+                try {
+                    if (MiraiCommand.runCommand(msg)) {
+                        continue;
+                    }
+                } catch (Exception e) {
+                    logger.error(l("unknown.error"));
+                    logger.trace(e);
+                    continue;
+                }
+                if (group == null) {
+                    logger.warn(l("not.group.set"));
+                    continue;
+                }
+                String decode;
+                try {
+                    decode = decodeUnicode(msg);
+                } catch (Exception e) {
+                    decode = msg;
+                }
+                try {
+                    group.sendMessage(MiraiCode.deserializeMiraiCode(msg.contains("\\u") ? decode : msg));
+                } catch (BotIsBeingMutedException e) {
+                    logger.error(l("bot.is.being.muted"));
+                }
+            }
+        });
+        thread.start();
+        return thread;
+    }
+
+    public static void stop() {
+        logger.warn(l("stopping.bot"), bot.getNick(), String.valueOf(bot.getId()));
+        lineThread.interrupt();
+        for (Plugin p : loader.plugins) {
+            try {
+                p.onDisable();
+            } catch (Exception e) {
+                logger.trace(e);
+            }
+        }
+        bot.close();
+        System.out.print("\n");
+        AnsiConsole.systemUninstall();
+        System.exit(0);
     }
 
     public static void reloadCommands() {
@@ -337,16 +370,16 @@ public class MiraiBot {
                 String nowV = version.replaceAll("[^0-9.]", "");
                 String newV = v.replaceAll("[^0-9.]", "");
                 if (!nowV.equals(newV)) {
-                    logger.warn(LanguageUtil.l("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + newV);
+                    logger.warn(l("found.new.update"), "https://github.com/1689295608/MiraiBot/releases/tag/" + newV);
                 } else {
-                    logger.info(LanguageUtil.l("already.latest.version"), newV);
+                    logger.info(l("already.latest.version"), newV);
                 }
             } catch (Exception e) {
-                logger.error(LanguageUtil.l("failed.check.update"), e.toString());
+                logger.error(l("failed.check.update"), e.toString());
                 if (ConfigUtil.getConfig("debug").equals("true")) logger.info(e.toString());
             }
         } catch (Exception e) {
-            logger.error(LanguageUtil.l("failed.check.update"), e.toString());
+            logger.error(l("failed.check.update"), e.toString());
             if (ConfigUtil.getConfig("debug").equals("true")) logger.info(e.toString());
         }
     }
@@ -406,20 +439,20 @@ public class MiraiBot {
                     return false;
                 }
                 Console console = System.console();
-                logger.info(LanguageUtil.l("before.settings"));
-                logger.info(LanguageUtil.l("please.input.qq"));
+                logger.info(l("before.settings"));
+                logger.info(l("please.input.qq"));
                 String qq = console.readLine();
-                logger.info(LanguageUtil.l("please.input.password"));
+                logger.info(l("please.input.password"));
                 String password = new String(console.readPassword());
-                logger.info(LanguageUtil.l("please.input.group.id"));
+                logger.info(l("please.input.group.id"));
                 String groups = console.readLine();
-                logger.info(LanguageUtil.l("please.input.check.update.on.setup"));
+                logger.info(l("please.input.check.update.on.setup"));
                 String checkUpdate = console.readLine();
 
                 FileOutputStream fos = new FileOutputStream(file);
                 InputStream is = ClassLoader.getSystemResourceAsStream("config.properties");
                 if (is == null) {
-                    System.out.println(LanguageUtil.l("unknown.error"));
+                    System.out.println(l("unknown.error"));
                     System.exit(-1);
                 }
                 String config = new String(is.readAllBytes(), StandardCharsets.UTF_8);
@@ -429,7 +462,7 @@ public class MiraiBot {
                 config = config.replaceAll("%check\\.as\\.setup%", checkUpdate);
                 fos.write(config.getBytes());
                 fos.close();
-                logger.warn(LanguageUtil.l("please.restart"));
+                logger.warn(l("please.restart"));
                 System.exit(0);
             } catch (IOException e) {
                 logger.trace(e);

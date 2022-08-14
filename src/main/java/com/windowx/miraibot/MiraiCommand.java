@@ -17,10 +17,9 @@ import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
-import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.message.data.Image;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
-import org.fusesource.jansi.AnsiConsole;
 
 import java.awt.*;
 import java.io.*;
@@ -33,12 +32,11 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.windowx.miraibot.EventListener.*;
-import static com.windowx.miraibot.EventListener.messages;
 import static com.windowx.miraibot.MiraiBot.*;
 import static com.windowx.miraibot.utils.LanguageUtil.l;
 
 public class MiraiCommand {
-    public static HashMap<String, CommandRunner> cmds = new HashMap<>();
+    public static final HashMap<String, CommandRunner> cmds = new HashMap<>();
 
     public static void init() {
         cmds.put("reload", new CommandRunner() {
@@ -58,19 +56,7 @@ public class MiraiCommand {
         cmds.put("stop", new CommandRunner() {
             @Override
             public void start() {
-                logger.warn(l("stopping.bot"), bot.getNick(), String.valueOf(bot.getId()));
-                running = false;
-                for (Plugin p : loader.plugins) {
-                    try {
-                        p.onDisable();
-                    } catch (Exception e) {
-                        logger.trace(e);
-                    }
-                }
-                bot.close();
-                System.out.print("\n");
-                AnsiConsole.systemUninstall();
-                System.exit(0);
+                stop();
             }
         });
         cmds.put("friendList", new CommandRunner() {
@@ -219,7 +205,7 @@ public class MiraiCommand {
         });
         cmds.put("kick", new CommandRunner() {
             @Override
-            public void start() throws Exception {
+            public void start() {
                 if (args().length < 2) {
                     logger.warn("%s: kick <%s> <%s>", l("usage"), l("qq"), l("reason"));
                     return;
@@ -498,7 +484,7 @@ public class MiraiCommand {
         });
         cmds.put("del", new CommandRunner() {
             @Override
-            public void start() throws Exception {
+            public void start() {
                 if (args().length < 1) {
                     logger.warn("%s: del <%s>", l("usage"), l("qq"));
                     return;
@@ -519,7 +505,7 @@ public class MiraiCommand {
         });
         cmds.put("reply", new CommandRunner() {
             @Override
-            public void start() throws Exception {
+            public void start() {
                 if (args().length < 2) {
                     logger.warn("%s: reply <%s> <%s>", l("usage"), l("message.id"), l("contents"));
                     return;
