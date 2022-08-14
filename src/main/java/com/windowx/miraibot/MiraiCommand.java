@@ -56,6 +56,8 @@ public class MiraiCommand {
         cmds.put("stop", new CommandRunner() {
             @Override
             public void start() {
+                logger.warn(l("stopping.bot"), bot.getNick(), String.valueOf(bot.getId()));
+                bot.close();
                 stop();
             }
         });

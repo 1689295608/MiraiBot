@@ -287,7 +287,6 @@ public class MiraiBot {
     }
 
     public static void stop() {
-        logger.warn(l("stopping.bot"), bot.getNick(), String.valueOf(bot.getId()));
         lineThread.interrupt();
         for (Plugin p : loader.plugins) {
             try {
@@ -296,7 +295,6 @@ public class MiraiBot {
                 logger.trace(e);
             }
         }
-        bot.close();
         System.out.print("\n");
         AnsiConsole.systemUninstall();
         System.exit(0);
