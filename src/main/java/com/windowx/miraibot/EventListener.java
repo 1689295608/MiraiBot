@@ -28,6 +28,8 @@ public class EventListener implements ListenerHost {
 	public void onEvent(Event event) {
 		loader.broadcastEvent(event);
 	}
+
+	// TODO: 重写 EventListener.java
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGroupJoin(MemberJoinEvent event) {
@@ -349,7 +351,8 @@ public class EventListener implements ListenerHost {
 					, event.getSuffix()
 			);
 		} else {
-			if (!(ConfigUtil.getConfig("friend").equals("*") || event.getFrom().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+			if (!(ConfigUtil.getConfig("friend").equals("*") ||
+					event.getFrom().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 				event.cancel();
 				return;
 			}
@@ -478,7 +481,8 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFriendMessage(FriendMessageEvent event) {
-		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getConfig("friend").equals("*") ||
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			event.cancel();
 			return;
 		}
@@ -488,7 +492,8 @@ public class EventListener implements ListenerHost {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onTempMessage(GroupTempMessageEvent event) {
-		if (!(ConfigUtil.getConfig("friend").equals("*") || event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
+		if (!(ConfigUtil.getConfig("friend").equals("*") ||
+				event.getSender().getId() == Long.parseLong(ConfigUtil.getConfig("friend")))) {
 			event.cancel();
 			return;
 		}
