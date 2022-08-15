@@ -257,13 +257,7 @@ public class MiraiBot {
                 if (reader.isReading()) continue;
                 String msg = reader.readLine("> ");
                 if (msg.isEmpty()) continue;
-                try {
-                    if (MiraiCommand.runCommand(msg)) {
-                        continue;
-                    }
-                } catch (Exception e) {
-                    logger.error(l("some.error"));
-                    logger.trace(e);
+                if (MiraiCommand.runCommand(msg)) {
                     continue;
                 }
                 if (group == null) {
@@ -312,7 +306,7 @@ public class MiraiBot {
     }
 
     @Deprecated
-    public static boolean runCommand(String msg) throws Exception {
+    public static boolean runCommand(String msg) {
         return MiraiCommand.runCommand(msg);
     }
 

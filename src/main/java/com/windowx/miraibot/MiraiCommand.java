@@ -821,11 +821,10 @@ public class MiraiCommand {
     /**
      * 运行命令执行
      *
-     * @param msg Message
-     * @return Is it an instruction
-     * @throws Exception Exception
+     * @param msg 信息内容
+     * @return 是否是一个可执行命令
      */
-    public static boolean runCommand(String msg) throws Exception {
+    public static boolean runCommand(String msg) {
         String[] cmd = msg.split(" ");
         if (cmd.length < 1) {
             return false;
@@ -834,7 +833,12 @@ public class MiraiCommand {
         String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
         CommandRunner runner = cmds.get(label);
         if (runner != null) {
-            runner.start(label, args, msg);
+            try {
+                runner.start(label, args, msg);
+            } catch (Exception e) {
+                logger.trace(e);
+                logger.error(l("some.error"), e.toString());
+            }
             return true;
         }
         boolean isCmd = false;
