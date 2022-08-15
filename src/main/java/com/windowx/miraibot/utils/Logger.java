@@ -1,5 +1,6 @@
 package com.windowx.miraibot.utils;
 
+import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import org.jline.utils.AttributedString;
 
@@ -46,20 +47,15 @@ public class Logger {
      */
     public String formatStr(String prefix, String str) {
         String[] spl = str.split("\n");
-        if (spl.length == 1) return (prefix + str + ansi().reset().toString());
+        if (spl.length == 1) return (prefix + str);
         StringBuilder sb = new StringBuilder();
         for (String s : spl) {
             s = prefix + s;
             if (sb.toString().isEmpty()) {
-                sb.append(s)
-                        .append(ansi().reset().toString())
-                        .append("\n");
+                sb.append(s).append("\n");
                 continue;
             }
-            sb /*.append(formatTime()) */
-                    .append(s)
-                    .append(ansi().reset().toString())
-                    .append("\n");
+            sb.append(s).append("\n");
         }
         return sb.toString();
     }
@@ -69,7 +65,7 @@ public class Logger {
      *
      * @param str 输出的内容
      */
-    public void print(String str, String level, Object... args) {
+    public void print(String str, String level, Ansi.Color color, Object... args) {
         if (str == null) str = "";
         String opt = String.format(formatStr(formatTime(level), str), args) + "\n";
         try {
@@ -77,6 +73,7 @@ public class Logger {
         } catch (IOException e) {
             trace(e);
         }
+        opt = ansi().fgBright(color).toString() + opt + ansi().reset().toString();
         if (reader == null) {
             AnsiConsole.out().print(opt);
         } else {
@@ -85,15 +82,15 @@ public class Logger {
     }
 
     public void info(String str, Object... args) {
-        print(formatStr(prefix, str), "I", args);
+        print(formatStr(prefix, str), "I", Ansi.Color.DEFAULT, args);
     }
 
     public void warn(String str, Object... args) {
-        print(formatStr(ansi().fgBrightYellow().toString() + prefix, str), "W", args);
+        print(formatStr(prefix, str), "W", Ansi.Color.YELLOW, args);
     }
 
     public void error(String str, Object... args) {
-        print(formatStr(ansi().fgBrightRed().toString() + prefix, str), "E", args);
+        print(formatStr(prefix, str), "E", Ansi.Color.RED, args);
     }
 
     /**
