@@ -20,11 +20,12 @@ public class LogUtil {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
         String time = formatter.format(date);
+        File logs = new File("logs");
         int i = 1;
-        while (new File("logs" + File.separator + time + "-" + i + ".log").exists()) {
+        while (new File(logs, time + "-" + i + ".log").exists()) {
             i++;
         }
-        File file = new File("logs" + File.separator + time + "-" + i + ".log");
+        File file = new File(logs, time + "-" + i + ".log");
         path = file.toPath();
     }
 
