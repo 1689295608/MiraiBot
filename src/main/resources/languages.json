@@ -174,6 +174,7 @@
     "bot.online": "机器人 %s 已上线！",
     "bot.offline": "机器人 %s 已下线！",
     "some.error": "发生了一些错误，请检查后再试？",
+    "cannot.mkdir": "创建 %s 目录失败！请检查权限！",
     "info": "I",
     "warn": "W",
     "error": "E"
