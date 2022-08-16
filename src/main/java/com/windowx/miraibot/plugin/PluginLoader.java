@@ -336,6 +336,15 @@ public class PluginLoader {
                 plugin.setFile(f);
                 plugin.setEnabled(true);
                 plugins.add(plugin);
+                add2commands(plugin.getCommands());
+                try {
+                    plugin.onEnable();
+                } catch (Exception e) {
+                    plugin.setEnabled(false);
+                    unloadPlugin(plugin.getName());
+                    logger.error(l("failed.load.plugin"), plugin.getName(), e.toString());
+                    logger.trace(e);
+                }
                 logger.info(l("loaded.plugin"), plugin.getName());
             } else {
                 logger.error(l("failed.load.plugin"), f.getName(), "unknown error");

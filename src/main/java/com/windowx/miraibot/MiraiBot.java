@@ -199,18 +199,6 @@ public class MiraiBot {
                     }
                 }
                 loader.initPlugins();
-                for (Plugin p : loader.plugins) {
-                    try {
-                        logger.info(l("enabling.plugin"), p.getName());
-                        p.onEnable();
-
-                        loader.add2commands(p.getCommands());
-                    } catch (Exception e) {
-                        p.setEnabled(false);
-                        logger.error(l("failed.load.plugin"), p.getName(), e.toString());
-                        logger.trace(e);
-                    }
-                }
             } catch (Exception e) {
                 logger.trace(e);
                 logger.error(l("unknown.error"));
