@@ -819,6 +819,7 @@ public class MiraiCommand {
     }
 
     public static String[] parseArgs(String[] args) {
+        if (args.length < 1) return args;
         StringBuilder sb = new StringBuilder();
         for (String s : args) {
             sb.append(s).append(" ");

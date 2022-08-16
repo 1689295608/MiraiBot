@@ -353,10 +353,6 @@ public class PluginLoader {
         return after;
     }
 
-    public void initPlugin(Plugin plugin) {
-
-    }
-
     /**
      * 获取是否已加载前置插件列表
      * @param depends 前置插件列表
