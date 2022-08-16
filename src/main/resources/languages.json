@@ -173,7 +173,10 @@
     "cannot.re.login": "重新登录失败，正在停止 MiraiBot... (%s)",
     "bot.online": "机器人 %s 已上线！",
     "bot.offline": "机器人 %s 已下线！",
-    "some.error": "发生了一些错误，请检查后再试？"
+    "some.error": "发生了一些错误，请检查后再试？",
+    "info": "I",
+    "warn": "W",
+    "error": "E"
   },
   "en": {
     "command.status": "View MiraiBot Current Status",
@@ -349,6 +352,9 @@
     "cannot.re.login": "Re-login failed, stopping MiraiBot... (%s)",
     "bot.online": "Bot %s is online!",
     "bot.offline": "Bot %s is offline!",
-    "some.error": "Some errors have occurred, please check and try again?"
+    "some.error": "Some errors have occurred, please check and try again?",
+    "info": "I",
+    "warn": "W",
+    "error": "E"
   }
 }

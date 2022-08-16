@@ -202,11 +202,11 @@ public class PluginLoader {
             return null;
         }
         Plugin p = pc.getDeclaredConstructor().newInstance();
-        p.setName(plugin.getProperty("name", "Untitled"));
-        p.setOwner(plugin.getProperty("owner", "Unnamed"));
+        p.setName(plugin.getProperty("name"));
+        p.setOwner(plugin.getProperty("owner"));
         p.setClassName(plugin.getProperty("main"));
-        p.setVersion(plugin.getProperty("version", "1.0.0"));
-        p.setDescription(plugin.getProperty("description", "A Plugin For MiraiBot."));
+        p.setVersion(plugin.getProperty("version"));
+        p.setDescription(plugin.getProperty("description"));
         p.setPluginClassLoader(u);
         p.setPlugin(plugin);
         p.setCommands(new Commands());

@@ -82,15 +82,15 @@ public class Logger {
     }
 
     public void info(String str, Object... args) {
-        print(formatStr(prefix, str), "I", Ansi.Color.DEFAULT, args);
+        print(formatStr(prefix, str), l("info"), Ansi.Color.DEFAULT, args);
     }
 
     public void warn(String str, Object... args) {
-        print(formatStr(prefix, str), "W", Ansi.Color.YELLOW, args);
+        print(formatStr(prefix, str), l("warn"), Ansi.Color.YELLOW, args);
     }
 
     public void error(String str, Object... args) {
-        print(formatStr(prefix, str), "E", Ansi.Color.RED, args);
+        print(formatStr(prefix, str), l("error"), Ansi.Color.RED, args);
     }
 
     /**
