@@ -226,15 +226,6 @@ public class MiraiBot {
                     logger.info(l("now.group"), group.getName(), String.valueOf(group.getId()));
                 }
             }
-
-            for (Plugin p : loader.plugins) {
-                if (!p.isEnabled()) continue;
-                try {
-                    p.onFinished();
-                } catch (Exception e) {
-                    logger.trace(e);
-                }
-            }
             reloadCommands();
 
             lineThread = runLinerReader();

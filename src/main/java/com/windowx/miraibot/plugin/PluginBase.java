@@ -16,11 +16,6 @@ abstract class PluginBase {
     public void onEnable() { }
 
     /**
-     * 插件加载完毕时触发
-     */
-    public void onFinished() { }
-
-    /**
      * 插件禁用时触发，也会在关闭机器人时触发
      */
     public void onDisable() { }

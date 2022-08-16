@@ -826,7 +826,7 @@ public class MiraiCommand {
         }
         sb.delete(sb.length() - 1, sb.length());
         String merge = sb.toString();
-        int from = 0,
+        int from = -1,
                 index;
         boolean merging = false;
         // 使用了两个占位符：\uFFFC 和 \uFFFB
