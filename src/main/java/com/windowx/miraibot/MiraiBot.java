@@ -147,7 +147,7 @@ public class MiraiBot {
         groups = ConfigUtil.getConfig("group").split(",");
         allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
         EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ", "false"));
-        if (qq.isEmpty() || password.isEmpty()) {
+        if (qq.isBlank() || password.isBlank()) {
             logger.error(l("qq.password.not.exists"));
             System.exit(-1);
             return;
@@ -204,15 +204,27 @@ public class MiraiBot {
                 logger.error(l("unknown.error"));
                 System.exit(-1);
             }
-
-            if (groups.length < 1) {
+            if (groups.length < 1 || groups[0].isBlank()) {
                 logger.info(l("not.group.set"));
-            } else if (!bot.getGroups().contains(Long.parseLong(groups[0]))) {
-                logger.info(l("not.entered.group"), groups[0]);
             } else {
-                for (int i = 0; i < groups.length; i++) groups[i] = groups[i].trim();
-                group = bot.getGroupOrFail(Long.parseLong(groups[0]));
-                logger.info(l("now.group"), group.getName(), String.valueOf(group.getId()));
+                long gid;
+                try {
+                    gid = Long.parseLong(groups[0]);
+                } catch (NumberFormatException e) {
+                    logger.error(l("not.group.id"), groups[0]);
+                    logger.trace(e);
+                    stop();
+                    return;
+                }
+                if (!bot.getGroups().contains(gid)) {
+                    logger.info(l("not.entered.group"), gid);
+                } else {
+                    for (int i = 0; i < groups.length; i++) {
+                        groups[i] = groups[i].trim();
+                    }
+                    group = bot.getGroupOrFail(Long.parseLong(groups[0]));
+                    logger.info(l("now.group"), group.getName(), String.valueOf(group.getId()));
+                }
             }
 
             for (Plugin p : loader.plugins) {
@@ -244,7 +256,7 @@ public class MiraiBot {
             while (!Thread.interrupted()) {
                 if (reader.isReading()) continue;
                 String msg = reader.readLine("> ");
-                if (msg.isEmpty()) continue;
+                if (msg.isBlank()) continue;
                 if (MiraiCommand.runCommand(msg)) {
                     continue;
                 }
