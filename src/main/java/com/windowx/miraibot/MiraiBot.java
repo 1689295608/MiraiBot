@@ -272,7 +272,6 @@ public class MiraiBot {
                 logger.trace(e);
             }
         }
-        System.out.print("\n");
         AnsiConsole.systemUninstall();
         System.exit(0);
     }
