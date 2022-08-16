@@ -818,6 +818,44 @@ public class MiraiCommand {
         });
     }
 
+    public static String[] parseArgs(String[] args) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : args) {
+            sb.append(s).append(" ");
+        }
+        sb.delete(sb.length() - 1, sb.length());
+        String merge = sb.toString();
+        int from = 0,
+                index;
+        boolean merging = false;
+        // 使用了两个占位符：\uFFFC 和 \uFFFB
+        String space = "\uFFFC";
+        String escape = "\uFFFB";
+        merge = merge.replaceAll("\\\\\"", escape);
+        while ((index = merge.indexOf("\"", from + 1)) != -1) {
+            int f = from;
+            from = index;
+            if (merging) {
+                String me = merge.substring(f, index + 1);
+                me = me.replaceAll(" ", space);
+                me = me.substring(1, me.length() - 1);
+                String left = merge.substring(0, f);
+                String right = merge.substring(index + 1);
+                merge = left + me + right;
+                merging = false;
+                continue;
+            }
+            merging = true;
+        }
+        ArrayList<String> out = new ArrayList<>();
+        for (String s : merge.split(" ")) {
+            s = s.replaceAll(space, " ");
+            s = s.replaceAll(escape, "\"");
+            out.add(s);
+        }
+        return out.toArray(new String[0]);
+    }
+
     /**
      * 运行命令执行
      *
@@ -831,6 +869,7 @@ public class MiraiCommand {
         }
         String label = cmd[0];
         String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
+        args = parseArgs(args);
         CommandRunner runner = cmds.get(label);
         if (runner != null) {
             try {
