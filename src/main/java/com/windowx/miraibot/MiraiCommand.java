@@ -188,15 +188,16 @@ public class MiraiCommand {
                     logger.warn("%s: send <%s> <%s...>", l("usage"), l("qq"), l("contents"));
                     return;
                 }
-                StringBuilder sb = new StringBuilder();
-                for (int i = 1; i < args().length; i++) {
-                    sb.append(args(i)).append(i == args().length - 1 ? "" : " ");
+                ArrayList<String> msgs = new ArrayList<>();
+                for (int i = 1; i < args().length; i ++) {
+                    msgs.add(args(i));
                 }
-                String msgs = sb.toString();
                 try {
                     Friend friend = bot.getFriend(Long.parseLong(args(0)));
                     if (friend != null) {
-                        friend.sendMessage(MiraiCode.deserializeMiraiCode(msgs));
+                        for (String s : msgs) {
+                            friend.sendMessage(MiraiCode.deserializeMiraiCode(s));
+                        }
                     } else {
                         logger.info(l("not.friend"));
                     }
@@ -208,8 +209,8 @@ public class MiraiCommand {
         cmds.put("kick", new CommandRunner() {
             @Override
             public void start() {
-                if (args().length < 2) {
-                    logger.warn("%s: kick <%s> <%s>", l("usage"), l("qq"), l("reason"));
+                if (args().length < 1) {
+                    logger.warn("%s: kick <%s> <%s = \"\">", l("usage"), l("qq"), l("reason"));
                     return;
                 }
                 NormalMember member = null;
@@ -220,7 +221,11 @@ public class MiraiCommand {
                 }
                 if (member != null) {
                     try {
-                        member.kick(args(1));
+                        String reason = "";
+                        if (args().length > 1) {
+                            reason = args(1);
+                        }
+                        member.kick(reason);
                         logger.info(l("kicked"));
                     } catch (Exception e) {
                         logger.error(l("no.permission"));
@@ -379,16 +384,26 @@ public class MiraiCommand {
             @Override
             public void start() {
                 if (args().length < 1) {
-                    logger.warn("%s: image <%s>", l("usage"), l("file.path"));
+                    logger.warn("%s: image <%s> [%s = false]",
+                            l("usage"),
+                            l("file.path"),
+                            l("send")
+                    );
                     return;
+                }
+                AtomicBoolean send = new AtomicBoolean(false);
+                if (args().length > 2) {
+                    send.set(Boolean.parseBoolean(args(2)));
                 }
                 Thread upImg = new Thread(() -> {
                     try {
-                        File file = new File(msg().substring(label().length()));
+                        File file = new File(args(0));
                         ExternalResource externalResource = ExternalResource.create(file);
                         logger.info(l("up.loading.img"));
                         Image img = group.uploadImage(externalResource);
-                        group.sendMessage(img);
+                        if (send.get()) {
+                            group.sendMessage(img);
+                        }
                         externalResource.close();
                         imageInfo(bot, img);
                     } catch (IOException e) {
@@ -421,7 +436,7 @@ public class MiraiCommand {
                     logger.warn("%s: upImg <%s>", l("usage"), l("file.path"));
                     return;
                 }
-                File file = new File(msg().substring(label().length()));
+                File file = new File(args(0));
                 ExternalResource externalResource = ExternalResource.create(file);
                 Image img = group.uploadImage(externalResource);
                 externalResource.close();
@@ -613,15 +628,9 @@ public class MiraiCommand {
                         logger.error(l("not.user"));
                         return;
                     }
-                    StringBuilder nameCard = new StringBuilder();
-                    for (int i = 2; i < args().length; i++) {
-                        nameCard.append(args(i));
-                        if (i != args().length - 1) {
-                            nameCard.append(" ");
-                        }
-                    }
-                    member.setNameCard(nameCard.toString());
-                    logger.info(l("name.card.set"), member.getNick(), nameCard.toString());
+                    String nameCard = args(1);
+                    member.setNameCard(nameCard);
+                    logger.info(l("name.card.set"), member.getNick(), nameCard);
                 } catch (NumberFormatException e) {
                     logger.error(l("not.qq"), args(0));
                     logger.trace(e);
@@ -814,6 +823,36 @@ public class MiraiCommand {
                         , classLoad.getLoadedClassCount()
                         , classLoad.getUnloadedClassCount()
                 );
+            }
+        });
+        cmds.put("quit", new CommandRunner() {
+            @Override
+            public void start() {
+                Group g;
+                if (args().length < 1) {
+                    logger.warn(
+                            "%s: quit <%s>",
+                            l("usage"),
+                            l("group.id")
+                    );
+                    return;
+                }
+                try {
+                    g = bot.getGroup(Long.parseLong(args(0)));
+                } catch (NumberFormatException e) {
+                    logger.error(l("not.group.id"));
+                    logger.trace(e);
+                    return;
+                }
+                if (g == null) {
+                    logger.error(l("group.not.found"));
+                    return;
+                }
+                if (!g.quit()) {
+                    logger.error(l("cannot.quit.group"));
+                    return;
+                }
+                logger.info(l("Successfully quit this group!"));
             }
         });
     }

@@ -178,7 +178,12 @@
     "not.group.id": "解析 %s 为群号失败，请检查后再试！",
     "info": "I",
     "warn": "W",
-    "error": "E"
+    "error": "E",
+    "group.not.found": "未找到该聊群！",
+    "cannot.quit.group": "无法退出此群！",
+    "succeed.quit.group": "成功退出此群！",
+    "command.quit": "离开一个聊群",
+    "group.id": "群号"
   },
   "en": {
     "command.status": "View MiraiBot Current Status",
@@ -359,6 +364,11 @@
     "not.group.id": "Parsing %s to group number failed, please check and try again!",
     "info": "I",
     "warn": "W",
-    "error": "E"
+    "error": "E",
+    "group.not.found": "Can't found this group, please check and try again!",
+    "cannot.quit.group": "Can't quit this group!",
+    "succeed.quit.group": "Successfully quit this group!",
+    "command.quit": "Leave a chat group",
+    "group.id": "Group ID"
   }
 }
