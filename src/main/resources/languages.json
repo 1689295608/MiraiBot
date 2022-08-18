@@ -185,7 +185,8 @@
     "command.quit": "离开一个聊群",
     "group.id": "群号",
     "group.name": "群名称",
-    "succeed.set.group.name": "成功设置群昵称为 %s！"
+    "succeed.set.group.name": "成功设置群昵称为 %s！",
+    "command.group.name": "设置一个群的名称"
   },
   "en": {
     "command.status": "View MiraiBot Current Status",
@@ -373,6 +374,7 @@
     "command.quit": "Leave a chat group",
     "group.id": "Group ID",
     "group.name": "Group name",
-    "succeed.set.group.name": "Successfully set the group nickname %s!"
+    "succeed.set.group.name": "Successfully set the group nickname %s!",
+    "command.group.name": "Sets the name of a group"
   }
 }
