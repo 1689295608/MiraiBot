@@ -291,7 +291,10 @@ public class MiraiBot {
         }
         StringsCompleter members = new StringsCompleter(names);
         completer = new ArgumentCompleter(sc, members, new Completers.FileNameCompleter());
-        LineReaderBuilder lrb = LineReaderBuilder.builder().completer(completer).history(history).terminal(terminal);
+        LineReaderBuilder lrb = LineReaderBuilder.builder()
+                .completer(completer)
+                .history(history)
+                .terminal(terminal);
         reader = lrb.build();
     }
 
@@ -305,7 +308,10 @@ public class MiraiBot {
      */
     public static void checkUpdate(String u) {
         try {
-            HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).followRedirects(HttpClient.Redirect.NORMAL).build();
+            HttpClient client = HttpClient.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .build();
 
             String def = "https://ghproxy.com/https://raw.githubusercontent.com/1689295608/MiraiBot/main/LatestVersion";
             URI uri = new URI(u == null ? def : u);

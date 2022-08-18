@@ -60,5 +60,3 @@ commands.set("demo", command);
 ## 大功告成
 
 在完成上述操作之后你的命令就已经被添加到 MiraiBot 命令列表中了
-
-*Enjoy it! <3*

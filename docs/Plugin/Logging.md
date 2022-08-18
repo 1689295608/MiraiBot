@@ -11,4 +11,4 @@
 ## 如何使用
 
 你可以参考 IDEA 的代码提示或直接查看源代码获取大概用法
-[`Logger.java`](/src/com/windowx/miraibot/utils/Logger.java)
+[`Logger.java`](https://github.com/1689295608/MiraiBot/blob/main/src/main/java/com/windowx/miraibot/utils/Logger.java)

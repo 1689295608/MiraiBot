@@ -132,7 +132,7 @@ public class MyDemo extends Plugin {
 
 若要监听 Mirai 相关方法，请参考 [ListenerHost 篇](Listener.md)
 
-在此处仅介绍如何使用插件事件（详见 [`JavaPlugin.java`](/src/com/windowx/miraibot/plugin/JavaPlugin.java)）
+在此处仅介绍如何使用插件事件（详见 [`JavaPlugin.java`](https://github.com/1689295608/MiraiBot/blob/main/src/main/java/com/windowx/miraibot/plugin/JavaPlugin.java)）
 
 接下来你需要简单的监听一个事件：`onEnable` （插件启动事件）
 
@@ -160,7 +160,7 @@ public void onEnable() {
 
 另外，MiraiBot 的 `Plugin` 的方法还是有挺多的，可以借助 IDEA 的代码提示功能来进一步了解
 
-也可以翻阅 MiraiBot 的源代码来进行了解：[`Plugin.java`](/src/com/windowx/miraibot/plugin/Plugin.java)
+也可以翻阅 MiraiBot 的源代码来进行了解：[`Plugin.java`](https://github.com/1689295608/MiraiBot/blob/main/src/main/java/com/windowx/miraibot/plugin/Plugin.java)
 
 ## 第五步：配置文件
 
