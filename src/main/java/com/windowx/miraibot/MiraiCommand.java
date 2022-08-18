@@ -880,7 +880,7 @@ public class MiraiCommand {
                     return;
                 }
                 g.setName(args(1));
-                logger.info(l("succeed.set.group.name"), args(0));
+                logger.info(l("succeed.set.group.name"), args(1));
             }
         });
     }
