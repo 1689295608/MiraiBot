@@ -855,6 +855,34 @@ public class MiraiCommand {
                 logger.info(l("Successfully quit this group!"));
             }
         });
+        cmds.put("group-name", new CommandRunner() {
+            @Override
+            public void start() {
+                Group g;
+                if (args().length < 2) {
+                    logger.warn(
+                            "%s: group-name <%s> <%s>",
+                            l("usage"),
+                            l("group.id"),
+                            l("group.name")
+                    );
+                    return;
+                }
+                try {
+                    g = bot.getGroup(Long.parseLong(args(0)));
+                } catch (NumberFormatException e) {
+                    logger.error(l("not.group.id"));
+                    logger.trace(e);
+                    return;
+                }
+                if (g == null) {
+                    logger.error(l("group.not.found"));
+                    return;
+                }
+                g.setName(args(1));
+                logger.info(l("succeed.set.group.name"), args(0));
+            }
+        });
     }
 
     public static String[] parseArgs(String[] args) {
