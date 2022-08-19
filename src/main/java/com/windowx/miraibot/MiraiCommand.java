@@ -880,8 +880,67 @@ public class MiraiCommand {
                 logger.info(l("succeed.set.group.name"), args(1));
             }
         });
+        cmds.put("forward", new CommandRunner() {
+            @Override
+            public void start() {
+                if (args().length < 3) {
+                    logger.warn(
+                            "%s: forward [g=%s|f=%s] <%s> <%s...>",
+                            l("usage"),
+                            l("group"),
+                            l("friend"),
+                            l("id"),
+                            l("id.list")
+                    );
+                    return;
+                }
+                Contact contact;
+                long id;
+                try {
+                     id = Long.parseLong(args(1));
+                } catch (NumberFormatException e) {
+                    logger.error(l("invalid.long"));
+                    return;
+                }
+                String gof = args(0);
+                switch (gof) {
+                    case "g" -> contact = bot.getGroup(id);
+                    case "f" -> contact = bot.getFriend(id);
+                    default -> {
+                        logger.error(l("invalid.arg"), gof);
+                        return;
+                    }
+                }
+                if (contact == null) {
+                    logger.error(
+                            l("st.not.found"),
+                            l(
+                                switch (gof) {
+                                    case "g" -> "group";
+                                    case "f" -> "friend";
+                                }
+                            )
+                    );
+                    return;
+                }
+                ForwardMessageBuilder fmb = new ForwardMessageBuilder(group);
+                for (int i = 2; i < args().length; i ++) {
+                    MessageSource source = getMessageById(Integer.parseInt(args(i)));
+                    if (source == null) continue;
+                    Member sender = group.get(source.getFromId());
+                    if (sender == null) continue;
+                    fmb.add(sender, source);
+                }
+                contact.sendMessage(fmb.build());
+            }
+        });
     }
 
+    /**
+     * 带引号解析的参数解析
+     * @param args 参数数组，以空格分隔的字符串
+     * @return 引号解析后的参数数组
+     */
     public static String[] parseArgs(String[] args) {
         if (args.length < 1) return args;
         StringBuilder sb = new StringBuilder();
