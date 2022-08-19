@@ -890,7 +890,7 @@ public class MiraiCommand {
                             l("group"),
                             l("friend"),
                             l("id"),
-                            l("id.list")
+                            l("id.array")
                     );
                     return;
                 }
@@ -924,7 +924,7 @@ public class MiraiCommand {
                     if (source == null) continue;
                     Member sender = group.get(source.getFromId());
                     if (sender == null) continue;
-                    fmb.add(sender, source);
+                    fmb.add(sender, source.getOriginalMessage());
                 }
                 contact.sendMessage(fmb.build());
             }
