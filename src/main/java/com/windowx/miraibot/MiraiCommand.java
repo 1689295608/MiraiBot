@@ -914,12 +914,7 @@ public class MiraiCommand {
                 if (contact == null) {
                     logger.error(
                             l("st.not.found"),
-                            l(
-                                switch (gof) {
-                                    case "g" -> "group";
-                                    case "f" -> "friend";
-                                }
-                            )
+                            l(gof.equals("g") ? "group" : "friend")
                     );
                     return;
                 }
