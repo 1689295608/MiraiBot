@@ -3,10 +3,7 @@ package com.windowx.miraibot;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.windowx.miraibot.command.Command;
-import com.windowx.miraibot.command.CommandExecutor;
-import com.windowx.miraibot.command.CommandRunner;
-import com.windowx.miraibot.command.Commands;
+import com.windowx.miraibot.command.*;
 import com.windowx.miraibot.plugin.Plugin;
 import com.windowx.miraibot.utils.ClipboardUtil;
 import com.windowx.miraibot.utils.ConfigUtil;
@@ -892,33 +889,32 @@ public class MiraiCommand {
             sb.append(s).append(" ");
         }
         sb.delete(sb.length() - 1, sb.length());
-        String merge = sb.toString();
         int from = -1,
                 index;
         boolean merging = false;
         // 使用了两个占位符：\uFFFC 和 \uFFFB
         String space = "\uFFFC";
         String escape = "\uFFFB";
-        merge = merge.replaceAll("\\\\\"", escape);
+        String replaced = sb.toString().replace("\\\"", escape);
+        StringBuilder merge = new StringBuilder(replaced);
         while ((index = merge.indexOf("\"", from + 1)) != -1) {
             int f = from;
             from = index;
             if (merging) {
                 String me = merge.substring(f, index + 1);
-                me = me.replaceAll(" ", space);
+                me = me.replace(" ", space);
                 me = me.substring(1, me.length() - 1);
-                String left = merge.substring(0, f);
-                String right = merge.substring(index + 1);
-                merge = left + me + right;
+                merge.replace(f, index + 1, me);
                 merging = false;
                 continue;
             }
             merging = true;
         }
         ArrayList<String> out = new ArrayList<>();
-        for (String s : merge.split(" ")) {
-            s = s.replaceAll(space, " ");
-            s = s.replaceAll(escape, "\"");
+        String str = merge.toString();
+        for (String s : str.split(" ")) {
+            s = s.replace(space, " ");
+            s = s.replace(escape, "\"");
             out.add(s);
         }
         return out.toArray(new String[0]);
