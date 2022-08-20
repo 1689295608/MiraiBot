@@ -1,13 +1,14 @@
-# MiraiBot
+<h1 align="center">MiraiBot</h1>
+<p align="center">
+  ⭐ 一个基于 <a href="//github.com/mamoe/mirai">Mirai</a> 的控制台机器人。 ⭐
+</p>
 
-[![Join the chat at https://gitter.im/1689295608/miraibot](https://badges.gitter.im/1689295608/miraibot.svg)](https://gitter.im/1689295608/miraibot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-一个基于 [Mirai](https://github.com/mamoe/mirai) 的控制台机器人。
-
-**使用前请注意：**
-```
-本项目基于 JDK 17 开发, 所以请使用 JDK 17 及以上的 Java 运行本程序!
-```
+<div align="center">
+  <a href="//github.com/1689295608/MiraiBot/tree/main/docs/">文档</a> · 
+  <a href="//github.com/1689295608/MiraiBot/releases/latest">下载</a> · 
+  <a href="//github.com/1689295608/MiraiBot#开始使用">开始使用</a> · 
+  <a href="//gitter.im/1689295608/miraibot">Chat On Gitter</a>
+</div>
 
 ## 声明
 
@@ -35,8 +36,13 @@ MiraiBot 继承 [Mirai](https://github.com/mamoe/mirai) 使用 AGPLv3 协议开�
 
 ---
 
-## 初次使用
-**初次使用** 的用户
+## 开始使用
+接下来会手把手教你如何开始使用 MiraiBot
+
+首先：
+```
+本项目基于 JDK 17 开发, 所以请使用 JDK 17 及以上的 Java 运行本程序!
+```
 
 请前往 [MiraiCore-Release](https://github.com/1689295608/MiraiCore/releases/tag/v1.0-origin) 下载最新的 MiraiCore 独立包 *（如果使用的版本低于 1.2.1 可以跳过这个步骤）*
 
