@@ -346,9 +346,9 @@ public class MiraiCommand {
         cmds.put("voice", new CommandRunner() {
             @Override
             public void start() {
-                if (args().length < 2) {
+                if (args().length < 1) {
                     logger.warn(
-                            "%s: voice <%s> <%s> [%s = false]",
+                            "%s: voice <%s> [%s = false]",
                             l("usage"),
                             l("file.path"),
                             l("send")
@@ -356,12 +356,12 @@ public class MiraiCommand {
                     return;
                 }
                 AtomicBoolean send = new AtomicBoolean(false);
-                if (args().length > 2) {
-                    send.set(Boolean.parseBoolean(args(2)));
+                if (args().length > 1) {
+                    send.set(Boolean.parseBoolean(args(1)));
                 }
                 Thread upVoice = new Thread(() -> {
                     try {
-                        File file = new File(msg().substring(6));
+                        File file = new File(args(0));
                         ExternalResource externalResource = ExternalResource.create(file);
                         logger.info(l("up.loading.voice"));
                         Audio audio = group.uploadAudio(externalResource);
