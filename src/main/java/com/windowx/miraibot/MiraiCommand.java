@@ -531,12 +531,8 @@ public class MiraiCommand {
                     logger.error(l("message.id.error"));
                     logger.trace(e);
                 }
-                StringBuilder content = new StringBuilder();
-                for (int i = 2; i < args().length; i++) {
-                    content.append(args(i));
-                }
                 if (message != null) {
-                    group.sendMessage(new QuoteReply(message).plus(MiraiCode.deserializeMiraiCode(content.toString())));
+                    group.sendMessage(new QuoteReply(message).plus(MiraiCode.deserializeMiraiCode(args(1))));
                 } else {
                     logger.error(l("message.not.found"));
                 }
