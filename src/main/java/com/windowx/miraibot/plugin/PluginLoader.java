@@ -53,7 +53,6 @@ public class PluginLoader {
                     if (type[0] != event.getClass() && !ec.isAssignableFrom(type[0]) && !type[0].isAssignableFrom(ec)) {
                         continue;
                     }
-                    method.setAccessible(true);
                     try {
                         method.invoke(listener, event);
                     } catch (Exception e) {
