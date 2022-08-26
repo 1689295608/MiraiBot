@@ -110,6 +110,19 @@ public class PluginLoader {
     }
 
     /**
+     * 移除一个事件监听器
+     * @param plugin    插件
+     * @param listener  监听器
+     */
+    public void removeListener(Plugin plugin, ListenerHost listener) {
+        ArrayList<ListenerHost> list = this.listeners.get(plugin);
+        if (list == null) {
+            return;
+        }
+        list.remove(listener);
+    }
+
+    /**
      * 获取插件的类名（不是全写）
      *
      * @param name 全写
