@@ -794,7 +794,7 @@ public class MiraiCommand {
         cmds.put("status", new CommandRunner() {
             @Override
             public void start() {
-                long MB = 1024 * 1024;
+                long MB = 1024L * 1024L;
 
                 ClassLoadingMXBean classLoad = ManagementFactory.getClassLoadingMXBean();
 

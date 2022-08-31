@@ -146,7 +146,7 @@ public class MiraiBot {
         String password = ConfigUtil.getConfig("password");
         groups = ConfigUtil.getConfig("group").split(",");
         allowedGroups = ConfigUtil.getConfig("allowedGroups").split(",");
-        EventListener.showQQ = Boolean.parseBoolean(ConfigUtil.getConfig("showQQ", "false"));
+        EventListener.setShowQQ(Boolean.parseBoolean(ConfigUtil.getConfig("showQQ", "false")));
         if (qq.isBlank() || password.isBlank()) {
             logger.error(l("qq.password.not.exists"));
             System.exit(-1);

@@ -14,20 +14,16 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageSource;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.windowx.miraibot.MiraiBot.*;
 import static com.windowx.miraibot.utils.LanguageUtil.l;
 
 public class EventListener implements ListenerHost {
-	public static final ArrayList<MemberJoinRequestEvent> joinRequest = new ArrayList<>();
-	public static final ArrayList<BotInvitedJoinGroupRequestEvent> inviteRequest = new ArrayList<>();
-	public static boolean showQQ;
-	public static ArrayList<MessageSource> messages = new ArrayList<>();
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEvent(Event event) {
-		loader.broadcastEvent(event);
-	}
+	public static final List<MemberJoinRequestEvent> joinRequest = new ArrayList<>();
+	public static final List<BotInvitedJoinGroupRequestEvent> inviteRequest = new ArrayList<>();
+	private static boolean showQQ = false;
+	public static List<MessageSource> messages = new ArrayList<>();
 
 	// TODO: 重写 EventListener.java
 	
@@ -531,7 +527,20 @@ public class EventListener implements ListenerHost {
 	public void onOnline(BotOnlineEvent event) {
 		logger.info(l("bot.online"), bot.getNick());
 	}
-	
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEvent(Event event) {
+		loader.broadcastEvent(event);
+	}
+
+	public static boolean isShowQQ() {
+		return showQQ;
+	}
+
+	public static void setShowQQ(boolean showQQ) {
+		EventListener.showQQ = showQQ;
+	}
+
 	/**
 	 * A useless function.
 	 *
