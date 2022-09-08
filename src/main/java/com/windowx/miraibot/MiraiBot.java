@@ -200,8 +200,7 @@ public class MiraiBot {
             MiraiCommand.init();
             String[] cmds = MiraiCommand.cmds.keySet().toArray(new String[0]);
             for (String c : cmds) {
-                String l = c.replaceAll("([A-Z])", ".$1").toLowerCase();
-                l = l.replaceAll("-", ".");
+                String l = c.replace('-', '.');
                 String de = l("command." + l);
                 commands.set(c, new Command(c, de));
             }

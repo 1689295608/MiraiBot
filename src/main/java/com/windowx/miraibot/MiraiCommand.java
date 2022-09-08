@@ -57,7 +57,7 @@ public class MiraiCommand {
                 stop();
             }
         });
-        cmds.put("friendList", new CommandRunner() {
+        cmds.put("friend-list", new CommandRunner() {
             @Override
             public void start() {
                 ContactList<Friend> friends = bot.getFriends();
@@ -76,7 +76,7 @@ public class MiraiCommand {
                 logger.info(out.toString());
             }
         });
-        cmds.put("memberList", new CommandRunner() {
+        cmds.put("member-list", new CommandRunner() {
             @Override
             public void start() {
                 ContactList<NormalMember> members = group.getMembers();
@@ -289,7 +289,7 @@ public class MiraiCommand {
             @Override
             public void start() {
                 if (args().length < 1) {
-                    logger.warn("%s: mute <%s>", l("usage"), l("qq"));
+                    logger.warn("%s: unmute <%s>", l("usage"), l("qq"));
                     return;
                 }
                 try {
@@ -411,11 +411,11 @@ public class MiraiCommand {
                 upImg.start();
             }
         });
-        cmds.put("imageInfo", new CommandRunner() {
+        cmds.put("image-info", new CommandRunner() {
             @Override
             public void start() {
                 if (args().length < 1) {
-                    logger.warn("%s: imageInfo <%s>", l("usage"), l("image.id"));
+                    logger.warn("%s: image-info <%s>", l("usage"), l("image.id"));
                     return;
                 }
                 try {
@@ -426,11 +426,11 @@ public class MiraiCommand {
                 }
             }
         });
-        cmds.put("upImg", new CommandRunner() {
+        cmds.put("upload-image", new CommandRunner() {
             @Override
             public void start() throws Exception {
                 if (args().length < 1) {
-                    logger.warn("%s: upImg <%s>", l("usage"), l("file.path"));
+                    logger.warn("%s: upload-image <%s>", l("usage"), l("file.path"));
                     return;
                 }
                 File file = new File(args(0));
@@ -440,7 +440,7 @@ public class MiraiCommand {
                 imageInfo(bot, img);
             }
         });
-        cmds.put("upClipImg", new CommandRunner() {
+        cmds.put("upload-clip-image", new CommandRunner() {
             @Override
             public void start() throws Exception {
                 byte[] clip = ClipboardUtil.getImageFromClipboard();
@@ -455,12 +455,12 @@ public class MiraiCommand {
                 }
             }
         });
-        cmds.put("newImg", new CommandRunner() {
+        cmds.put("new-image", new CommandRunner() {
             @Override
             public void start() throws Exception {
                 if (args().length < 4) {
                     logger.warn(
-                            "%s: newImg <%s> <%s> <%s> <%s>",
+                            "%s: new-image <%s> <%s> <%s> <%s>",
                             l("usage"),
                             l("width"),
                             l("height"),
@@ -538,7 +538,7 @@ public class MiraiCommand {
                 }
             }
         });
-        cmds.put("checkUpdate", new CommandRunner() {
+        cmds.put("check-update", new CommandRunner() {
             @Override
             public void start() {
                 logger.info(l("checking.update"));
@@ -608,11 +608,11 @@ public class MiraiCommand {
                 }
             }
         });
-        cmds.put("nameCard", new CommandRunner() {
+        cmds.put("name-card", new CommandRunner() {
             @Override
             public void start() {
                 if (args().length < 2) {
-                    logger.warn("%s: nameCard <%s> <%s>", l("usage"), l("qq"), l("name.card"));
+                    logger.warn("%s: name-card <%s> <%s>", l("usage"), l("qq"), l("name.card"));
                     return;
                 }
                 try {
