@@ -193,7 +193,9 @@
     "invalid.long": "无效的群号/QQ号！",
     "invalid.arg": "无效的参数 %s！",
     "st.not.found": "未找到该 %s！",
-    "command.forward": "合并转发消息给好友或群"
+    "command.forward": "合并转发消息给好友或群",
+    "command.prefix": "/",
+    "console.title.format": "%s (%d)"
   },
   "en": {
     "command.status": "View MiraiBot Current Status",
@@ -389,6 +391,8 @@
     "invalid.long": "Invalid group number/QQ number!",
     "invalid.arg": "Invalid parameter %s!",
     "st.not.found": "The %s was not found!",
-    "command.forward": "Forward messages to friends or groups"
+    "command.forward": "Forward messages to friends or groups",
+    "command.prefix": "/",
+    "console.title.format": "%s (%d)"
   }
 }

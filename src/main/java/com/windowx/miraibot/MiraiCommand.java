@@ -974,12 +974,11 @@ public class MiraiCommand {
      * 运行命令执行
      *
      * @param msg 信息内容
-     * @return 是否是一个可执行命令
      */
-    public static boolean runCommand(String msg) {
+    public static void runCommand(String msg) {
         String[] cmd = msg.split(" ");
         if (cmd.length < 1) {
-            return false;
+            return;
         }
         String label = cmd[0];
         String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
@@ -992,14 +991,12 @@ public class MiraiCommand {
                 logger.trace(e);
                 logger.error(l("some.error"), e.toString());
             }
-            return true;
+            return;
         }
-        boolean isCmd = false;
         for (Plugin p : loader.plugins) {
             if (!p.isEnabled()) continue;
             try {
-                boolean s = p.onCommand(msg);
-                if (!s) isCmd = true;
+                p.onCommand(msg);
             } catch (Exception e) {
                 logger.error(l("plugin.command.error"),
                         p.getName(),
@@ -1016,7 +1013,6 @@ public class MiraiCommand {
                 if (!label.equals(c.getName())) {
                     continue;
                 }
-                isCmd = true;
                 try {
                     executor.onCommand(label, args);
                 } catch (Exception e) {
@@ -1029,7 +1025,6 @@ public class MiraiCommand {
                 }
             }
         }
-        return isCmd;
     }
 
     public static MusicShare neteaseMusic(long id) throws Exception {

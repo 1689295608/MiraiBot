@@ -157,11 +157,16 @@ public class MiraiBot {
         logger.info(l("trying.login"), protocol);
         try {
             BotConfiguration.MiraiProtocol miraiProtocol = switch (protocol) {
-                case "PAD" -> BotConfiguration.MiraiProtocol.ANDROID_PAD;
-                case "WATCH" -> BotConfiguration.MiraiProtocol.ANDROID_WATCH;
-                case "IPAD" -> BotConfiguration.MiraiProtocol.IPAD;
-                case "MACOS" -> BotConfiguration.MiraiProtocol.MACOS;
-                default -> BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+                case "PAD" ->
+                        BotConfiguration.MiraiProtocol.ANDROID_PAD;
+                case "WATCH" ->
+                        BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+                case "IPAD" ->
+                        BotConfiguration.MiraiProtocol.IPAD;
+                case "MACOS" ->
+                        BotConfiguration.MiraiProtocol.MACOS;
+                default ->
+                        BotConfiguration.MiraiProtocol.ANDROID_PHONE;
             };
             bot = BotFactory.INSTANCE.newBot(Long.parseLong(qq), password, new BotConfiguration() {{
                 fileBasedDeviceInfo();
@@ -175,11 +180,21 @@ public class MiraiBot {
             bot.getEventChannel().registerListenerHost(new EventListener());
 
             logger.info(l("login.success"), bot.getNick());
-            String os = System.getProperty("os.name").toLowerCase();
-            if (os.contains("windows")) {
-                new ProcessBuilder("cmd", "/c", "title " + bot.getNick() + " (" + bot.getId() + ")").inheritIO().start().waitFor();
-            } else if (os.contains("linux")) {
-                new ProcessBuilder("echo", "-e", "\\033]0;" + bot.getNick() + " (" + bot.getId() + ")" + "\\007").inheritIO().start().waitFor();
+
+            boolean title = Boolean.parseBoolean(ConfigUtil.getConfig("console-title", "true"));
+            if (title) {
+                String os = System.getProperty("os.name").toLowerCase();
+                String format = l("console.title.format");
+                format = String.format(format, bot.getNick(), bot.getId());
+                ProcessBuilder pb = null;
+                if (os.contains("windows")) {
+                    pb = new ProcessBuilder("cmd", "/c", "title " + format);
+                } else if (os.contains("linux")) {
+                    pb = new ProcessBuilder("echo", "-e", "\\033]0;" + format + "\\007");
+                }
+                if (pb != null) {
+                    pb.inheritIO().start().waitFor();
+                }
             }
 
             MiraiCommand.init();
@@ -248,7 +263,8 @@ public class MiraiBot {
                 if (reader.isReading()) continue;
                 String msg = reader.readLine("> ");
                 if (msg.isBlank()) continue;
-                if (MiraiCommand.runCommand(msg)) {
+                if (msg.startsWith(l("command.prefix"))) {
+                    MiraiCommand.runCommand(msg.substring(l("command.prefix").length()));
                     continue;
                 }
                 if (group == null) {
@@ -299,8 +315,8 @@ public class MiraiBot {
     }
 
     @Deprecated
-    public static boolean runCommand(String msg) {
-        return MiraiCommand.runCommand(msg);
+    public static void runCommand(String msg) {
+        MiraiCommand.runCommand(msg);
     }
 
     /**
