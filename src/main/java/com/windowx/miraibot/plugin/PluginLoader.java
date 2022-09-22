@@ -225,7 +225,9 @@ public class PluginLoader {
         p.setPluginLoader(MiraiBot.loader);
         p.setLogger(new Logger("[" + p.getName() + "] "));
         File file = new File(p.getDataFolder(), "/config.json");
-        p.loadConfig(new FileInputStream(file));
+        if (file.exists()) {
+            p.loadConfig(new FileInputStream(file));
+        }
         loaders.put(p, u);
         return p;
     }
